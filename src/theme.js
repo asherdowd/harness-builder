@@ -1,0 +1,15 @@
+export const COLOR = {
+  bg: "#12151a",
+  grid: "#1c2129",
+  trunkFill: "#262b33",
+  trunkStroke: "#4a515c",
+  trunkStrand: "#343b45",
+  bodyFill: "#1b1f26",
+  bodyStroke: "#7c8794",
+  leadStroke: "#565e6a",
+  pinFill: "#e2a355",
+  pinRing: "#0d0f12",
+  pinEmptyStroke: "#454c56",
+  idText: "#e8b25c",
+  nameText: "#8b93a1",
+};
