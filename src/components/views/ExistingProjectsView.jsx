@@ -1,19 +1,7 @@
 import React from "react";
 import { COLOR } from "../../theme.js";
-import { HARNESS } from "../../data/harness.js";
 
-export function ExistingProjectsView({ onOpenProject }) {
-  // TODO: replace this hardcoded seed project with a real read from
-  // persistence (Supabase) once that's wired up.
-  const projects = [
-    {
-      id: "vx-b20z2",
-      name: HARNESS.meta.project,
-      subtitle: HARNESS.meta.vehicle,
-      count: HARNESS.connectors.length,
-    },
-  ];
-
+export function ExistingProjectsView({ projects, onOpenProject }) {
   return (
     <div style={{ padding: "20px 20px 40px" }}>
       <div style={{ color: COLOR.nameText, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12, padding: "0 4px" }}>
@@ -22,7 +10,7 @@ export function ExistingProjectsView({ onOpenProject }) {
       {projects.map((p) => (
         <button
           key={p.id}
-          onClick={() => onOpenProject(p.id)}
+          onClick={() => onOpenProject(p)}
           style={{
             display: "block", width: "100%", textAlign: "left", background: "#171b21",
             border: `1px solid ${COLOR.grid}`, borderRadius: 8, padding: "14px 16px",
