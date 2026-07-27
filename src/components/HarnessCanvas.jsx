@@ -25,7 +25,7 @@ function renderHarnessView(harness) {
   return { layout, totalHeight, svgWidth, trunkX, topPad, bottomPad };
 }
 
-export function HarnessCanvas({ project, component, components = [], onAddComponent, onSelectComponent }) {
+export function HarnessCanvas({ project, component, components = [], onAddComponent, onSelectComponent, onUpdateComponent, onDeleteComponent }) {
   const activeComponent = component || project?.components?.[0] || null;
   const harness = activeComponent?.harness || HARNESS;
   const title = activeComponent?.name || harness.meta?.project || HARNESS.meta.project;
@@ -45,12 +45,44 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
 
   const svgWidth = view.mode === "ecu" ? 960 : view.svgWidth;
   const totalHeight = view.mode === "ecu" ? 280 : view.totalHeight;
+  const [editingName, setEditingName] = React.useState(activeComponent?.name || "");
+
+  React.useEffect(() => {
+    setEditingName(activeComponent?.name || "");
+  }, [activeComponent?.id, activeComponent?.name]);
+
+  const handleSaveName = () => {
+    if (!activeComponent) return;
+    onUpdateComponent?.(activeComponent.id, { name: editingName.trim() || activeComponent.name });
+  };
 
   return (
     <div style={{ background: COLOR.bg, minHeight: "100%", width: "100%", fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>
       <div style={{ padding: "16px 28px 8px", borderBottom: `1px solid ${COLOR.grid}` }}>
         <div style={{ color: "#e6e9ed", fontSize: 18, fontWeight: 600 }}>{title}</div>
         <div style={{ color: COLOR.nameText, fontSize: 12.5, marginTop: 2 }}>{subtitle}</div>
+        {activeComponent && (
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap", alignItems: "center" }}>
+            <input
+              value={editingName}
+              onChange={(event) => setEditingName(event.target.value)}
+              placeholder="Component name"
+              style={{ background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }}
+            />
+            <button
+              onClick={handleSaveName}
+              style={{ background: "#2f6fed", border: "none", borderRadius: 8, color: "#fff", padding: "7px 10px", cursor: "pointer", fontFamily: "inherit" }}
+            >
+              Save
+            </button>
+            <button
+              onClick={() => onDeleteComponent?.(activeComponent.id)}
+              style={{ background: "#7a2e2e", border: "none", borderRadius: 8, color: "#fff", padding: "7px 10px", cursor: "pointer", fontFamily: "inherit" }}
+            >
+              Delete
+            </button>
+          </div>
+        )}
         {components.length > 0 && (
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             {components.map((item) => (

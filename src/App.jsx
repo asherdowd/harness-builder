@@ -70,6 +70,33 @@ export default function App() {
     setActiveComponentId(nextProject.components[nextProject.components.length - 1].id);
   };
 
+  const handleUpdateComponent = (componentId, updates) => {
+    if (!activeProject) return;
+
+    const nextComponents = (activeProject.components || getProjectComponents(activeProject)).map((component) => {
+      if (component.id !== componentId) return component;
+      return { ...component, ...updates };
+    });
+
+    const nextProject = { ...activeProject, components: nextComponents };
+    setProjects((current) => current.map((project) => (project.id === activeProject.id ? nextProject : project)));
+    setActiveProject(nextProject);
+  };
+
+  const handleDeleteComponent = (componentId) => {
+    if (!activeProject) return;
+
+    const nextComponents = (activeProject.components || getProjectComponents(activeProject)).filter((component) => component.id !== componentId);
+    if (nextComponents.length === 0) {
+      return;
+    }
+
+    const nextProject = { ...activeProject, components: nextComponents };
+    setProjects((current) => current.map((project) => (project.id === activeProject.id ? nextProject : project)));
+    setActiveProject(nextProject);
+    setActiveComponentId(nextComponents[0].id);
+  };
+
   return (
     <div style={{ background: COLOR.bg, minHeight: "100vh", width: "100%", fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>
       <TopBar onMenu={() => setDrawerOpen(true)} title={titles[view]} />
@@ -82,6 +109,8 @@ export default function App() {
           components={activeComponents}
           onAddComponent={handleAddComponent}
           onSelectComponent={setActiveComponentId}
+          onUpdateComponent={handleUpdateComponent}
+          onDeleteComponent={handleDeleteComponent}
         />
       )}
       {view === "existing" && <ExistingProjectsView projects={projects} onOpenProject={handleOpenProject} />}
