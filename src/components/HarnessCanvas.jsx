@@ -135,6 +135,48 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
         )}
       </div>
 
+      <div style={{ padding: "12px 28px 16px", display: "grid", gap: 12, borderBottom: `1px solid ${COLOR.grid}` }}>
+        {activeComponent?.type === "harness" && (
+          <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", alignItems: "end" }}>
+            <label style={{ display: "grid", gap: 6 }}>
+              <span style={{ color: COLOR.nameText, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}>Connector name</span>
+              <input value={connectorName} onChange={(event) => setConnectorName(event.target.value)} placeholder="Connector name" style={{ background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "8px 10px", fontFamily: "inherit" }} />
+            </label>
+            <label style={{ display: "grid", gap: 6 }}>
+              <span style={{ color: COLOR.nameText, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}>Placement</span>
+              <select value={connectorPlacement} onChange={(event) => setConnectorPlacement(event.target.value)} style={{ background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "8px 10px", fontFamily: "inherit" }}>
+                <option value="after">After</option>
+                <option value="before">Before</option>
+                <option value="end">End</option>
+              </select>
+            </label>
+            <label style={{ display: "grid", gap: 6 }}>
+              <span style={{ color: COLOR.nameText, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}>Anchor connector</span>
+              <select value={connectorAnchorId} onChange={(event) => setConnectorAnchorId(event.target.value)} style={{ background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "8px 10px", fontFamily: "inherit" }}>
+                <option value="">Choose an anchor</option>
+                {harness.connectors.map((connector) => <option key={connector.id} value={connector.id}>{connector.id}</option>)}
+              </select>
+            </label>
+            <button onClick={handleAddConnector} style={{ background: "#2f6fed", border: "none", borderRadius: 8, color: "#fff", padding: "8px 12px", cursor: "pointer", fontFamily: "inherit" }}>Add connector</button>
+          </div>
+        )}
+        {activeComponent?.type === "ecu" && (
+          <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", alignItems: "end" }}>
+            <label style={{ display: "grid", gap: 6 }}>
+              <span style={{ color: COLOR.nameText, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}>ECU name</span>
+              <input value={ecuName} onChange={(event) => setEcuName(event.target.value)} placeholder="ECU name" style={{ background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "8px 10px", fontFamily: "inherit" }} />
+            </label>
+            <label style={{ display: "grid", gap: 6 }}>
+              <span style={{ color: COLOR.nameText, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}>ECU type</span>
+              <select value={ecuTypeId} onChange={(event) => setEcuTypeId(event.target.value)} style={{ background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "8px 10px", fontFamily: "inherit" }}>
+                {ECU_TYPES.map((type) => <option key={type.id} value={type.id}>{type.name}</option>)}
+              </select>
+            </label>
+            <button onClick={handleSaveEcu} style={{ background: "#2f6fed", border: "none", borderRadius: 8, color: "#fff", padding: "8px 12px", cursor: "pointer", fontFamily: "inherit" }}>Apply ECU details</button>
+          </div>
+        )}
+      </div>
+
       <div style={{ overflow: "auto", maxHeight: "calc(100vh - 140px)" }}>
         <svg width={svgWidth} height={totalHeight} viewBox={`0 0 ${svgWidth} ${totalHeight}`}>
           <defs>
@@ -174,22 +216,6 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
                 <line key={i} x1={view.trunkX + dx} y1={view.topPad - 26} x2={view.trunkX + dx} y2={totalHeight - view.bottomPad + 26}
                   stroke={COLOR.trunkStrand} strokeWidth={1} strokeDasharray="1,5" />
               ))}
-
-              <g transform="translate(80, 20)">
-                <rect x={0} y={0} width={380} height={120} rx={12} fill="rgba(10,15,24,0.75)" stroke={COLOR.grid} strokeWidth={1} />
-                <text x={18} y={28} fill="#e6e9ed" fontSize={14} fontWeight={700}>Add connector</text>
-                <input value={connectorName} onChange={(event) => setConnectorName(event.target.value)} placeholder="Connector name" style={{ position: "absolute", left: 18, top: 42, width: 180, background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }} />
-                <select value={connectorPlacement} onChange={(event) => setConnectorPlacement(event.target.value)} style={{ position: "absolute", left: 208, top: 42, background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }}>
-                  <option value="after">After</option>
-                  <option value="before">Before</option>
-                  <option value="end">End</option>
-                </select>
-                <select value={connectorAnchorId} onChange={(event) => setConnectorAnchorId(event.target.value)} style={{ position: "absolute", left: 18, top: 86, width: 220, background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }}>
-                  <option value="">Choose an anchor</option>
-                  {harness.connectors.map((connector) => <option key={connector.id} value={connector.id}>{connector.id}</option>)}
-                </select>
-                <button onClick={handleAddConnector} style={{ position: "absolute", left: 250, top: 86, background: "#2f6fed", border: "none", borderRadius: 8, color: "#fff", padding: "8px 12px", cursor: "pointer", fontFamily: "inherit" }}>Add connector</button>
-              </g>
 
               {view.layout.map(({ conn, side, y, anchorX, shapeData }) => {
                 const trunkEdgeX = view.trunkX + side * 14;
