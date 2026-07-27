@@ -3,6 +3,7 @@ import { COLOR } from "../theme.js";
 import { HARNESS } from "../data/harness.js";
 import { wrapText } from "../lib/geometry.js";
 import { renderShape } from "./shapes/shapeRenderers.jsx";
+import { ECU_TYPES } from "../lib/harnessEditor.js";
 
 function renderHarnessView(harness) {
   const trunkX = 480;
@@ -25,7 +26,7 @@ function renderHarnessView(harness) {
   return { layout, totalHeight, svgWidth, trunkX, topPad, bottomPad };
 }
 
-export function HarnessCanvas({ project, component, components = [], onAddComponent, onSelectComponent, onUpdateComponent, onDeleteComponent }) {
+export function HarnessCanvas({ project, component, components = [], onAddComponent, onSelectComponent, onUpdateComponent, onDeleteComponent, onAddConnector }) {
   const activeComponent = component || project?.components?.[0] || null;
   const harness = activeComponent?.harness || HARNESS;
   const title = activeComponent?.name || harness.meta?.project || HARNESS.meta.project;
@@ -46,14 +47,34 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
   const svgWidth = view.mode === "ecu" ? 960 : view.svgWidth;
   const totalHeight = view.mode === "ecu" ? 280 : view.totalHeight;
   const [editingName, setEditingName] = React.useState(activeComponent?.name || "");
+  const [connectorName, setConnectorName] = React.useState("");
+  const [connectorPlacement, setConnectorPlacement] = React.useState("after");
+  const [connectorAnchorId, setConnectorAnchorId] = React.useState("");
+  const [ecuTypeId, setEcuTypeId] = React.useState(activeComponent?.ecu?.typeId || "ecm");
+  const [ecuName, setEcuName] = React.useState(activeComponent?.ecu?.name || "");
+  const [showDetails, setShowDetails] = React.useState(false);
 
   React.useEffect(() => {
     setEditingName(activeComponent?.name || "");
-  }, [activeComponent?.id, activeComponent?.name]);
+    setEcuTypeId(activeComponent?.ecu?.typeId || "ecm");
+    setEcuName(activeComponent?.ecu?.name || "");
+  }, [activeComponent?.id, activeComponent?.name, activeComponent?.ecu?.typeId, activeComponent?.ecu?.name]);
 
   const handleSaveName = () => {
     if (!activeComponent) return;
     onUpdateComponent?.(activeComponent.id, { name: editingName.trim() || activeComponent.name });
+  };
+
+  const handleAddConnector = () => {
+    if (!activeComponent || activeComponent.type !== "harness") return;
+    onAddConnector?.(activeComponent.id, connectorName.trim() || "New connector", connectorPlacement, connectorAnchorId || null);
+    setConnectorName("");
+    setConnectorAnchorId("");
+  };
+
+  const handleSaveEcu = () => {
+    if (!activeComponent || activeComponent.type !== "ecu") return;
+    onUpdateComponent?.(activeComponent.id, { name: ecuName.trim() || activeComponent.name, ecu: { ...(activeComponent.ecu || {}), name: ecuName.trim() || activeComponent.name, typeId: ecuTypeId } });
   };
 
   return (
@@ -99,7 +120,7 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
               </button>
             ))}
             <button
-              onClick={() => onAddComponent?.("ecu")}
+              onClick={() => onAddComponent?.("ecu", { name: "Connected ECU", typeId: "ecm" })}
               style={{ background: "#243041", border: "1px solid #3c506a", borderRadius: 999, color: "#e6e9ed", padding: "6px 10px", cursor: "pointer", fontFamily: "inherit" }}
             >
               + ECU
@@ -129,6 +150,21 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
               <text x={480} y={120} textAnchor="middle" fill="#e6e9ed" fontSize={18} fontWeight={700}>ECU</text>
               <text x={480} y={148} textAnchor="middle" fill={COLOR.nameText} fontSize={13}>{activeComponent?.ecu?.name || "Connected ECU"}</text>
               <line x1={480} y1={210} x2={480} y2={280} stroke={COLOR.leadStroke} strokeWidth={2} />
+              <rect x={120} y={30} width={720} height={220} rx={20} fill="rgba(10,15,24,0.75)" stroke={COLOR.grid} strokeWidth={1} />
+              <text x={160} y={68} fill="#e6e9ed" fontSize={14} fontWeight={700}>ECU type</text>
+              <select value={ecuTypeId} onChange={(event) => setEcuTypeId(event.target.value)} style={{ position: "absolute", left: 160, top: 78, background: "#12161d", border: `1px solid ${COLOR.grid}`, color: "#e6e9ed", padding: "7px 10px", borderRadius: 8, fontFamily: "inherit" }}>
+                {ECU_TYPES.map((type) => <option key={type.id} value={type.id}>{type.name}</option>)}
+              </select>
+              <text x={160} y={132} fill="#e6e9ed" fontSize={14} fontWeight={700}>Pinout preview</text>
+              <g transform="translate(160, 150)">
+                {(ECU_TYPES.find((type) => type.id === ecuTypeId)?.plugs?.[0]?.pins || []).map((pin, index) => (
+                  <g key={`${pin.name}-${index}`} transform={`translate(${index * 110}, 0)`}>
+                    <rect x={0} y={0} width={90} height={48} rx={8} fill={pin.color || "#4f6b8a"} stroke="#fff" strokeWidth={1.2} />
+                    <text x={45} y={28} textAnchor="middle" fill="#07111b" fontSize={11}>{pin.name}</text>
+                  </g>
+                ))}
+              </g>
+              <button onClick={handleSaveEcu} style={{ position: "absolute", left: 160, top: 220, background: "#2f6fed", border: "none", borderRadius: 8, color: "#fff", padding: "8px 12px", cursor: "pointer", fontFamily: "inherit" }}>Apply ECU details</button>
             </>
           ) : (
             <>
@@ -138,6 +174,22 @@ export function HarnessCanvas({ project, component, components = [], onAddCompon
                 <line key={i} x1={view.trunkX + dx} y1={view.topPad - 26} x2={view.trunkX + dx} y2={totalHeight - view.bottomPad + 26}
                   stroke={COLOR.trunkStrand} strokeWidth={1} strokeDasharray="1,5" />
               ))}
+
+              <g transform="translate(80, 20)">
+                <rect x={0} y={0} width={380} height={120} rx={12} fill="rgba(10,15,24,0.75)" stroke={COLOR.grid} strokeWidth={1} />
+                <text x={18} y={28} fill="#e6e9ed" fontSize={14} fontWeight={700}>Add connector</text>
+                <input value={connectorName} onChange={(event) => setConnectorName(event.target.value)} placeholder="Connector name" style={{ position: "absolute", left: 18, top: 42, width: 180, background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }} />
+                <select value={connectorPlacement} onChange={(event) => setConnectorPlacement(event.target.value)} style={{ position: "absolute", left: 208, top: 42, background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }}>
+                  <option value="after">After</option>
+                  <option value="before">Before</option>
+                  <option value="end">End</option>
+                </select>
+                <select value={connectorAnchorId} onChange={(event) => setConnectorAnchorId(event.target.value)} style={{ position: "absolute", left: 18, top: 86, width: 220, background: "#12161d", border: `1px solid ${COLOR.grid}`, borderRadius: 8, color: "#e6e9ed", padding: "7px 10px", fontFamily: "inherit" }}>
+                  <option value="">Choose an anchor</option>
+                  {harness.connectors.map((connector) => <option key={connector.id} value={connector.id}>{connector.id}</option>)}
+                </select>
+                <button onClick={handleAddConnector} style={{ position: "absolute", left: 250, top: 86, background: "#2f6fed", border: "none", borderRadius: 8, color: "#fff", padding: "8px 12px", cursor: "pointer", fontFamily: "inherit" }}>Add connector</button>
+              </g>
 
               {view.layout.map(({ conn, side, y, anchorX, shapeData }) => {
                 const trunkEdgeX = view.trunkX + side * 14;

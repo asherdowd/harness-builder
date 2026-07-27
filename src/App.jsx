@@ -8,6 +8,7 @@ import { ExistingProjectsView } from "./components/views/ExistingProjectsView.js
 import { NewProjectView } from "./components/views/NewProjectView.jsx";
 import { SettingsView } from "./components/views/SettingsView.jsx";
 import { createProject, getProjectComponents, initializeProjects } from "./lib/projectStore.js";
+import { buildConnector, insertConnectorIntoHarness } from "./lib/harnessEditor.js";
 
 export default function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -49,7 +50,7 @@ export default function App() {
   const activeComponents = React.useMemo(() => getProjectComponents(activeProject), [activeProject]);
   const activeComponent = activeComponents.find((component) => component.id === activeComponentId) || activeComponents[0] || null;
 
-  const handleAddComponent = (type) => {
+  const handleAddComponent = (type, payload = {}) => {
     if (!activeProject) return;
 
     const nextProject = {
@@ -59,8 +60,10 @@ export default function App() {
         {
           type,
           id: `${type}-${Date.now()}`,
-          name: type === "ecu" ? "Connected ECU" : "Added Harness",
-          ...(type === "ecu" ? { ecu: { name: "Connected ECU" } } : { harness: HARNESS }),
+          name: type === "ecu" ? payload.name || "Connected ECU" : payload.name || "Added Harness",
+          ...(type === "ecu"
+            ? { ecu: { name: payload.name || "Connected ECU", typeId: payload.typeId || "ecm", plugs: payload.plugs || [] } }
+            : { harness: payload.harness || HARNESS }),
         },
       ],
     };
@@ -97,6 +100,21 @@ export default function App() {
     setActiveComponentId(nextComponents[0].id);
   };
 
+  const handleAddConnector = (componentId, connectorName, placement, anchorId) => {
+    if (!activeProject) return;
+
+    const nextComponents = (activeProject.components || getProjectComponents(activeProject)).map((component) => {
+      if (component.id !== componentId || component.type !== "harness") return component;
+      const connector = buildConnector(connectorName, { prefix: "EH" });
+      const nextHarness = insertConnectorIntoHarness(component.harness, connector, placement, anchorId);
+      return { ...component, harness: nextHarness };
+    });
+
+    const nextProject = { ...activeProject, components: nextComponents };
+    setProjects((current) => current.map((project) => (project.id === activeProject.id ? nextProject : project)));
+    setActiveProject(nextProject);
+  };
+
   return (
     <div style={{ background: COLOR.bg, minHeight: "100vh", width: "100%", fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>
       <TopBar onMenu={() => setDrawerOpen(true)} title={titles[view]} />
@@ -111,6 +129,7 @@ export default function App() {
           onSelectComponent={setActiveComponentId}
           onUpdateComponent={handleUpdateComponent}
           onDeleteComponent={handleDeleteComponent}
+          onAddConnector={handleAddConnector}
         />
       )}
       {view === "existing" && <ExistingProjectsView projects={projects} onOpenProject={handleOpenProject} />}
