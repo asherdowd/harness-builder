@@ -1,10 +1,13 @@
 import React from "react";
 import { COLOR } from "../../theme.js";
 import { EmptyState } from "../common/EmptyState.jsx";
+import { buildHarnessProject } from "../../lib/wizardTemplates.js";
 
 export function NewProjectView({ onCreateProject }) {
   const [selected, setSelected] = React.useState(null);
   const [projectName, setProjectName] = React.useState("");
+  const [vehicleName, setVehicleName] = React.useState("");
+  const [connectorPrefix, setConnectorPrefix] = React.useState("EH");
 
   const option = (key, label, desc) => (
     <button
@@ -23,7 +26,17 @@ export function NewProjectView({ onCreateProject }) {
 
   const handleCreate = () => {
     if (!selected || !projectName.trim()) return;
-    onCreateProject(projectName.trim());
+    if (selected !== "harness") {
+      onCreateProject(projectName.trim());
+      return;
+    }
+
+    const project = buildHarnessProject(projectName.trim(), {
+      vehicleName: vehicleName.trim() || undefined,
+      connectorPrefix: connectorPrefix.trim() || "EH",
+    });
+
+    onCreateProject(project.name, project.harness);
   };
 
   return (
@@ -51,6 +64,36 @@ export function NewProjectView({ onCreateProject }) {
             />
           </label>
 
+          {selected === "harness" && (
+            <>
+              <label style={{ display: "grid", gap: 8 }}>
+                <span style={{ color: COLOR.nameText, fontSize: 12.5, textTransform: "uppercase", letterSpacing: "0.08em" }}>Vehicle / build</span>
+                <input
+                  value={vehicleName}
+                  onChange={(event) => setVehicleName(event.target.value)}
+                  placeholder="Example: 1994 Civic Hatch"
+                  style={{
+                    background: "#171b21", border: `1px solid ${COLOR.grid}`, borderRadius: 8,
+                    color: "#e6e9ed", padding: "12px 14px", fontFamily: "inherit"
+                  }}
+                />
+              </label>
+
+              <label style={{ display: "grid", gap: 8 }}>
+                <span style={{ color: COLOR.nameText, fontSize: 12.5, textTransform: "uppercase", letterSpacing: "0.08em" }}>Connector prefix</span>
+                <input
+                  value={connectorPrefix}
+                  onChange={(event) => setConnectorPrefix(event.target.value)}
+                  placeholder="EH"
+                  style={{
+                    background: "#171b21", border: `1px solid ${COLOR.grid}`, borderRadius: 8,
+                    color: "#e6e9ed", padding: "12px 14px", fontFamily: "inherit"
+                  }}
+                />
+              </label>
+            </>
+          )}
+
           <button
             onClick={handleCreate}
             disabled={!projectName.trim()}
@@ -68,9 +111,9 @@ export function NewProjectView({ onCreateProject }) {
       {!selected && (
         <div style={{ marginTop: 22 }}>
           <EmptyState
-            eyebrow="Coming Next"
+            eyebrow="New flow"
             title="Harness setup wizard"
-            body="Select a component type to start creating a new project entry."
+            body="Choose harness to create a simple custom harness project with a starter connector layout."
           />
         </div>
       )}

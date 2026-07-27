@@ -33,8 +33,8 @@ export default function App() {
     setDrawerOpen(false);
   };
 
-  const handleCreateProject = (name) => {
-    const project = createProject(name, HARNESS);
+  const handleCreateProject = (name, harness = HARNESS) => {
+    const project = createProject(name, harness);
     setProjects((current) => [...current, project]);
     setActiveProject(project);
     setView("canvas");
