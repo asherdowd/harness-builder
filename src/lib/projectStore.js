@@ -25,7 +25,25 @@ export function buildSeedProject(harness = HARNESS) {
     subtitle: harness.meta.vehicle,
     count: harness.connectors.length,
     harness,
+    components: [{ type: "harness", id: "harness-vx-b20z2", name: harness.meta.project, harness }],
   };
+}
+
+export function getProjectComponents(project) {
+  if (Array.isArray(project?.components) && project.components.length > 0) {
+    return project.components;
+  }
+
+  const components = [];
+  if (project?.harness) {
+    components.push({ type: "harness", id: `${project.id || "project"}-harness`, name: project.name, harness: project.harness });
+  }
+
+  if (project?.ecu) {
+    components.push({ type: "ecu", id: `${project.id || "project"}-ecu`, name: project.ecu.name || "ECU", ecu: project.ecu });
+  }
+
+  return components;
 }
 
 export function readProjects(storage) {
@@ -77,6 +95,7 @@ export function createProject(name, harness = HARNESS, storage) {
     subtitle: harness.meta.vehicle,
     count: harness.connectors.length,
     harness,
+    components: [{ type: "harness", id: `harness-${Date.now()}`, name, harness }],
   };
 
   upsertProject(project, storage);

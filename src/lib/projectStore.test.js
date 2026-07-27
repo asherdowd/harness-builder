@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createProject, initializeProjects, readProjects, writeProjects } from "./projectStore.js";
+import { createProject, getProjectComponents, initializeProjects, readProjects, writeProjects } from "./projectStore.js";
 
 function createMemoryStorage() {
   const store = new Map();
@@ -44,5 +44,18 @@ describe("projectStore", () => {
     writeProjects(projects, storage);
 
     expect(readProjects(storage)).toEqual(projects);
+  });
+
+  it("normalizes projects into a component list", () => {
+    const project = {
+      id: "project-1",
+      name: "Garage build",
+      harness: { meta: { project: "Garage build" }, connectors: [] },
+    };
+
+    const components = getProjectComponents(project);
+
+    expect(components).toHaveLength(1);
+    expect(components[0].type).toBe("harness");
   });
 });

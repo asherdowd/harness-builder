@@ -7,13 +7,14 @@ import { HarnessCanvas } from "./components/HarnessCanvas.jsx";
 import { ExistingProjectsView } from "./components/views/ExistingProjectsView.jsx";
 import { NewProjectView } from "./components/views/NewProjectView.jsx";
 import { SettingsView } from "./components/views/SettingsView.jsx";
-import { createProject, initializeProjects } from "./lib/projectStore.js";
+import { createProject, getProjectComponents, initializeProjects } from "./lib/projectStore.js";
 
 export default function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [view, setView] = React.useState("canvas");
   const [projects, setProjects] = React.useState(() => initializeProjects());
   const [activeProject, setActiveProject] = React.useState(projects[0] ?? null);
+  const [activeComponentId, setActiveComponentId] = React.useState(null);
 
   const titles = {
     canvas: activeProject?.name ?? HARNESS.meta.project,
@@ -29,6 +30,8 @@ export default function App() {
 
   const handleOpenProject = (project) => {
     setActiveProject(project);
+    const components = getProjectComponents(project);
+    setActiveComponentId(components[0]?.id ?? null);
     setView("canvas");
     setDrawerOpen(false);
   };
@@ -37,9 +40,34 @@ export default function App() {
     const project = createProject(name, harness);
     setProjects((current) => [...current, project]);
     setActiveProject(project);
+    setActiveComponentId(project.components?.[0]?.id ?? null);
     setView("canvas");
     setDrawerOpen(false);
     return project;
+  };
+
+  const activeComponents = React.useMemo(() => getProjectComponents(activeProject), [activeProject]);
+  const activeComponent = activeComponents.find((component) => component.id === activeComponentId) || activeComponents[0] || null;
+
+  const handleAddComponent = (type) => {
+    if (!activeProject) return;
+
+    const nextProject = {
+      ...activeProject,
+      components: [
+        ...(activeProject.components || getProjectComponents(activeProject)),
+        {
+          type,
+          id: `${type}-${Date.now()}`,
+          name: type === "ecu" ? "Connected ECU" : "Added Harness",
+          ...(type === "ecu" ? { ecu: { name: "Connected ECU" } } : { harness: HARNESS }),
+        },
+      ],
+    };
+
+    setProjects((current) => current.map((project) => (project.id === activeProject.id ? nextProject : project)));
+    setActiveProject(nextProject);
+    setActiveComponentId(nextProject.components[nextProject.components.length - 1].id);
   };
 
   return (
@@ -47,7 +75,15 @@ export default function App() {
       <TopBar onMenu={() => setDrawerOpen(true)} title={titles[view]} />
       <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} view={view} onNavigate={handleNavigate} />
 
-      {view === "canvas" && <HarnessCanvas project={activeProject ?? projects[0] ?? null} />}
+      {view === "canvas" && (
+        <HarnessCanvas
+          project={activeProject ?? projects[0] ?? null}
+          component={activeComponent}
+          components={activeComponents}
+          onAddComponent={handleAddComponent}
+          onSelectComponent={setActiveComponentId}
+        />
+      )}
       {view === "existing" && <ExistingProjectsView projects={projects} onOpenProject={handleOpenProject} />}
       {view === "new" && <NewProjectView onCreateProject={handleCreateProject} />}
       {view === "settings" && <SettingsView />}
