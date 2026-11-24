@@ -15,7 +15,7 @@ private struct PinchBase {
 
 // MARK: - drawing layers (all in "world" coordinates, already shifted by shiftX)
 
-private struct TrunkLayer: View {
+struct TrunkLayer: View {
     let layout: HarnessLayout
 
     var body: some View {
@@ -46,7 +46,7 @@ private struct TrunkLayer: View {
     }
 }
 
-private struct LeadsLayer: View {
+struct LeadsLayer: View {
     let layout: HarnessLayout
 
     var body: some View {
@@ -74,7 +74,7 @@ private struct LeadsLayer: View {
     }
 }
 
-private struct PlugItemView: View {
+struct PlugItemView: View {
     let item: PlacedPlug
     let shiftX: CGFloat
     let selected: Bool

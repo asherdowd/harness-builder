@@ -12,6 +12,8 @@ struct HarnessMenuSheet: View {
     let store: HarnessStore
     let harnessID: String
     let onClose: () -> Void
+    /// Open the export sheet.
+    let onExport: () -> Void
 
     @State private var name = ""
     @State private var loaded = false
@@ -60,6 +62,18 @@ struct HarnessMenuSheet: View {
                     .tint(Palette.amber)
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || name == harness?.title)
             }
+
+            Button {
+                onExport()
+            } label: {
+                Label("Export as PDF or image", systemImage: "square.and.arrow.up")
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 13)
+            }
+            .buttonStyle(.bordered)
+            .tint(Palette.amber)
+            .padding(.top, 6)
 
             if !store.isBlank {
                 Button(role: .destructive) {

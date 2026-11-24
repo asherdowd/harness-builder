@@ -15,6 +15,7 @@ private enum ActiveSheet: Identifiable {
     case wizard(WizardRequest)
     case addHarness
     case harnessMenu
+    case export
     case linkPicker(String)
 
     var id: String { "sheet" }
@@ -24,6 +25,7 @@ private enum ActiveSheet: Identifiable {
 private enum Panel {
     case addHarness
     case harnessMenu
+    case export
     case linkPicker(String)
 }
 
@@ -68,6 +70,7 @@ struct MainView: View {
                     switch p {
                     case .addHarness: return .addHarness
                     case .harnessMenu: return .harnessMenu
+                    case .export: return .export
                     case .linkPicker(let id): return .linkPicker(id)
                     }
                 }
@@ -141,8 +144,12 @@ struct MainView: View {
                 HarnessMenuSheet(store: store, harnessID: store.active.id, onClose: {
                     selectedID = nil
                     panel = nil
-                })
+                }, onExport: { panel = .export })
                     .presentationDetents([.medium])
+                    .presentationBackground(Color(hex: 0x1b1f26))
+            case .export:
+                ExportSheet(store: store, onClose: { panel = nil })
+                    .presentationDetents([.medium, .large])
                     .presentationBackground(Color(hex: 0x1b1f26))
             case .linkPicker(let id):
                 LinkPickerSheet(store: store, plugID: id, onClose: { panel = nil })
