@@ -13,12 +13,21 @@ import SwiftUI
 
 struct ModelCheckView: View {
     @State private var store = HarnessStore()
+    @State private var lastAction = "Nothing tapped yet"
+
+    private func note(_ text: String) {
+        lastAction = "\(Date.now.formatted(date: .omitted, time: .standard))  \(text)"
+    }
 
     var body: some View {
         NavigationStack {
             List {
                 if let err = store.loadError {
                     Section("Problems") { Text(err).font(.caption).foregroundStyle(.red) }
+                }
+
+                Section("Last action") {
+                    Text(lastAction).font(.callout)
                 }
 
                 Section("Harnesses (tap to open)") {
@@ -71,15 +80,37 @@ struct ModelCheckView: View {
                 }
 
                 Section("Actions") {
-                    Button("Try the example") { store.loadExample() }
+                    Button("Try the example") {
+                        store.loadExample()
+                        note("Example loaded. Harnesses now: \(store.harnesses.count)")
+                    }
                     Menu("Add a template…") {
                         ForEach(store.templates) { t in
-                            Button(t.label) { store.addTemplate(key: t.key) }.disabled(!store.canAdd(t))
+                            Button(t.label) {
+                                let id = store.addTemplate(key: t.key)
+                                note(id == nil ? "Template \(t.label): not added" : "Template \(t.label): added as \(id ?? "?"). Harnesses now: \(store.harnesses.count)")
+                            }
+                            .disabled(!store.canAdd(t))
                         }
                     }
-                    Button("Create a harness") { store.createHarness() }
-                    Button("Delete this harness", role: .destructive) { store.deleteHarness(id: store.active.id) }
-                    Button("Reset to blank first open", role: .destructive) { store.resetAll() }
+                    Button("Create a harness") {
+                        if let id = store.createHarness() {
+                            note("Create: added \(id). Harnesses now: \(store.harnesses.count)")
+                        } else {
+                            note("Create: you only have the empty starter harness, so it was kept as your first harness (nothing added)")
+                        }
+                    }
+                    Button("Delete this harness", role: .destructive) {
+                        let before = store.harnesses.count
+                        let name = store.active.title
+                        store.deleteHarness(id: store.active.id)
+                        note("Delete \"\(name)\": harnesses \(before) -> \(store.harnesses.count)")
+                    }
+                    Button("Reset to blank first open", role: .destructive) {
+                        let before = store.harnesses.count
+                        store.resetAll()
+                        note("Reset: harnesses \(before) -> \(store.harnesses.count)")
+                    }
                 }
 
                 Section("Saved at") {
