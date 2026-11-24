@@ -47,6 +47,16 @@ enum ShapeCatalog {
     }
 }
 
+/// A connection chosen in the wizard that also has to be written onto the other
+/// plug's pin when the draft is saved (so both ends share one net).
+struct NetStamp: Equatable {
+    var pinIndex: Int       // 0-based pin on the plug being built or edited
+    var plugID: String      // the plug at the other end
+    var pinNumber: Int      // 1-based pin on that plug
+    var net: String
+    var netType: String
+}
+
 struct PlugDraft {
     var shape: String
     var rowCount: Int
@@ -59,6 +69,8 @@ struct PlugDraft {
     var base: Connector?
     /// When editing, the pins as they were, to tell if any wired pins would be lost.
     var originalPins: [Pin] = []
+    /// Connections to pins on other plugs, written onto those pins when saved.
+    var stamps: [NetStamp] = []
 
     static func blankPin(_ position: Int) -> Pin {
         Pin(position: position, populated: true, color: nil, guess: nil, confidence: "High")
@@ -143,12 +155,44 @@ struct PlugDraft {
         return originalPins[pins.count...].filter { $0.populated && (!($0.color ?? "").isEmpty || !($0.guess ?? "").isEmpty) }.count
     }
 
+    static func newNet() -> String {
+        "W-" + String(UUID().uuidString.prefix(6))
+    }
+
+    /// Connects a pin to a pin on another plug: both end up on the same net.
+    /// The other pin's net wins if it has one; otherwise this pin's own net is
+    /// kept (so connecting to several pins builds one wire group); otherwise a new net.
+    mutating func connect(pin index: Int, toPlug plugID: String, pinNumber: Int, targetPin: Pin) {
+        guard pins.indices.contains(index) else { return }
+        let theirs = targetPin.netId ?? ""
+        let own = pins[index].netId ?? ""
+        let net = !theirs.isEmpty ? theirs : (!own.isEmpty ? own : Self.newNet())
+        let type = !theirs.isEmpty ? (targetPin.netType ?? "wire") : (pins[index].netType ?? "wire")
+        pins[index].netId = net
+        pins[index].netType = type
+        stamps.removeAll { $0.pinIndex == index && $0.plugID == plugID && $0.pinNumber == pinNumber }
+        stamps.append(NetStamp(pinIndex: index, plugID: plugID, pinNumber: pinNumber, net: net, netType: type))
+    }
+
+    /// Takes a pin off its net (the pins it was connected to keep theirs).
+    mutating func disconnect(pin index: Int) {
+        guard pins.indices.contains(index) else { return }
+        pins[index].netId = nil
+        pins[index].netType = nil
+        stamps.removeAll { $0.pinIndex == index }
+    }
+
+    /// The stamps that still match the pins (pins can be removed or changed after connecting).
+    var validStamps: [NetStamp] {
+        stamps.filter { pins.indices.contains($0.pinIndex) && pins[$0.pinIndex].netId == $0.net }
+    }
+
     /// True once the user has changed anything (so leaving would lose it).
     var hasChanges: Bool {
         if let b = base {
             return pins != originalPins || shape != b.shape || name != b.title || fixedRows == nil
         }
-        return !name.isEmpty || pins.contains { $0.color != nil || $0.guess != nil || $0.role != nil || $0.gauge != nil || !$0.populated }
+        return !name.isEmpty || pins.contains { $0.color != nil || $0.guess != nil || $0.role != nil || $0.gauge != nil || $0.netId != nil || !$0.populated }
     }
 
     /// The pin rows as stored in the model.

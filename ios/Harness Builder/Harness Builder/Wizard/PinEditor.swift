@@ -35,8 +35,18 @@ struct SegRow<T: Hashable>: View {
     }
 }
 
+/// One pin elsewhere that the pin being edited is connected to.
+struct PinConnection: Identifiable {
+    var id: String
+    var title: String   // "Fuel pump plug · pin 2"
+    var sub: String     // the harness it is on
+}
+
 struct PinEditor: View {
     @Binding var pin: Pin
+    var connections: [PinConnection] = []
+    var onConnect: () -> Void = {}
+    var onDisconnect: () -> Void = {}
 
     private var parts: ColorParts { ColorParts(code: pin.color) }
 
@@ -117,6 +127,9 @@ struct PinEditor: View {
                     .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
                     .foregroundStyle(.white)
 
+                caption("Connects to (optional)")
+                connectsTo
+
                 caption("Wire type (optional)")
                 SegRow(options: [(nil, "Not set"), ("power", "Hot"), ("signal", "Signal"), ("ground", "Ground")] as [(String?, String)],
                        selection: $pin.role)
@@ -132,6 +145,37 @@ struct PinEditor: View {
                 caption("How sure are you?")
                 SegRow(options: [("High", "Sure"), ("Med", "Probably"), ("Low", "Guess")] as [(String?, String)],
                        selection: $pin.confidence)
+            }
+        }
+    }
+
+    /// Where this wire continues on other plugs, with buttons to add or clear connections.
+    private var connectsTo: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(connections) { c in
+                HStack(spacing: 10) {
+                    Image(systemName: "link").foregroundStyle(Palette.amber)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(c.title)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(.white)
+                        Text(c.sub)
+                            .font(.system(size: 12))
+                            .foregroundStyle(Palette.nameText)
+                    }
+                    Spacer()
+                }
+                .padding(10)
+                .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
+            }
+            HStack(spacing: 8) {
+                Button(connections.isEmpty ? "Connect to a pin" : "Connect to another pin", action: onConnect)
+                    .buttonStyle(.bordered)
+                    .tint(Palette.amber)
+                if pin.netId != nil {
+                    Button("Clear", role: .destructive, action: onDisconnect)
+                        .buttonStyle(.bordered)
+                }
             }
         }
     }

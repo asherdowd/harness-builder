@@ -254,6 +254,30 @@ final class HarnessStore {
         }
     }
 
+    /// Writes connections chosen in the wizard onto the pins at the other end.
+    /// A pin that already has a net is left alone.
+    func stampNets(_ stamps: [NetStamp]) {
+        guard !stamps.isEmpty else { return }
+        commit { s in
+            for st in stamps {
+                for hi in s.harnesses.indices {
+                    guard let ci = s.harnesses[hi].connectors.firstIndex(where: { $0.id == st.plugID }) else { continue }
+                    var n = 0
+                    for ri in s.harnesses[hi].connectors[ci].rows.indices {
+                        for pi in s.harnesses[hi].connectors[ci].rows[ri].pins.indices {
+                            n += 1
+                            guard n == st.pinNumber else { continue }
+                            if (s.harnesses[hi].connectors[ci].rows[ri].pins[pi].netId ?? "").isEmpty {
+                                s.harnesses[hi].connectors[ci].rows[ri].pins[pi].netId = st.net
+                                s.harnesses[hi].connectors[ci].rows[ri].pins[pi].netType = st.netType
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /// Moves a plug up (-1) or down (+1) along its harness.
     func movePlug(id: String, by delta: Int) {
         commit { s in

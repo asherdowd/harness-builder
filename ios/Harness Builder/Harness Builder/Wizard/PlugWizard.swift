@@ -21,6 +21,7 @@ struct PlugWizard: View {
     @State private var pickingShape = false
     @State private var confirmDrop = false
     @State private var confirmDiscard = false
+    @State private var pickingWire = false
 
     /// `startPin` is the pin (0-based) the editor opens on when editing.
     init(store: HarnessStore, harnessID: String, editing: Connector?, startPin: Int?,
@@ -57,6 +58,16 @@ struct PlugWizard: View {
         .background(Color(hex: 0x1b1f26))
         .scrollDismissesKeyboard(.interactively)
         .interactiveDismissDisabled(draft?.hasChanges ?? false)
+        .sheet(isPresented: $pickingWire) {
+            WirePickerSheet(store: store, excludingPlugID: editing?.id,
+                            onPick: { plugID, number, pin in
+                                draft?.connect(pin: sel, toPlug: plugID, pinNumber: number, targetPin: pin)
+                                pickingWire = false
+                            },
+                            onClose: { pickingWire = false })
+                .presentationDetents([.large])
+                .presentationBackground(Color(hex: 0x1b1f26))
+        }
         .alert("Data will be lost", isPresented: $confirmDrop) {
             Button("Cancel", role: .cancel) {}
             Button("Delete \(draft?.droppedWiredCount ?? 0) wired pins and save", role: .destructive) {
@@ -152,7 +163,10 @@ struct PlugWizard: View {
                             get: { d.wrappedValue.pins[sel] },
                             set: { newValue in
                                 if d.wrappedValue.pins.indices.contains(sel) { d.wrappedValue.pins[sel] = newValue }
-                            }))
+                            }),
+                            connections: connections(value, pin: sel),
+                            onConnect: { pickingWire = true },
+                            onDisconnect: { d.wrappedValue.disconnect(pin: sel) })
                     }
 
                     if value.droppedWiredCount > 0 {
@@ -344,6 +358,30 @@ struct PlugWizard: View {
         .buttonStyle(.plain)
     }
 
+    /// Pins on other plugs that this pin is connected to (saved, or chosen but not saved yet).
+    private func connections(_ value: PlugDraft, pin i: Int) -> [PinConnection] {
+        guard value.pins.indices.contains(i), let net = value.pins[i].netId, !net.isEmpty else { return [] }
+        var out: [PinConnection] = []
+        var seen = Set<String>()
+        func add(_ plug: Connector, _ harness: Harness, _ number: Int) {
+            let key = "\(plug.id)#\(number)"
+            guard seen.insert(key).inserted else { return }
+            out.append(PinConnection(id: key, title: "\(plug.title) · pin \(number)", sub: harness.tabLabel))
+        }
+        for st in value.stamps where st.pinIndex == i {
+            if let ref = store.plug(id: st.plugID) { add(ref.connector, ref.harness, st.pinNumber) }
+        }
+        for h in store.harnesses {
+            for c in h.connectors {
+                for fp in c.flatPins where fp.pin.netId == net {
+                    if c.id == editing?.id && fp.number == i + 1 { continue }
+                    add(c, h, fp.number)
+                }
+            }
+        }
+        return out
+    }
+
     // MARK: saving
 
     private func save(_ d: PlugDraft) {
@@ -361,11 +399,13 @@ struct PlugWizard: View {
                     c.displayName = name
                 }
             }
+            store.stampNets(d.validStamps)
             onSaved(editing.id)
         } else {
             var c = d.connector()
             c.name = name
             if let id = store.addPlug(c, toHarness: harnessID) {
+                store.stampNets(d.validStamps)
                 onSaved(id)
             }
         }

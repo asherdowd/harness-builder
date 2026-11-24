@@ -121,7 +121,7 @@ opens on the selected wire); add/edit plug wizard (shape, rows, up to 60
 pins, per-pin color, stripe, function, wire type, gauge, role, confidence,
 data-loss warnings); Add a harness (blank or from a template), harness menu
 (rename, delete, export), plug-to-plug links for component harnesses; wire
-tracing across harnesses with jump and zoom; optional per-wire gauge (text
+tracing across harnesses with jump and zoom; "Connects to" on a wire you build (pick a pin on another plug, same net on both ends); optional per-wire gauge (text
 only) and role (hot, signal, ground) symbols; export to PDF or PNG with an
 optional wire table; light, dark and tinted app icons.
 

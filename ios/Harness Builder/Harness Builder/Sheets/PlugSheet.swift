@@ -213,7 +213,7 @@ struct PlugSheet: View {
         let whole = links.filter { !$0.precise }
         return VStack(alignment: .leading, spacing: 10) {
             if c.custom == true && (fp.pin.netId ?? "").isEmpty {
-                hint("Wires you build aren't traced to other plugs yet.")
+                hint("This wire isn't connected to another plug yet. Edit the plug and use Connects to.")
             }
             traceGroup("Same wire continues at", same, sub: "same wire")
             traceGroup("Does the same job in", job, sub: "same job, other harness")

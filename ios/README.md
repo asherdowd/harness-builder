@@ -18,7 +18,7 @@ with plugs branching off, pan and pinch zoom) is the product.
 | `Drawing/` | Palette, geometry, plug silhouettes and pin dots, wire color swatches, role symbols |
 | `Canvas/` | Trunk layout and the pan/zoom canvas (grid, selection, move buttons) |
 | `Sheets/` | Plug sheet, pinout, Add a harness, harness menu, link picker, export sheet |
-| `Wizard/` | Add/edit plug wizard (shape picker, pin editor, draft model) |
+| `Wizard/` | Add/edit plug wizard (shape picker, pin editor, draft model, wire picker for "Connects to") |
 | `Export/` | PDF and PNG export |
 | `Resources/Templates.json` | Bundled example harnesses (cleaned, see below) |
 | `MainView.swift` | Header, tabs, first-open card, and the single bottom sheet that swaps content |
@@ -61,7 +61,7 @@ Unit tests (Xcode, Cmd-U) and a manual QA run both gate every upload, and the re
 ## Not done yet
 
 - Build with AI (bring your own Anthropic key, Keychain storage)
-- Unit test target and tests; UI smoke tests (later)
+- UI smoke tests (later)
 - iPad and iOS 17 simulator checks (in the manual QA plan)
 - App Store screenshots and privacy answers
 - Print-friendly white-background export
