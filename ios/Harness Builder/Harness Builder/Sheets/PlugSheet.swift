@@ -95,14 +95,6 @@ struct PlugSheet: View {
                     .font(.system(size: 20, weight: .bold))
                     .foregroundStyle(.white)
                 Spacer()
-                if c.noRef != true {
-                    Text("Ref \(c.id)")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(Palette.nameText)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(Capsule().fill(Palette.chipFill))
-                }
             }
             Text("\(c.pinCount) pins")
                 .font(.system(size: 13))
