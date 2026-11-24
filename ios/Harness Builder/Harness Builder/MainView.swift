@@ -30,6 +30,8 @@ struct MainView: View {
     @State private var selectedID: String?
     @State private var wizard: WizardRequest?
     @State private var showTools = false
+    @State private var showRoles = false
+    @State private var fitTick = 0
 
     private var activeSheet: Binding<ActiveSheet?> {
         Binding(
@@ -50,10 +52,15 @@ struct MainView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
-            tabRow
+            VStack(spacing: 0) {
+                header
+                tabRow
+            }
+            .background(Palette.surface)
+            Divider().overlay(Palette.divider)
             ZStack(alignment: .bottom) {
-                HarnessCanvasView(harness: store.active, selectedID: selectedID) { selectedID = $0 }
+                HarnessCanvasView(harness: store.active, selectedID: selectedID,
+                                  onSelect: { selectedID = $0 }, showRoles: showRoles, fitTick: fitTick)
                 if store.isBlank {
                     firstOpenCard
                 }
@@ -92,12 +99,30 @@ struct MainView: View {
     }
 
     private var header: some View {
-        HStack {
+        HStack(spacing: 8) {
             Text(store.active.title)
                 .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
             Spacer()
+            Button {
+                showRoles.toggle()
+            } label: {
+                Image(systemName: "plusminus.circle")
+                    .foregroundStyle(showRoles ? Palette.amberText : Palette.chipText)
+                    .frame(width: 36, height: 32)
+                    .background(Capsule().fill(showRoles ? Palette.amber : Palette.chipFill))
+            }
+            .accessibilityLabel("Show wire types")
+            Button {
+                fitTick += 1
+            } label: {
+                Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    .foregroundStyle(Palette.chipText)
+                    .frame(width: 36, height: 32)
+                    .background(Capsule().fill(Palette.chipFill))
+            }
+            .accessibilityLabel("Fit all")
             Button {
                 selectedID = nil
                 wizard = WizardRequest(harnessID: store.active.id, editing: nil, startPin: nil)

@@ -128,13 +128,16 @@ struct HarnessCanvasView: View {
     let harness: Harness
     let selectedID: String?
     let onSelect: (String?) -> Void
+    /// Show the wire-type symbols on pins.
+    var showRoles: Bool = false
+    /// Changes whenever the parent wants the view fitted to the whole harness.
+    var fitTick: Int = 0
 
     @State private var scale: CGFloat = 1
     @State private var offset: CGSize = .zero
     @State private var dragBase: CGSize = .zero
     @State private var pinch: PinchBase?
     @State private var viewSize: CGSize = .zero
-    @State private var showRoles = false
 
     var body: some View {
         GeometryReader { geo in
@@ -149,7 +152,6 @@ struct HarnessCanvasView: View {
                         .offset(offset)
                 }
                 .clipped()
-                .overlay(alignment: .topTrailing) { fitButton(layout, geo.size) }
                 .gesture(panGesture)
                 .simultaneousGesture(zoomGesture)
                 .onAppear {
@@ -159,6 +161,9 @@ struct HarnessCanvasView: View {
                 .onChange(of: geo.size) { _, newSize in
                     viewSize = newSize
                     fit(HarnessLayout(connectors: harness.connectors), in: newSize, animated: false)
+                }
+                .onChange(of: fitTick) { _, _ in
+                    fit(HarnessLayout(connectors: harness.connectors), in: geo.size, animated: true)
                 }
                 .onChange(of: harness.id) { _, _ in
                     fit(HarnessLayout(connectors: harness.connectors), in: geo.size, animated: false)
@@ -176,33 +181,6 @@ struct HarnessCanvasView: View {
                 }
             }
         }
-    }
-
-    private func fitButton(_ layout: HarnessLayout, _ size: CGSize) -> some View {
-        HStack(spacing: 8) {
-            Button {
-                showRoles.toggle()
-            } label: {
-                Text("Roles")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(showRoles ? Palette.amberText : Palette.chipText)
-                    .padding(.horizontal, 13)
-                    .frame(height: 32)
-                    .background(Capsule().fill(showRoles ? Palette.amber : Color(hex: 0x282c34, opacity: 0.9)))
-            }
-            Button {
-                fit(layout, in: size, animated: true)
-            } label: {
-                Text("Fit all")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Palette.chipText)
-                    .padding(.horizontal, 13)
-                    .frame(height: 32)
-                    .background(Capsule().fill(Color(hex: 0x282c34, opacity: 0.9)))
-            }
-        }
-        .padding(.top, 8)
-        .padding(.trailing, 12)
     }
 
     // MARK: gestures
