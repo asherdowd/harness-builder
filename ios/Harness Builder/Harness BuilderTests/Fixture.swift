@@ -71,7 +71,8 @@ enum Fixture {
     /// A store saving to a throwaway file, optionally starting from `state`.
     static func store(_ state: AppState? = nil,
                       library: TemplateLibrary? = nil,
-                      at url: URL = tempFileURL()) throws -> HarnessStore {
+                      at fileURL: URL? = nil) throws -> HarnessStore {
+        let url = fileURL ?? tempFileURL()
         if let state {
             try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
             try JSONEncoder().encode(state).write(to: url)
