@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>__TITLE__</title>
+<style>
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --fg:#1b1f27; --muted:#5b6472; --line:#d8dce3;
+  --accent:#2c5b8e; --accent-fg:#ffffff;
+  --pass:#1c7548; --pass-bg:#dff2e7; --fail:#b3261e; --fail-bg:#fbe3e1; --skip:#76671a; --skip-bg:#f2ecce; --warn:#94540a;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#11141a; --surface:#1a1f27; --fg:#e5e8ee; --muted:#98a1b0; --line:#2b323e;
+  --accent:#86b4e8; --accent-fg:#0d1622;
+  --pass:#62d29c; --pass-bg:#163325; --fail:#ff8b82; --fail-bg:#3b1b19; --skip:#e2cf6c; --skip-bg:#33300f; --warn:#f0b05c; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45;
+  padding-inline:16px;padding-block:calc(20px + env(safe-area-inset-top,0px)) calc(48px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:760px;margin-inline:auto}
+h1{font-size:1.5rem;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 6px}
+.upd{color:var(--muted);font-family:var(--font-mono);font-size:.78rem;margin:0 0 16px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;min-width:0}
+input[type=text],input[type=date],textarea{width:100%;font:inherit;font-size:16px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 10px;min-width:0}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+textarea{resize:vertical;min-height:44px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.counts{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.counts b{font-weight:600}
+.c-pass{color:var(--pass)}.c-fail{color:var(--fail)}.c-skip{color:var(--skip)}.c-open{color:var(--muted)}
+.track{height:6px;background:var(--line);border-radius:3px;overflow:hidden;display:flex;margin-top:8px}
+.track i{display:block;height:100%}
+.t-pass{background:var(--pass)}.t-fail{background:var(--fail)}.t-skip{background:var(--skip)}
+.filters{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.chip{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+h2{font-size:1rem;margin:26px 0 4px;display:flex;align-items:baseline;gap:10px}
+h2 .k{font-family:var(--font-mono);color:var(--accent);font-size:1.05rem}
+.secnote{margin:0 0 10px;color:var(--muted);font-size:.85rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:10px;border-left:4px solid var(--line)}
+.card[data-r=pass]{border-left-color:var(--pass)}.card[data-r=fail]{border-left-color:var(--fail)}.card[data-r=skip]{border-left-color:var(--skip)}
+.head{display:flex;gap:10px;align-items:baseline}
+.id{font-family:var(--font-mono);font-weight:600;color:var(--accent);flex:none}
+.ttl{font-weight:600}
+.steps{margin:6px 0 4px}
+.exp{margin:0 0 10px;color:var(--muted);font-size:.9rem}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;border:1px solid currentColor;border-radius:3px;padding:0 5px;margin-right:6px;vertical-align:1px}
+.tag.known{color:var(--muted)}.tag.unv{color:var(--warn)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.seg button{font:inherit;font-weight:600;min-height:44px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.seg button .bx{width:16px;height:16px;border:2px solid currentColor;border-radius:3px;display:inline-block;position:relative}
+.seg button[aria-pressed=true] .bx::after{content:"";position:absolute;left:3px;top:0;width:4px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(40deg)}
+.seg [data-v=pass][aria-pressed=true]{background:var(--pass-bg);color:var(--pass);border-color:var(--pass)}
+.seg [data-v=fail][aria-pressed=true]{background:var(--fail-bg);color:var(--fail);border-color:var(--fail)}
+.seg [data-v=skip][aria-pressed=true]{background:var(--skip-bg);color:var(--skip);border-color:var(--skip)}
+.nb{display:grid;grid-template-columns:1fr 96px;gap:8px}
+.nb input{font-family:var(--font-mono)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{font:inherit;font-weight:600;min-height:44px;padding:0 16px;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-fg);cursor:pointer}
+.btn.danger{border-color:var(--fail);color:var(--fail);background:transparent}
+.btn.danger.armed{background:var(--fail);color:var(--surface)}
+.out{margin-top:12px}
+.out textarea{min-height:220px;font-family:var(--font-mono);font-size:13px}
+.status{font-size:.82rem;color:var(--muted);margin-top:6px}
+.hide{display:none!important}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+</head><body>
+<div class="wrap">
+  <h1>__TITLE__</h1>
+  <p class="sub">Manual test script for the iOS app. Tap Pass, Fail or Skip, add a note, and the result saves as you go. When you are done, tap Copy summary and paste it into the chat so the results can be recorded in the repo.</p>
+  <p class="upd" id="upd"></p>
+
+  <div class="meta">
+    <label class="f">Date<input type="date" id="m-date"></label>
+    <label class="f">Version / build<input type="text" id="m-build" placeholder="e.g. 1.0 (1), abc1234"></label>
+    <label class="f">Device<input type="text" id="m-device" placeholder="e.g. iPhone 13 Pro"></label>
+    <label class="f">iOS version<input type="text" id="m-ios" placeholder="e.g. 26.1"></label>
+  </div>
+
+  <div class="bar">
+    <div class="counts" id="counts"></div>
+    <div class="track" id="track"><i class="t-pass"></i><i class="t-fail"></i><i class="t-skip"></i></div>
+    <div class="filters" role="group" aria-label="Filter tests">
+      <button class="chip" data-f="all" aria-pressed="true">All</button>
+      <button class="chip" data-f="open" aria-pressed="false">To do</button>
+      <button class="chip" data-f="fail" aria-pressed="false">Failed</button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="actions">
+    <button class="btn" id="copy">Copy summary</button>
+    <button class="btn danger" id="reset">Clear all results</button>
+  </div>
+  <div class="status" id="status" role="status"></div>
+  <div class="out hide" id="outwrap"><textarea id="out" readonly aria-label="Summary text"></textarea></div>
+</div>
+
+<script type="application/json" id="plan">__DATA__</script>
+<script>
+(function(){
+  var PLAN=JSON.parse(document.getElementById("plan").textContent);
+  var SECTIONS=PLAN.sections, TESTS=PLAN.tests;
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var state={}, meta={date:"",build:"",device:"",ios:""}, filter="all";
+  var db=null;
+  var LS="harness-builder-test-run-v1";
+  $("#upd").textContent=PLAN.updated;
+
+  function lsRead(){try{var j=JSON.parse(localStorage.getItem(LS)||"null");if(j){state=j.state||{};meta=Object.assign(meta,j.meta||{})}}catch(e){}}
+  function lsWrite(){try{localStorage.setItem(LS,JSON.stringify({state:state,meta:meta}))}catch(e){}}
+  function status(t){$("#status").textContent=t}
+
+  var chains={};
+  function enqueue(key,fn){var p=(chains[key]||Promise.resolve()).then(fn).catch(function(e){status("Save problem: "+((e&&e.message)||"unknown"))});chains[key]=p;return p}
+  function byId(id){return TESTS.filter(function(t){return t.id===id})[0]||{}}
+  function saveTest(id){
+    var s=state[id]||{};
+    if(!db){lsWrite();return}
+    var body={result:s.result||"",note:s.note||"",bug:s.bug||"",title:byId(id).title||"",at:new Date().toISOString()};
+    enqueue("t/"+id,function(){return db.doc("tests/"+id).set(body)});
+  }
+  var metaTimer=null;
+  function saveMeta(){
+    if(!db){lsWrite();return}
+    clearTimeout(metaTimer);
+    metaTimer=setTimeout(function(){enqueue("meta",function(){return db.doc("run/meta").set(Object.assign({},meta))})},500);
+  }
+  var noteTimers={}, pending={};
+  function saveSoon(id){pending[id]=true;clearTimeout(noteTimers[id]);noteTimers[id]=setTimeout(function(){delete pending[id];saveTest(id)},600)}
+
+  var list=$("#list");
+  SECTIONS.forEach(function(sec){
+    var h=document.createElement("h2");h.dataset.sec=sec.k;
+    var k=document.createElement("span");k.className="k";k.textContent=sec.k;
+    var n=document.createElement("span");n.textContent=sec.name;
+    h.appendChild(k);h.appendChild(n);list.appendChild(h);
+    var sn=document.createElement("p");sn.className="secnote";sn.dataset.secnote=sec.k;sn.textContent=sec.note||"";
+    if(!sec.note)sn.classList.add("hide");
+    list.appendChild(sn);
+    TESTS.filter(function(t){return t.id[0]===sec.k}).forEach(function(t){
+      var c=document.createElement("section");c.className="card";c.dataset.id=t.id;c.dataset.r="";
+      var head=document.createElement("div");head.className="head";
+      var id=document.createElement("span");id.className="id";id.textContent=t.id;
+      var ti=document.createElement("span");ti.className="ttl";ti.textContent=t.title;
+      head.appendChild(id);head.appendChild(ti);c.appendChild(head);
+      var st=document.createElement("p");st.className="steps";st.textContent=t.steps;c.appendChild(st);
+      var ex=document.createElement("p");ex.className="exp";
+      if(t.tag){var tg=document.createElement("span");tg.className="tag "+t.tag;tg.textContent=t.tag==="unv"?"unverified":"known";ex.appendChild(tg)}
+      ex.appendChild(document.createTextNode("Expected: "+t.expected));c.appendChild(ex);
+      var seg=document.createElement("div");seg.className="seg";
+      [["pass","Pass"],["fail","Fail"],["skip","Skip"]].forEach(function(v){
+        var b=document.createElement("button");b.type="button";b.dataset.v=v[0];b.setAttribute("aria-pressed","false");
+        b.id="b-"+t.id+"-"+v[0];
+        var bx=document.createElement("span");bx.className="bx";bx.setAttribute("aria-hidden","true");
+        b.appendChild(bx);b.appendChild(document.createTextNode(v[1]));
+        b.addEventListener("click",function(){
+          var s=state[t.id]=state[t.id]||{};
+          s.result=(s.result===v[0])?"":v[0];
+          apply();saveTest(t.id);
+        });
+        seg.appendChild(b);
+      });
+      c.appendChild(seg);
+      var nb=document.createElement("div");nb.className="nb";
+      var note=document.createElement("textarea");note.id="n-"+t.id;note.rows=1;note.placeholder="Notes: what you saw";note.setAttribute("aria-label","Notes for "+t.id);
+      note.addEventListener("input",function(){var s=state[t.id]=state[t.id]||{};s.note=note.value;saveSoon(t.id)});
+      var bug=document.createElement("input");bug.type="text";bug.id="g-"+t.id;bug.placeholder="Issue #";bug.setAttribute("aria-label","Issue number for "+t.id);
+      bug.addEventListener("input",function(){var s=state[t.id]=state[t.id]||{};s.bug=bug.value;saveSoon(t.id)});
+      nb.appendChild(note);nb.appendChild(bug);c.appendChild(nb);
+      list.appendChild(c);
+    });
+  });
+
+  function apply(){
+    var cnt={pass:0,fail:0,skip:0,open:0};
+    TESTS.forEach(function(t){
+      var s=state[t.id]||{}, r=s.result||"";
+      cnt[r||"open"]++;
+      var c=$('.card[data-id="'+t.id+'"]');
+      c.dataset.r=r;
+      ["pass","fail","skip"].forEach(function(v){$("#b-"+t.id+"-"+v).setAttribute("aria-pressed",String(r===v))});
+      var n=$("#n-"+t.id), g=$("#g-"+t.id);
+      if(document.activeElement!==n && n.value!==(s.note||"")) n.value=s.note||"";
+      if(document.activeElement!==g && g.value!==(s.bug||"")) g.value=s.bug||"";
+      var show=filter==="all"||(filter==="open"&&!r)||(filter==="fail"&&r==="fail");
+      c.classList.toggle("hide",!show);
+    });
+    SECTIONS.forEach(function(sec){
+      var any=TESTS.some(function(t){return t.id[0]===sec.k&&!$('.card[data-id="'+t.id+'"]').classList.contains("hide")});
+      $('h2[data-sec="'+sec.k+'"]').classList.toggle("hide",!any);
+      $('p[data-secnote="'+sec.k+'"]').classList.toggle("hide",!any||!sec.note);
+    });
+    var total=TESTS.length;
+    $("#counts").textContent="";
+    [["c-pass","Pass",cnt.pass],["c-fail","Fail",cnt.fail],["c-skip","Skip",cnt.skip],["c-open","To do",cnt.open]].forEach(function(x){
+      var sp=document.createElement("span");sp.className=x[0];var b=document.createElement("b");b.textContent=x[2];sp.appendChild(b);sp.appendChild(document.createTextNode(" "+x[1]));$("#counts").appendChild(sp);
+    });
+    var bars=$("#track").children;
+    bars[0].style.width=(cnt.pass/total*100)+"%";bars[1].style.width=(cnt.fail/total*100)+"%";bars[2].style.width=(cnt.skip/total*100)+"%";
+    [["m-date","date"],["m-build","build"],["m-device","device"],["m-ios","ios"]].forEach(function(p){
+      var el=$("#"+p[0]);if(document.activeElement!==el)el.value=meta[p[1]]||"";
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".chip"),function(ch){
+    ch.addEventListener("click",function(){
+      filter=ch.dataset.f;
+      Array.prototype.forEach.call(document.querySelectorAll(".chip"),function(x){x.setAttribute("aria-pressed",String(x===ch))});
+      apply();
+    });
+  });
+  [["m-date","date"],["m-build","build"],["m-device","device"],["m-ios","ios"]].forEach(function(p){
+    $("#"+p[0]).addEventListener("input",function(e){meta[p[1]]=e.target.value;saveMeta()});
+  });
+
+  function cell(s){return String(s||"").replace(/\|/g,"\\|").replace(/\r?\n/g," ")}
+  function summary(){
+    var cnt={pass:0,fail:0,skip:0,open:0};
+    TESTS.forEach(function(t){cnt[(state[t.id]||{}).result||"open"]++});
+    var L=["# Manual test run: "+(meta.build||"-"),"",
+      "- Date: "+(meta.date||"-"),"- Device: "+(meta.device||"-"),"- iOS: "+(meta.ios||"-"),"- Plan: "+PLAN.updated,"",
+      "**Result: "+cnt.pass+" passed, "+cnt.fail+" failed, "+cnt.skip+" skipped, "+cnt.open+" not run** (of "+TESTS.length+")",""];
+    function listRows(title,r){
+      var rows=TESTS.filter(function(t){return ((state[t.id]||{}).result||"open")===r});
+      if(!rows.length)return;
+      L.push("## "+title);
+      rows.forEach(function(t){var s=state[t.id]||{};L.push("- "+t.id+" "+t.title+(s.bug?" (issue "+s.bug+")":"")+(s.note?": "+s.note:""))});
+      L.push("");
+    }
+    listRows("Failed","fail");listRows("Skipped","skip");listRows("Not run","open");
+    L.push("## All results","","| ID | Test | Result | Note | Issue |","| --- | --- | --- | --- | --- |");
+    TESTS.forEach(function(t){var s=state[t.id]||{};
+      L.push("| "+t.id+" | "+cell(t.title)+" | "+(s.result||"not run")+" | "+cell(s.note)+" | "+cell(s.bug)+" |")});
+    return L.join("\n");
+  }
+  $("#copy").addEventListener("click",function(){
+    var text=summary(), out=$("#out");
+    out.value=text;$("#outwrap").classList.remove("hide");
+    var done=function(){status("Copied. Paste it into the chat.")};
+    var fallback=function(){out.focus();out.select();status("Select and copy the text below.")};
+    try{ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,fallback)} else fallback() }catch(e){fallback()}
+  });
+
+  var armed=false, armTimer=null;
+  function disarm(){armed=false;clearTimeout(armTimer);var b=$("#reset");b.classList.remove("armed");b.textContent="Clear all results"}
+  $("#reset").addEventListener("click",function(){
+    var btn=$("#reset");
+    if(!armed){armed=true;btn.classList.add("armed");btn.textContent="Tap again to clear everything";armTimer=setTimeout(disarm,4000);return}
+    disarm();
+    var ids=Object.keys(state);state={};apply();
+    if(!db){lsWrite();status("Cleared.");return}
+    ids.reduce(function(p,id){return p.then(function(){return enqueue("t/"+id,function(){return db.doc("tests/"+id).delete()})})},Promise.resolve()).then(function(){status("Cleared.")});
+  });
+
+  var today=new Date();meta.date=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
+  apply();
+
+  function fallbackLocal(){lsRead();apply();status("Saving in this browser only.")}
+  var useP=(window.claude&&window.claude.use)?window.claude.use("db"):Promise.resolve(null);
+  useP.then(function(d){
+    if(!d){fallbackLocal();return}
+    db=d;
+    db.collection("tests").onSnapshot(function(snap){
+      var next={};
+      snap.docs.forEach(function(doc){var x=doc.data()||{};next[doc.id]={result:x.result||"",note:x.note||"",bug:x.bug||""}});
+      Object.keys(pending).forEach(function(id){if(state[id])next[id]=state[id]});
+      state=next;apply();
+    },function(){db=null;fallbackLocal()});
+    db.doc("run/meta").onSnapshot(function(doc){
+      if(doc.exists){var x=doc.data()||{};meta=Object.assign({},meta,{date:x.date||meta.date,build:x.build||"",device:x.device||"",ios:x.ios||""});apply()}
+    },function(){});
+  },function(){fallbackLocal()});
+})();
+</script>
+</body></html>

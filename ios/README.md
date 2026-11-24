@@ -54,10 +54,15 @@ One number scheme keeps Xcode, the App Store and git in step:
 - Tag the exact commit you upload, with the same numbers, for example `ios-v1.0-build1`, then draft a GitHub release from that tag (mark it a pre-release until the app is live). The release notes link the feature issues that shipped.
 - Do not change `MARKETING_VERSION` or `CURRENT_PROJECT_VERSION` in a feature branch without saying so; change them in the commit that prepares the upload.
 
+## Testing
+
+Unit tests (Xcode, Cmd-U) and a manual QA run both gate every upload, and the results are committed to the repo. See [`qa/README.md`](qa/README.md).
+
 ## Not done yet
 
 - Build with AI (bring your own Anthropic key, Keychain storage)
-- iPad and iOS 17 simulator checks
+- Unit test target and tests; UI smoke tests (later)
+- iPad and iOS 17 simulator checks (in the manual QA plan)
 - App Store screenshots and privacy answers
 - Print-friendly white-background export
 - Native Mac app
