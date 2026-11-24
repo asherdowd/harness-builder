@@ -18,6 +18,9 @@ struct PlugWizard: View {
 
     @State private var draft: PlugDraft?
     @State private var sel: Int
+    @State private var pickingShape = false
+    @State private var confirmDrop = false
+    @State private var confirmDiscard = false
 
     /// `startPin` is the pin (0-based) the editor opens on when editing.
     init(store: HarnessStore, harnessID: String, editing: Connector?, startPin: Int?,
@@ -36,22 +39,44 @@ struct PlugWizard: View {
     var body: some View {
         VStack(spacing: 0) {
             topBar
-            if let d = Binding($draft) {
+            if let d = Binding($draft), !pickingShape {
                 editor(d)
             } else {
                 ShapePicker { def in
-                    draft = PlugDraft(newShape: def.key)
-                    sel = 0
+                    if draft == nil {
+                        draft = PlugDraft(newShape: def.key)
+                        sel = 0
+                    } else {
+                        draft?.changeShape(to: def.key)
+                        sel = min(sel, max((draft?.total ?? 1) - 1, 0))
+                    }
+                    pickingShape = false
                 }
             }
         }
         .background(Color(hex: 0x1b1f26))
         .scrollDismissesKeyboard(.interactively)
+        .interactiveDismissDisabled(draft?.hasChanges ?? false)
+        .alert("Data will be lost", isPresented: $confirmDrop) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete \(draft?.droppedWiredCount ?? 0) wired pins and save", role: .destructive) {
+                if let d = draft { save(d) }
+            }
+        } message: {
+            Text("This plug now has fewer pins. \(draft?.droppedWiredCount ?? 0) pins that have wires set on them would be deleted for good, along with their color, function, gauge and type.")
+        }
     }
 
     private var topBar: some View {
         HStack {
-            if draft != nil, editing == nil {
+            if pickingShape, draft != nil {
+                Button {
+                    pickingShape = false
+                } label: {
+                    Label("Back", systemImage: "chevron.left")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+            } else if draft != nil, editing == nil {
                 Button {
                     draft = nil
                 } label: {
@@ -60,13 +85,21 @@ struct PlugWizard: View {
                 }
             }
             Spacer()
-            Button("Cancel", action: onClose)
-                .font(.system(size: 14, weight: .semibold))
+            Button("Cancel") {
+                if draft?.hasChanges == true { confirmDiscard = true } else { onClose() }
+            }
+            .font(.system(size: 14, weight: .semibold))
         }
         .padding(.horizontal, 16)
         .padding(.top, 14)
         .padding(.bottom, 4)
         .tint(Palette.amber)
+        .confirmationDialog("Discard your changes?", isPresented: $confirmDiscard, titleVisibility: .visible) {
+            Button("Discard changes", role: .destructive, action: onClose)
+            Button("Keep editing", role: .cancel) {}
+        } message: {
+            Text("What you set on this plug has not been saved.")
+        }
     }
 
     // MARK: editor step
@@ -101,6 +134,7 @@ struct PlugWizard: View {
                         .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
                         .foregroundStyle(.white)
 
+                    shapeRow(value)
                     sizeControls(d)
 
                     Text("Tap a pin, then set its wire")
@@ -121,6 +155,21 @@ struct PlugWizard: View {
                             }))
                     }
 
+                    if value.droppedWiredCount > 0 {
+                        HStack(alignment: .top, spacing: 10) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(Color(hex: 0xff6b5b))
+                            Text("Warning: \(value.droppedWiredCount) pins that have wires set on them are gone from this layout. Saving will delete them for good. Add pins back to keep them.")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(Color(hex: 0xffb4ab))
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: 0x4a1f1b)))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: 0xff6b5b), lineWidth: 1.5))
+                        .padding(.top, 8)
+                    }
+
                     HStack(spacing: 10) {
                         if sel < total - 1 {
                             Button {
@@ -136,7 +185,7 @@ struct PlugWizard: View {
                             .buttonStyle(.plain)
                         }
                         Button {
-                            save(value)
+                            if value.droppedWiredCount > 0 { confirmDrop = true } else { save(value) }
                         } label: {
                             Text(editing == nil ? "Add to harness" : "Save changes")
                                 .font(.system(size: 16, weight: .bold))
@@ -160,24 +209,53 @@ struct PlugWizard: View {
         }
     }
 
-    /// Row and pin count steppers (new plugs only).
+    /// The current shape, with a button to pick another.
+    private func shapeRow(_ value: PlugDraft) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Shape")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Palette.nameText)
+                Text(value.def?.label ?? "Imported layout")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Palette.chipText)
+            }
+            Spacer()
+            Button("Change shape") { pickingShape = true }
+                .buttonStyle(.bordered)
+                .tint(Palette.amber)
+        }
+        .padding(.top, 4)
+    }
+
+    /// Row and pin count steppers (up to 60 pins in all).
     @ViewBuilder
     private func sizeControls(_ d: Binding<PlugDraft>) -> some View {
         let value = d.wrappedValue
-        if value.fixedRows == nil, let def = value.def, def.adjust != .none {
-            let maxCols = def.adjust == .splice ? 4 : (def.adjust == .cols ? 6 : 13)
+        if let def = value.def, def.adjust != .none {
+            let maxCols = def.adjust == .splice ? 4 : (def.adjust == .cols ? ShapeLimits.maxInlineCols : ShapeLimits.maxCols)
+            let colLimit = def.adjust == .grid ? min(maxCols, ShapeLimits.maxPins / max(value.rowCount, 1)) : maxCols
             VStack(spacing: 8) {
                 if def.adjust == .grid {
-                    stepRow("Rows", value: value.rowCount, range: 1...3) { n in
+                    let rowLimit = min(ShapeLimits.maxRows, ShapeLimits.maxPins / max(value.colCount, 1))
+                    stepRow("Rows", value: value.rowCount, range: 1...max(rowLimit, 1)) { n in
                         d.wrappedValue.resize(rows: n)
                         sel = min(sel, d.wrappedValue.total - 1)
                     }
                 }
-                stepRow(def.adjust == .grid ? "Pins per row" : "Pins", value: value.colCount, range: 2...maxCols) { n in
+                stepRow(def.adjust == .grid ? "Pins per row" : "Pins", value: value.colCount, range: 2...max(colLimit, 2)) { n in
                     d.wrappedValue.resize(cols: n)
                     sel = min(sel, d.wrappedValue.total - 1)
                 }
+                Text("\(value.total) pins in all")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Palette.nameText)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
             }
+        } else if value.def == nil {
+            Text("\(value.pins.count) pins, laid out as imported. Change the shape to resize.")
+                .font(.system(size: 12))
+                .foregroundStyle(Palette.nameText)
         }
     }
 
@@ -187,14 +265,14 @@ struct PlugWizard: View {
                 .font(.system(size: 15))
                 .foregroundStyle(Palette.chipText)
             Spacer()
-            Button { set(max(range.lowerBound, value - 1)) } label: {
+            Button { set(min(max(range.lowerBound, value - 1), max(value, range.lowerBound))) } label: {
                 Image(systemName: "minus").frame(width: 38, height: 34)
             }
             Text("\(value)")
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(.white)
                 .frame(minWidth: 26)
-            Button { set(min(range.upperBound, value + 1)) } label: {
+            Button { set(max(min(range.upperBound, value + 1), min(value, range.upperBound))) } label: {
                 Image(systemName: "plus").frame(width: 38, height: 34)
             }
         }
@@ -203,6 +281,7 @@ struct PlugWizard: View {
     }
 
     /// The plug's pins as tappable color chips, laid out in rows.
+    /// Wide plugs (many pins per row) get small chips and scroll sideways.
     private func pinGrid(_ value: PlugDraft) -> some View {
         let rows = normalizeRows(shape: value.shape, rows: value.buildRows())
         var counter = 0
@@ -215,36 +294,52 @@ struct PlugWizard: View {
             }
             numbered.append(line)
         }
-        return VStack(spacing: 8) {
+        let compact = (numbered.map(\.count).max() ?? 0) > 7
+        let grid = VStack(spacing: compact ? 4 : 8) {
             ForEach(Array(numbered.enumerated()), id: \.offset) { rowItem in
-                HStack(spacing: 10) {
+                HStack(spacing: compact ? 4 : 10) {
                     ForEach(rowItem.element, id: \.self) { i in
-                        pinChip(i, pin: value.pins.indices.contains(i) ? value.pins[i] : nil)
+                        pinChip(i, pin: value.pins.indices.contains(i) ? value.pins[i] : nil, compact: compact)
+                            .id(i)
                     }
                 }
             }
         }
-        .frame(maxWidth: .infinity)
+        return Group {
+            if compact {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal, showsIndicators: true) {
+                        grid.padding(.horizontal, 2).padding(.bottom, 8)
+                    }
+                    .onChange(of: sel) { _, n in
+                        withAnimation { proxy.scrollTo(n, anchor: .center) }
+                    }
+                }
+            } else {
+                grid.frame(maxWidth: .infinity)
+            }
+        }
     }
 
-    private func pinChip(_ i: Int, pin: Pin?) -> some View {
+    private func pinChip(_ i: Int, pin: Pin?, compact: Bool) -> some View {
         let on = i == sel
+        let size: CGFloat = compact ? 22 : 32
         return Button {
             sel = i
         } label: {
             VStack(spacing: 2) {
                 if let pin, pin.populated {
-                    ColorSwatch(code: pin.color, width: 32, height: 32)
+                    ColorSwatch(code: pin.color, width: size, height: size)
                 } else {
                     Circle()
                         .stroke(Palette.pinEmptyStroke, style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
-                        .frame(width: 32, height: 32)
+                        .frame(width: size, height: size)
                 }
-                Text("\(i + 1)").font(.system(size: 11)).foregroundStyle(Palette.nameText)
+                Text("\(i + 1)").font(.system(size: compact ? 9 : 11)).foregroundStyle(Palette.nameText)
             }
-            .padding(6)
-            .background(RoundedRectangle(cornerRadius: 10).fill(on ? Color(hex: 0x2d2a22) : Color.clear))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(on ? Palette.amber : Color.clear, lineWidth: 2))
+            .padding(compact ? 3 : 6)
+            .background(RoundedRectangle(cornerRadius: 8).fill(on ? Color(hex: 0x2d2a22) : Color.clear))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(on ? Palette.amber : Color.clear, lineWidth: 2))
         }
         .buttonStyle(.plain)
     }
@@ -256,6 +351,10 @@ struct PlugWizard: View {
         let name = d.name.trimmingCharacters(in: .whitespacesAndNewlines)
         if let editing {
             store.updatePlug(id: editing.id) { c in
+                if d.shape != c.shape {
+                    c.shape = d.shape
+                    c.shapeProvisional = false
+                }
                 c.rows = rows
                 if !name.isEmpty, name != c.title {
                     c.name = name

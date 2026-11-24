@@ -19,6 +19,14 @@ struct ShapeDef {
     let count: Int      // pins, for shapes with a fixed count
 }
 
+/// Largest plugs the wizard builds (modern ECU plugs go up to about 60 pins).
+enum ShapeLimits {
+    static let maxPins = 60
+    static let maxRows = 6
+    static let maxCols = 20
+    static let maxInlineCols = 16
+}
+
 enum ShapeCatalog {
     static let all: [ShapeDef] = [
         ShapeDef(key: "rectangular-block", label: "Large block", rows: 2, cols: 4, adjust: .grid, count: 0),
@@ -49,6 +57,8 @@ struct PlugDraft {
     var fixedRows: [Row]?
     /// When editing, the original plug.
     var base: Connector?
+    /// When editing, the pins as they were, to tell if any wired pins would be lost.
+    var originalPins: [Pin] = []
 
     static func blankPin(_ position: Int) -> Pin {
         Pin(position: position, populated: true, color: nil, guess: nil, confidence: "High")
@@ -73,6 +83,7 @@ struct PlugDraft {
         rowCount = c.rows.count
         colCount = c.rows.map(\.positions).max() ?? 1
         pins = c.flatPins.map(\.pin)
+        originalPins = pins
         name = c.title
         fixedRows = c.rows
         base = c
@@ -90,13 +101,54 @@ struct PlugDraft {
         }
     }
 
-    /// Changes the size of a new plug, keeping the pins already set.
+    /// Changes the size, keeping the pins already set (in order). The first
+    /// change on an existing plug replaces its original layout with rows x pins.
     mutating func resize(rows: Int? = nil, cols: Int? = nil) {
-        guard fixedRows == nil else { return }
+        fixedRows = nil
         if let rows { rowCount = rows }
         if let cols { colCount = cols }
         let n = total
         pins = (0..<n).map { i in i < pins.count ? pins[i] : Self.blankPin(i + 1) }
+    }
+
+    /// Switches to another shape, keeping the pins already set (in order).
+    mutating func changeShape(to key: String) {
+        guard key != shape, let d = ShapeCatalog.def(key) else { return }
+        let count = pins.count
+        shape = key
+        fixedRows = nil
+        switch d.adjust {
+        case .grid:
+            var r = d.rows
+            while (count + r - 1) / r > ShapeLimits.maxCols, r < ShapeLimits.maxRows { r += 1 }
+            rowCount = r
+            colCount = max(2, (count + r - 1) / r)
+        case .cols:
+            rowCount = 1
+            colCount = min(max(count, 2), ShapeLimits.maxInlineCols)
+        case .splice:
+            rowCount = 1
+            colCount = min(max(count, 2), 4)
+        case .none:
+            rowCount = 1
+            colCount = 1
+        }
+        let n = total
+        pins = (0..<n).map { i in i < pins.count ? pins[i] : Self.blankPin(i + 1) }
+    }
+
+    /// Pins that have a wire set on them in the original plug but are gone now.
+    var droppedWiredCount: Int {
+        guard originalPins.count > pins.count else { return 0 }
+        return originalPins[pins.count...].filter { $0.populated && (!($0.color ?? "").isEmpty || !($0.guess ?? "").isEmpty) }.count
+    }
+
+    /// True once the user has changed anything (so leaving would lose it).
+    var hasChanges: Bool {
+        if let b = base {
+            return pins != originalPins || shape != b.shape || name != b.title || fixedRows == nil
+        }
+        return !name.isEmpty || pins.contains { $0.color != nil || $0.guess != nil || $0.role != nil || $0.gauge != nil || !$0.populated }
     }
 
     /// The pin rows as stored in the model.

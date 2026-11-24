@@ -224,7 +224,7 @@ struct HarnessCanvasView: View {
             .onChanged { v in
                 if pinch == nil { pinch = PinchBase(scale: scale, offset: offset) }
                 guard let base = pinch else { return }
-                let newScale = min(max(base.scale * v.magnification, 0.25), 3)
+                let newScale = min(max(base.scale * v.magnification, 0.15), 3)
                 // Keep the point under the fingers where it was when the pinch started.
                 let a = v.startLocation
                 let wx = (a.x - base.offset.width) / base.scale
@@ -243,7 +243,7 @@ struct HarnessCanvasView: View {
     private func fit(_ layout: HarnessLayout, in size: CGSize, animated: Bool) {
         guard size.width > 0 else { return }
         let bw = layout.maxX - layout.minX + 56
-        let k = min(max(min(1, size.width / bw), 0.3), 1)
+        let k = min(max(min(1, size.width / bw), 0.15), 1)
         let cx = (layout.minX + layout.maxX) / 2 + layout.shiftX
         let newOffset = CGSize(width: size.width / 2 - cx * k, height: 14)
         if animated {
