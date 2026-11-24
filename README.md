@@ -15,23 +15,30 @@ Working on a harness often means juggling photos, handwritten notes, and memory.
 - Pin-level wire color tracking for fast reference during installs and diagnostics
 - Shape-aware connector rendering for common harness-style silhouettes
 - Project-based organization for harness documentation and future expansion
-- Mobile-friendly workflow for use in the workshop or on the job
+- Wire tracing across harnesses, optional wire gauge and hot/signal/ground symbols
+- Export to PDF or PNG for printing or sharing
+- Mobile-first workflow for use in the workshop or on the job
+
+## Apps in this repo
+
+- **iOS app** (`ios/`): a native SwiftUI app for iPhone and iPad (iOS 17+). This is the primary product. It has the harness canvas, a plug sheet, an add/edit plug wizard, multiple harnesses with templates, wire tracing across harnesses, optional wire gauge and role symbols, and PDF/PNG export. Everything is stored on the device. See [`ios/README.md`](ios/README.md).
+- **Web app** (repo root): the original React/Vite version with the harness canvas and connector rendering. It is secondary for now.
 
 ## Current status
 
-The app already includes a working visual canvas and a solid foundation for connector rendering. Ongoing development is focused on turning that foundation into a fuller product experience with persistent projects, better data entry, and richer wire-tracing capabilities.
+The iOS app is feature-complete for building, editing, tracing and exporting harnesses on a device, and is being prepared for the App Store. Next up is an optional "Build with AI" feature where you bring your own Anthropic API key. The web app has a working canvas and connector rendering but no persistence yet.
 
 ## Roadmap
 
 ### Near-term
-- Persistent project save and load
-- Guided harness and ECU creation workflow
-- Connector lookup and preset suggestions
+- Build with AI on iOS (bring your own Anthropic key)
+- App Store release of the iOS app
+- Web app: persistent project save and load
 
 ### Medium-term
-- Wire-tracing across connectors and components
-- Improved pin popups and detail views
-- Export and sharing workflows
+- Native Mac app
+- Print-friendly (white background) export
+- Gauge visualization
 
 ### Longer-term
 - Multi-project collaboration and shared reference data
@@ -40,7 +47,5 @@ The app already includes a working visual canvas and a solid foundation for conn
 
 ## Tech stack
 
-- React
-- Vite
-- SVG-based visualization
-- Planned backend integration for persistence and lookup services
+- iOS: SwiftUI (iOS 17+, Xcode 26), `@Observable`, on-device JSON storage
+- Web: React, Vite, SVG-based visualization

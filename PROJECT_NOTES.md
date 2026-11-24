@@ -14,7 +14,12 @@ with wire colors and confidence levels — so the pinout is easy to reference
 while actually working on the car, and easy to trace across harnesses/ECUs
 later.
 
-## Current state (as of this handoff)
+> **There are now two apps in this repo.** The web app (this file's main
+> subject, repo root) is the original. The **native SwiftUI iOS app** under
+> `ios/` is now the primary product and is where active work happens. See
+> "iOS app" below, and `ios/README.md` for the code layout and setup.
+
+## Current state of the web app (as of the original handoff)
 
 **Built and working:**
 - `HarnessCanvas` — renders a harness as a central trunk with connectors
@@ -69,12 +74,10 @@ Decided during planning, not yet built:
   That call needs an API key, which can't live in client-side code once this
   is a real hosted app — hence one small `/api/lookup`-style serverless
   function to hold the key server-side.
-- **Mobile:** Capacitor, wrapping this same React/Vite app, targeting both
-  iOS and Android from one codebase. A genuinely native rewrite (Kotlin
-  Multiplatform / Swift) was discussed as a *possible future* step beyond
-  Capacitor, not a replacement for it — nothing about the current plan
-  blocks that if it's wanted later, but it would mean rewriting the UI
-  layer from scratch, sharing only the backend/data model.
+- **Mobile (superseded):** this section originally planned Capacitor around
+  the React app. That was replaced by a native SwiftUI iOS app (see "iOS
+  app" below). The web app is secondary for now; the Supabase/Vercel plan
+  above has not been built and is on hold.
 
 ## Shape accuracy — what's confirmed vs. inferred
 
@@ -104,9 +107,41 @@ shared identifier — once we get to real persistence. Don't build this
 speculatively; design it deliberately when cross-component wire tracing is
 actually being built.
 
+## iOS app
+
+Native SwiftUI app in `ios/Harness Builder/` (Xcode 26, iPhone and iPad,
+minimum iOS 17, bundle id `BagelBytez.Harness-Builder`, display name
+"Harness Builder", category Utilities). Data is stored on the device only
+(`state.json` in Application Support); there is no account or server.
+
+**Built:** harness canvas (trunk, plug silhouettes, pan, pinch zoom, Fit all,
+moving grid, tap to select, up/down move buttons on the selected plug);
+plug sheet (pinout, wire list, notes, link cards, Edit and Remove, Edit
+opens on the selected wire); add/edit plug wizard (shape, rows, up to 60
+pins, per-pin color, stripe, function, wire type, gauge, role, confidence,
+data-loss warnings); Add a harness (blank or from a template), harness menu
+(rename, delete, export), plug-to-plug links for component harnesses; wire
+tracing across harnesses with jump and zoom; optional per-wire gauge (text
+only) and role (hot, signal, ground) symbols; export to PDF or PNG with an
+optional wire table; light, dark and tinted app icons.
+
+**Planned next:** "Build with AI" (bring your own Anthropic key, key in the
+iOS Keychain, structured tool call, preview with every wire marked "Guess").
+See the Civic project doc `ios-swift-progress.md` for the agreed design.
+
+**Working rules for this project:** ask before adding any feature that was
+not discussed; do not refactor unless discussed; check and report everywhere
+a feature needs to go before writing it; show an HTML POC of significant UX
+changes before writing Swift. The repo is public: never commit API keys.
+Example data shipped in the app must not contain research notes, internal
+reference codes or personal names (`ios/tools/clean_examples.py` cleans it).
+
+**Verification gap:** there is no Swift compiler in the Claude sandbox, so
+every iOS change has to be built in Xcode on the Mac before it counts as
+working.
+
 ## Suggested next step
 
-Wire up Supabase (auth + Postgres) for real project save/load, replacing
-the hardcoded array in `ExistingProjectsView`. That's the natural
-prerequisite for the harness/ECU creation wizard, since the wizard's whole
-job is producing a record that needs somewhere real to be saved.
+For the iOS app: the Build with AI feature, plus iPad and iOS 17 simulator
+checks and App Store screenshots. For the web app: unchanged, and on hold
+(Supabase save/load was the prerequisite for its creation wizard).
