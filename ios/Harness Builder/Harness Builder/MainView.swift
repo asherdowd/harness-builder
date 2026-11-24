@@ -95,8 +95,8 @@ struct MainView: View {
             ZStack(alignment: .bottom) {
                 HarnessCanvasView(harness: store.active, selectedID: selectedID,
                                   onSelect: { select($0) }, showRoles: showRoles,
-                                  onMove: { id, delta in store.movePlug(id: id, by: delta) },
                                   linkedIDs: linkedIDs, focusID: focusID, focusTick: focusTick,
+                                  onMove: { id, delta in store.movePlug(id: id, by: delta) },
                                   fitTick: fitTick)
                 if store.isBlank {
                     firstOpenCard
