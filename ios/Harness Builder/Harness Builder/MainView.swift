@@ -40,6 +40,26 @@ struct MainView: View {
     @State private var panel: Panel?
     @State private var showRoles = true
     @State private var fitTick = 0
+    @State private var selectedPin: Int?
+    @State private var focusID: String?
+    @State private var focusTick = 0
+
+    /// Select a plug and bring it into view (above the plug sheet).
+    private func select(_ id: String?) {
+        if id != selectedID { selectedPin = nil }
+        selectedID = id
+        if let id {
+            focusID = id
+            focusTick += 1
+        }
+    }
+
+    /// Plugs to outline on the canvas for the selected wire (or same-circuit plugs).
+    private var linkedIDs: Set<String> {
+        guard let id = selectedID, let ref = store.plug(id: id) else { return [] }
+        return WireTrace.highlightIDs(selected: ref.connector, pinIndex: selectedPin,
+                                      harnesses: store.harnesses, activeID: store.active.id)
+    }
 
     private var activeSheet: Binding<ActiveSheet?> {
         Binding(
@@ -74,8 +94,9 @@ struct MainView: View {
             Divider().overlay(Palette.divider)
             ZStack(alignment: .bottom) {
                 HarnessCanvasView(harness: store.active, selectedID: selectedID,
-                                  onSelect: { selectedID = $0 }, showRoles: showRoles,
+                                  onSelect: { select($0) }, showRoles: showRoles,
                                   onMove: { id, delta in store.movePlug(id: id, by: delta) },
+                                  linkedIDs: linkedIDs, focusID: focusID, focusTick: focusTick,
                                   fitTick: fitTick)
                 if store.isBlank {
                     firstOpenCard
@@ -87,10 +108,10 @@ struct MainView: View {
         .sheet(item: activeSheet) { kind in
             switch kind {
             case .plug(let id):
-                PlugSheet(store: store, plugID: id,
+                PlugSheet(store: store, plugID: id, selectedPin: $selectedPin,
                           onJump: { ref in
                               store.setActive(ref.harness.id)
-                              selectedID = ref.connector.id
+                              select(ref.connector.id)
                           },
                           onRemoved: { selectedID = nil },
                           onEdit: { plug, pin in

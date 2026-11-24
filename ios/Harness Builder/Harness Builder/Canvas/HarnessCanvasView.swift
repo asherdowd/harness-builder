@@ -78,6 +78,7 @@ private struct PlugItemView: View {
     let item: PlacedPlug
     let shiftX: CGFloat
     let selected: Bool
+    let linked: Bool
     let showRoles: Bool
     let canUp: Bool
     let canDown: Bool
@@ -105,10 +106,12 @@ private struct PlugItemView: View {
         let w = item.width
         let h = item.height
         ZStack {
-            if selected {
+            if selected || linked {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Palette.amber.opacity(0.10))
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Palette.amber, lineWidth: 2.2))
+                    .fill(selected ? Palette.amber.opacity(0.10) : Color(hex: 0x6fb3c9, opacity: 0.10))
+                    .overlay(RoundedRectangle(cornerRadius: 12)
+                        .stroke(selected ? Palette.amber : Color(hex: 0x6fb3c9),
+                                style: StrokeStyle(lineWidth: selected ? 2.2 : 1.8, dash: selected ? [] : [5, 4])))
                     .frame(width: w + 18, height: h + 58)
                     .position(x: cx, y: item.y + 20)
                     .allowsHitTesting(false)
@@ -158,6 +161,11 @@ struct HarnessCanvasView: View {
     let onSelect: (String?) -> Void
     /// Show the wire-type symbols on pins.
     var showRoles: Bool = false
+    /// Plugs to outline as "connected to the selected wire".
+    var linkedIDs: Set<String> = []
+    /// Zooms to this plug whenever focusTick changes.
+    var focusID: String? = nil
+    var focusTick: Int = 0
     /// Moves a plug up (-1) or down (+1) along the trunk.
     var onMove: (String, Int) -> Void = { _, _ in }
     /// Changes whenever the parent wants the view fitted to the whole harness.
@@ -199,6 +207,10 @@ struct HarnessCanvasView: View {
                 .onChange(of: harness.id) { _, _ in
                     fit(HarnessLayout(connectors: harness.connectors), in: geo.size, animated: false)
                 }
+                // After the harness change above, so a jump to another harness ends zoomed on the plug.
+                .onChange(of: focusTick) { _, _ in
+                    focus(HarnessLayout(connectors: harness.connectors), in: geo.size)
+                }
         }
     }
 
@@ -234,6 +246,7 @@ struct HarnessCanvasView: View {
             LeadsLayer(layout: layout).allowsHitTesting(false)
             ForEach(Array(layout.items.enumerated()), id: \.element.id) { pair in
                 PlugItemView(item: pair.element, shiftX: layout.shiftX, selected: pair.element.id == selectedID,
+                             linked: linkedIDs.contains(pair.element.id),
                              showRoles: showRoles,
                              canUp: pair.offset > 0,
                              canDown: pair.offset < layout.items.count - 1,
@@ -275,6 +288,21 @@ struct HarnessCanvasView: View {
                 pinch = nil
                 dragBase = offset
             }
+    }
+
+    // MARK: focus
+
+    /// Brings one plug into the top part of the view (the plug sheet covers the bottom).
+    private func focus(_ layout: HarnessLayout, in size: CGSize) {
+        guard let id = focusID, let item = layout.items.first(where: { $0.id == id }) else { return }
+        let k = min(max(scale, 0.75), 3)
+        let newOffset = CGSize(width: size.width / 2 - (layout.shiftX + item.x) * k,
+                               height: size.height * 0.26 - item.y * k)
+        withAnimation(.easeOut(duration: 0.38)) {
+            scale = k
+            offset = newOffset
+        }
+        dragBase = newOffset
     }
 
     // MARK: fit

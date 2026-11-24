@@ -12,6 +12,8 @@ import SwiftUI
 struct PlugSheet: View {
     let store: HarnessStore
     let plugID: String
+    /// The selected wire (0-based), owned by the main screen so the canvas can outline where it goes.
+    @Binding var selectedPin: Int?
     /// Open another plug (switches to its harness tab and selects it).
     let onJump: (PlugRef) -> Void
     /// The plug was removed.
@@ -22,7 +24,6 @@ struct PlugSheet: View {
     let onLink: (Connector) -> Void
 
     @State private var confirmRemove = false
-    @State private var selectedPin: Int?
     @State private var notesOpen = false
     @State private var editingNote = false
     @State private var noteText = ""
@@ -67,6 +68,10 @@ struct PlugSheet: View {
                     .background(RoundedRectangle(cornerRadius: 14).fill(Palette.bg))
 
                 wireList(c, target: target?.connector)
+
+                if let idx = selectedPin, let fp = c.flatPins.first(where: { $0.number == idx + 1 }) {
+                    traceSection(c, fp)
+                }
 
                 actions(c)
             }
@@ -199,6 +204,64 @@ struct PlugSheet: View {
             }
         }
         .background(RoundedRectangle(cornerRadius: 12).fill(Palette.chipFill))
+    }
+
+    /// Where the selected wire goes: same wire, same job, or the whole plug.
+    private func traceSection(_ c: Connector, _ fp: FlatPin) -> some View {
+        let links = WireTrace.links(for: fp, in: c, harnesses: store.harnesses)
+        let same = links.filter { $0.precise && $0.same }
+        let job = links.filter { $0.precise && !$0.same }
+        let whole = links.filter { !$0.precise }
+        return VStack(alignment: .leading, spacing: 10) {
+            if c.custom == true && (fp.pin.netId ?? "").isEmpty {
+                hint("Wires you build aren't traced to other plugs yet.")
+            }
+            traceGroup("Same wire continues at", same, sub: "same wire")
+            traceGroup("Does the same job in", job, sub: "same job, other harness")
+            traceGroup("This plug as a whole matches", whole, sub: "pins not mapped yet")
+            if c.custom != true && links.isEmpty {
+                hint("Nothing mapped for this wire yet.")
+            }
+        }
+    }
+
+    private func hint(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 13))
+            .foregroundStyle(Palette.nameText)
+    }
+
+    @ViewBuilder
+    private func traceGroup(_ title: String, _ items: [TraceLink], sub: String) -> some View {
+        if !items.isEmpty {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title.uppercased())
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(Palette.amber)
+                ForEach(items) { l in
+                    Button {
+                        if let ref = store.plug(id: l.plugID) { onJump(ref) }
+                    } label: {
+                        HStack(spacing: 10) {
+                            if l.color != nil { ColorSwatch(code: l.color, width: 26, height: 20) }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(l.plugTitle + (l.pinNumber.map { " · pin \($0)" } ?? ""))
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(.white)
+                                Text("\(l.harnessTitle), \(sub)")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(Palette.nameText)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundStyle(Palette.nameText)
+                        }
+                        .padding(12)
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Palette.chipFill))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
     }
 
     private func linkCard(label: String, ref: PlugRef, onJump: @escaping (PlugRef) -> Void) -> some View {
