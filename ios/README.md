@@ -39,6 +39,21 @@ with plugs branching off, pan and pinch zoom) is the product.
 `Assets.xcassets/AppIcon.appiconset` holds three 1024x1024 PNGs: light (default), dark, tinted (grayscale). iOS makes every smaller size from them. Artwork is a rounded plug with four pins and four wires on the canvas grid, with a margin of three grid rows on every side.
 `tools/make_icon.py` regenerates all three (needs Python with Pillow and `rsvg-convert`).
 
+## Versions and releases
+
+One number scheme keeps Xcode, the App Store and git in step:
+
+| Where | Setting | Today |
+| --- | --- | --- |
+| Xcode and App Store | Version (`MARKETING_VERSION`) | 1.0 |
+| Xcode and App Store Connect | Build (`CURRENT_PROJECT_VERSION`) | 1 |
+| Git | tag `ios-v<Version>-build<Build>` | none yet |
+
+- The Version is what people see on the App Store. Bump it for each public release (1.0, 1.1, ...).
+- The Build must go up on every upload to App Store Connect, even when the Version stays the same.
+- Tag the exact commit you upload, with the same numbers, for example `ios-v1.0-build1`, then draft a GitHub release from that tag (mark it a pre-release until the app is live). The release notes link the feature issues that shipped.
+- Do not change `MARKETING_VERSION` or `CURRENT_PROJECT_VERSION` in a feature branch without saying so; change them in the commit that prepares the upload.
+
 ## Not done yet
 
 - Build with AI (bring your own Anthropic key, Keychain storage)
