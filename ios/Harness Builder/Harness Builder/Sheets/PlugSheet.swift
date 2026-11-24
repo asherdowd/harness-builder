@@ -4,7 +4,7 @@
 //
 //  The bottom sheet for one plug: numbered pinout, wire list, component link
 //  cards, and Edit / move / Remove.
-//  Edit stays disabled until the add-plug wizard (its pin editor) exists.
+//  Tapping a wire selects it; Edit then opens the wizard on that pin.
 //
 
 import SwiftUI
@@ -16,8 +16,11 @@ struct PlugSheet: View {
     let onJump: (PlugRef) -> Void
     /// The plug was removed.
     let onRemoved: () -> Void
+    /// Open the wizard to edit this plug, on the selected pin (0-based) if there is one.
+    let onEdit: (Connector, Int?) -> Void
 
     @State private var confirmRemove = false
+    @State private var selectedPin: Int?
 
     var body: some View {
         if let ref = store.plug(id: plugID) {
@@ -128,6 +131,12 @@ struct PlugSheet: View {
                 .padding(.bottom, 6)
             ForEach(c.flatPins, id: \.number) { fp in
                 wireRow(fp, target: target)
+                    .contentShape(Rectangle())
+                    .background(selectedPin == fp.number - 1 ? Palette.amber.opacity(0.14) : Color.clear)
+                    .onTapGesture {
+                        guard fp.pin.populated else { return }
+                        selectedPin = selectedPin == fp.number - 1 ? nil : fp.number - 1
+                    }
                 Divider().overlay(Color(hex: 0x2a2e35))
             }
         }
@@ -171,8 +180,9 @@ struct PlugSheet: View {
 
     private func actions(_ c: Connector, index: Int, count: Int) -> some View {
         HStack(spacing: 8) {
-            Button("Edit") {}
-                .disabled(true)
+            Button("Edit") {
+                onEdit(c, selectedPin)
+            }
             Spacer()
             Button {
                 store.movePlug(id: c.id, by: -1)

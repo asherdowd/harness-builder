@@ -3,22 +3,48 @@
 //  Harness Builder
 //
 //  The app's main screen: harness tabs and the canvas.
-//  Tapping a plug opens the plug sheet. (The add-plug wizard and "Add a harness" sheet come next;
-//  until then the wrench button opens the temporary test tools.)
+//  Tapping a plug opens the plug sheet; "+" opens the add-plug wizard. (The "Add a harness" sheet
+//  comes next; until then the wrench button opens the temporary test tools.)
 //
 
 import SwiftUI
 
+/// What the main screen's one bottom sheet is showing. All cases share an id,
+/// so switching between them swaps the content instead of closing the sheet.
+private enum ActiveSheet: Identifiable {
+    case plug(String)
+    case wizard(WizardRequest)
+    case tools
+
+    var id: String { "sheet" }
+}
+
+private struct WizardRequest {
+    var harnessID: String
+    var editing: Connector?
+    var startPin: Int?
+}
+
 struct MainView: View {
     @State private var store = HarnessStore()
     @State private var selectedID: String?
+    @State private var wizard: WizardRequest?
     @State private var showTools = false
 
-    /// The plug sheet is open whenever a plug is selected and still exists.
-    private var plugSheetShown: Binding<Bool> {
+    private var activeSheet: Binding<ActiveSheet?> {
         Binding(
-            get: { selectedID.flatMap { store.plug(id: $0) } != nil },
-            set: { if !$0 { selectedID = nil } }
+            get: {
+                if showTools { return .tools }
+                if let w = wizard { return .wizard(w) }
+                if let id = selectedID, store.plug(id: id) != nil { return .plug(id) }
+                return nil
+            },
+            set: { newValue in
+                guard newValue == nil else { return }
+                if showTools { showTools = false }
+                else if wizard != nil { wizard = nil }
+                else { selectedID = nil }
+            }
         )
     }
 
@@ -35,21 +61,33 @@ struct MainView: View {
         }
         .background(Palette.bg.ignoresSafeArea())
         .preferredColorScheme(.dark)
-        .sheet(isPresented: plugSheetShown) {
-            if let id = selectedID {
+        .sheet(item: activeSheet) { kind in
+            switch kind {
+            case .plug(let id):
                 PlugSheet(store: store, plugID: id,
                           onJump: { ref in
                               store.setActive(ref.harness.id)
                               selectedID = ref.connector.id
                           },
-                          onRemoved: { selectedID = nil })
+                          onRemoved: { selectedID = nil },
+                          onEdit: { plug, pin in
+                              wizard = WizardRequest(harnessID: store.active.id, editing: plug, startPin: pin)
+                          })
                     .presentationDetents([.fraction(0.46), .large])
                     .presentationBackgroundInteraction(.enabled(upThrough: .fraction(0.46)))
                     .presentationBackground(Color(hex: 0x1b1f26))
+            case .wizard(let req):
+                PlugWizard(store: store, harnessID: req.harnessID, editing: req.editing, startPin: req.startPin,
+                           onClose: { wizard = nil },
+                           onSaved: { id in
+                               selectedID = id
+                               wizard = nil
+                           })
+                    .presentationDetents([.large])
+                    .presentationBackground(Color(hex: 0x1b1f26))
+            case .tools:
+                ModelCheckView(store: store)
             }
-        }
-        .sheet(isPresented: $showTools) {
-            ModelCheckView(store: store)
         }
     }
 
@@ -60,6 +98,16 @@ struct MainView: View {
                 .foregroundStyle(.white)
                 .lineLimit(1)
             Spacer()
+            Button {
+                selectedID = nil
+                wizard = WizardRequest(harnessID: store.active.id, editing: nil, startPin: nil)
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Palette.amberText)
+                    .frame(width: 36, height: 32)
+                    .background(Capsule().fill(Palette.amber))
+            }
             Button {
                 showTools = true
             } label: {
@@ -108,10 +156,9 @@ struct MainView: View {
                     .foregroundStyle(Palette.nameText)
                     .multilineTextAlignment(.center)
                 Button {
-                    selectedID = nil
-                    store.loadExample()
+                    wizard = WizardRequest(harnessID: store.active.id, editing: nil, startPin: nil)
                 } label: {
-                    Text("Try the example")
+                    Text("Add your first plug")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(Palette.amberText)
                         .frame(maxWidth: .infinity)
@@ -119,6 +166,17 @@ struct MainView: View {
                         .background(RoundedRectangle(cornerRadius: 14).fill(Palette.amber))
                 }
                 .padding(.top, 6)
+                Button {
+                    selectedID = nil
+                    store.loadExample()
+                } label: {
+                    Text("Try the example")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(Palette.chipText)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(RoundedRectangle(cornerRadius: 14).fill(Palette.chipFill))
+                }
             }
             .padding(22)
             .background(RoundedRectangle(cornerRadius: 20).fill(Color(hex: 0x1b1f26)))
