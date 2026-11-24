@@ -3,7 +3,7 @@
 //  Harness Builder
 //
 //  The app's main screen: harness tabs and the canvas.
-//  (The plug sheet, add-plug wizard and "Add a harness" sheet come next;
+//  Tapping a plug opens the plug sheet. (The add-plug wizard and "Add a harness" sheet come next;
 //  until then the wrench button opens the temporary test tools.)
 //
 
@@ -14,9 +14,12 @@ struct MainView: View {
     @State private var selectedID: String?
     @State private var showTools = false
 
-    private var selectedPlug: Connector? {
-        guard let id = selectedID else { return nil }
-        return store.active.connectors.first { $0.id == id }
+    /// The plug sheet is open whenever a plug is selected and still exists.
+    private var plugSheetShown: Binding<Bool> {
+        Binding(
+            get: { selectedID.flatMap { store.plug(id: $0) } != nil },
+            set: { if !$0 { selectedID = nil } }
+        )
     }
 
     var body: some View {
@@ -27,13 +30,24 @@ struct MainView: View {
                 HarnessCanvasView(harness: store.active, selectedID: selectedID) { selectedID = $0 }
                 if store.isBlank {
                     firstOpenCard
-                } else if let plug = selectedPlug {
-                    selectionBar(plug)
                 }
             }
         }
         .background(Palette.bg.ignoresSafeArea())
         .preferredColorScheme(.dark)
+        .sheet(isPresented: plugSheetShown) {
+            if let id = selectedID {
+                PlugSheet(store: store, plugID: id,
+                          onJump: { ref in
+                              store.setActive(ref.harness.id)
+                              selectedID = ref.connector.id
+                          },
+                          onRemoved: { selectedID = nil })
+                    .presentationDetents([.fraction(0.46), .large])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .fraction(0.46)))
+                    .presentationBackground(Color(hex: 0x1b1f26))
+            }
+        }
         .sheet(isPresented: $showTools) {
             ModelCheckView(store: store)
         }
@@ -113,24 +127,6 @@ struct MainView: View {
             .padding(.top, 70)
             Spacer()
         }
-    }
-
-    private func selectionBar(_ plug: Connector) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(plug.title)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(.white)
-                Text("\(plug.pinCount) pins. The plug sheet comes next.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Palette.nameText)
-            }
-            Spacer()
-        }
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color(hex: 0x1b1f26)))
-        .padding(.horizontal, 14)
-        .padding(.bottom, 14)
     }
 }
 
