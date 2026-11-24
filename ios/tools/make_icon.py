@@ -46,7 +46,7 @@ def svg(BG, GRID, BODY, STROKE, PIN, RING, EMPTY, wires):
 
 
 VARIANTS = {
-    "AppIcon-1024.png": ("#eceff3", "#d6dbe2", "#ffffff", "#5d6773", "#e2a355", "#1c1205", "#6f7782", WIRES),
+    "AppIcon-1024.png": ("#eceff3", "#d6dbe2", "#b0b6bd", "#4a525d", "#e2a355", "#1c1205", "#3a4049", WIRES),
     "AppIcon-1024-dark.png": ("#14181e", "#232932", "#1b1f26", "#7c8794", "#e2a355", "#040506", "#454c56", WIRES),
     "AppIcon-1024-tinted.png": ("#000000", "#1c1c1c", "#0e0e0e", "#9a9a9a", "#f2f2f2", "#000000", "#5a5a5a",
                                 ["#b0b0b0", "#d0d0d0", "#8a8a8a", "#e6e6e6"]),
