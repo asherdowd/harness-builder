@@ -145,6 +145,7 @@ struct HarnessCanvasView: View {
             Palette.bg
                 .contentShape(Rectangle())
                 .onTapGesture { onSelect(nil) }
+                .overlay { gridLayer(color: Palette.grid) }
                 .overlay(alignment: .topLeading) {
                     world(layout)
                         .frame(width: layout.worldWidth, height: layout.worldHeight, alignment: .topLeading)
@@ -169,6 +170,32 @@ struct HarnessCanvasView: View {
                     fit(HarnessLayout(connectors: harness.connectors), in: geo.size, animated: false)
                 }
         }
+    }
+
+    /// A faint grid that pans and zooms with the harness.
+    private func gridLayer(color: Color) -> some View {
+        let step = 28 * scale
+        let shift = offset
+        return Canvas { context, size in
+            guard step >= 7 else { return }
+            var path = Path()
+            var x = shift.width.truncatingRemainder(dividingBy: step)
+            if x < 0 { x += step }
+            while x <= size.width {
+                path.move(to: CGPoint(x: x, y: 0))
+                path.addLine(to: CGPoint(x: x, y: size.height))
+                x += step
+            }
+            var y = shift.height.truncatingRemainder(dividingBy: step)
+            if y < 0 { y += step }
+            while y <= size.height {
+                path.move(to: CGPoint(x: 0, y: y))
+                path.addLine(to: CGPoint(x: size.width, y: y))
+                y += step
+            }
+            context.stroke(path, with: .color(color), lineWidth: 1)
+        }
+        .allowsHitTesting(false)
     }
 
     private func world(_ layout: HarnessLayout) -> some View {

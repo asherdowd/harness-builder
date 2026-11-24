@@ -32,6 +32,7 @@ enum Palette {
     static let nameText = Color(hex: 0x8b93a1)
     static let amber = Color(hex: 0xe8b25c)
     static let amberText = Color(hex: 0x1a1408)
+    static let grid = Color(hex: 0x252b34)
     static let surface = Color(hex: 0x181c22)
     static let divider = Color(hex: 0x2c323b)
     static let chipFill = Color(hex: 0x2a2e35)
