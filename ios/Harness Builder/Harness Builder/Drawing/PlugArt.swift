@@ -41,6 +41,7 @@ struct PinDotView: View {
 
 struct PlugArt: View {
     let model: ArtModel
+    var showRoles: Bool = false
 
     var body: some View {
         let w = model.width
@@ -50,6 +51,10 @@ struct PlugArt: View {
             ForEach(Array(model.pins.enumerated()), id: \.offset) { item in
                 PinDotView(pin: item.element.pin)
                     .position(x: w / 2 + item.element.x, y: h / 2 + item.element.y)
+                if showRoles, item.element.pin.populated, let role = WireRole(rawValue: item.element.pin.role ?? "") {
+                    RoleBadge(role: role, size: 11)
+                        .position(x: w / 2 + item.element.x + 7, y: h / 2 + item.element.y - 7)
+                }
             }
         }
         .frame(width: w, height: h)

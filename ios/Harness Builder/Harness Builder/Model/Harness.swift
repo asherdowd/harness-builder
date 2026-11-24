@@ -21,6 +21,8 @@ struct Pin: Codable, Hashable {
     var netType: String?        // which harness group the pin belongs to
     var colorNote: String?
     var colorCrossRef: ColorCrossRef?
+    var role: String?           // app-only: "power", "signal" or "ground" (set by hand)
+    var gauge: Int?             // app-only: wire gauge in AWG (optional)
 
     init(position: Int,
          populated: Bool = true,
@@ -30,7 +32,9 @@ struct Pin: Codable, Hashable {
          netId: String? = nil,
          netType: String? = nil,
          colorNote: String? = nil,
-         colorCrossRef: ColorCrossRef? = nil) {
+         colorCrossRef: ColorCrossRef? = nil,
+         role: String? = nil,
+         gauge: Int? = nil) {
         self.position = position
         self.populated = populated
         self.color = color
@@ -40,10 +44,12 @@ struct Pin: Codable, Hashable {
         self.netType = netType
         self.colorNote = colorNote
         self.colorCrossRef = colorCrossRef
+        self.role = role
+        self.gauge = gauge
     }
 
     enum CodingKeys: String, CodingKey {
-        case position, populated, color, guess, confidence, netId, netType, colorNote, colorCrossRef
+        case position, populated, color, guess, confidence, netId, netType, colorNote, colorCrossRef, role, gauge
     }
 
     init(from decoder: Decoder) throws {
@@ -57,6 +63,8 @@ struct Pin: Codable, Hashable {
         netType = try c.decodeIfPresent(String.self, forKey: .netType)
         colorNote = try c.decodeIfPresent(String.self, forKey: .colorNote)
         colorCrossRef = try c.decodeIfPresent(ColorCrossRef.self, forKey: .colorCrossRef)
+        role = try c.decodeIfPresent(String.self, forKey: .role)
+        gauge = try c.decodeIfPresent(Int.self, forKey: .gauge)
     }
 }
 

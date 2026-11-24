@@ -1,1927 +1,2143 @@
 {
- "version": 1,
- "templates": [
-  {
-   "key": "VX",
-   "label": "Engine harness",
-   "sub": "3 plugs",
-   "repeatable": false,
-   "harness": {
-    "id": "VX",
-    "title": "Engine harness",
-    "tab": "Engine",
-    "kind": "harness",
-    "connectors": [
-     {
-      "id": "VX-EH-01",
-      "name": "Firewall passthrough / bulkhead block connector",
-      "location": "Next to main ground",
-      "shape": "rectangular-block",
-      "housingColor": "black",
-      "totalPositions": 14,
-      "populatedPositions": 8,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": false
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "ORN/BLU",
-          "guess": "TDC sensor (+), distributor",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
+  "version": 1,
+  "templates": [
+    {
+      "key": "VX",
+      "label": "Engine harness",
+      "sub": "3 plugs",
+      "repeatable": false,
+      "harness": {
+        "id": "VX",
+        "title": "Engine harness",
+        "tab": "Engine",
+        "kind": "harness",
+        "connectors": [
+          {
+            "id": "VX-EH-01",
+            "name": "Firewall passthrough / bulkhead block connector",
+            "location": "Next to main ground",
+            "shape": "rectangular-block",
+            "housingColor": "black",
+            "totalPositions": 14,
+            "populatedPositions": 8,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": false
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "ORN/BLU",
+                    "guess": "TDC sensor (+), distributor",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": false
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": false
+                  },
+                  {
+                    "position": 2,
+                    "populated": false
+                  },
+                  {
+                    "position": 3,
+                    "populated": false
+                  },
+                  {
+                    "position": 4,
+                    "populated": false
+                  }
+                ]
+              },
+              {
+                "row": 3,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "RED/BLU",
+                    "guess": "Unknown",
+                    "confidence": "Low",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "GRN/WHT",
+                    "guess": "Shared sensor ground bus",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "YEL/WHT",
+                    "guess": "TPS 5V reference (VCC2) \u2014 confirmed by SHK-EH-01",
+                    "confidence": "High",
+                    "netId": "NET-TPS-VCC",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "YEL/GRN",
+                    "guess": "ICM ignition trigger output",
+                    "confidence": "High",
+                    "netId": "NET-ICM",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "CONFLICT: SHK-EH-01 shows this same color as FANC (High confidence), not ICM. Both readings are High confidence on their respective connectors. VX-EH-01's ICM identity is also independently supported by VX-EH-06 (confirmed distributor) and VX-EH-20. Not resolved \u2014 needs continuity test.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  }
+                ]
+              },
+              {
+                "row": 4,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "RED/YEL",
+                    "guess": "IAT \u2014 reconsidered (was TPS signal). TPS signal already established elsewhere as RED/BLU (VX-EH-13); SHK-EH-01 independently shows this color as IAT.",
+                    "confidence": "Med-High",
+                    "colorNote": "Original TPS-signal guess conflicts with VX-EH-13's confirmed TPS signal (RED/BLU). SHK-EH-01 shows RED/YEL as IAT, which is also the consistent match everywhere else in the data. IAT is the better-supported guess.",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "RED/WHT",
+                    "guess": "ECT \u2014 resolved via SHK-EH-01 (was Unknown/Low)",
+                    "confidence": "High",
+                    "netId": "NET-ECT-VX",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Previously logged as unresolved. Confirmed ECT by direct comparison against SHK-EH-01, which shows this same color as ECT with High confidence.",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BLU",
+                    "colorNote": "solid",
+                    "guess": "Tach output signal",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  }
+                ]
+              }
+            ],
+            "description": "Not a single-sensor plug \u2014 likely a junction/pass-through block carrying several separate circuits rather than one component. Physical shell CONFIRMED identical to CRV-EH-01 (same 14-pin rectangular-block) \u2014 VX uses only 8 of 14 available cavities, CR-V uses all 14.",
+            "status": "Unconfirmed",
+            "condition": "Not noted",
+            "gender": "TBD",
+            "sameCircuitAs": [],
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "Main firewall plug"
+          },
+          {
+            "id": "VX-EH-02",
+            "name": "Fuel injector power supply connector",
+            "location": "Next to VX-EH-01 bulkhead plug",
+            "shape": "inline-block",
+            "housingColor": "black",
+            "totalPositions": 4,
+            "populatedPositions": 4,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "LT BLU",
+                    "guess": "INJ3 supply",
+                    "confidence": "High",
+                    "netId": "NET-INJ3",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "YEL",
+                    "guess": "INJ4 supply",
+                    "confidence": "High",
+                    "netId": "NET-INJ4",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BRN",
+                    "guess": "INJ1 supply",
+                    "confidence": "High",
+                    "netId": "NET-INJ1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "RED",
+                    "guess": "INJ2 supply",
+                    "confidence": "High",
+                    "netId": "NET-INJ2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  }
+                ]
+              }
+            ],
+            "description": "Matches documented OBD1 injector color code (Brown=INJ1, Yellow=INJ4, Red=INJ2, Blue=INJ3) almost exactly. PHYSICAL INTERFACE MATCH: same connector shell as CRV-EH-03 (NOT CRV-EH-02, despite matching number) \u2014 4-pin injector connector. Numbering diverged between harnesses; use CRV-EH-03 as the de-pin reference for this connector.",
+            "status": "Unconfirmed",
+            "sameCircuitAs": [],
+            "condition": "Not noted",
+            "gender": "TBD",
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "Injector power plug"
+          },
+          {
+            "id": "VX-EH-03",
+            "name": "Bulkhead passthrough \u2014 distributor position sensor circuits",
+            "location": "Bulkhead/firewall (not at distributor itself)",
+            "shape": "rectangular-block",
+            "housingColor": "black",
+            "totalPositions": 10,
+            "populatedPositions": 9,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BRN/BLK",
+                    "guess": "LG2 (Logic Ground 2) \u2014 resolved via SHK-EH-02",
+                    "confidence": "High",
+                    "netId": "NET-LG2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Previously unresolved. Confirmed LG2 by direct comparison against SHK-EH-02.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "WHT/PNK",
+                    "guess": "Unresolved",
+                    "confidence": "Low",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BLK/RED",
+                    "guess": "LG1 (Logic Ground 1) \u2014 resolved via SHK-EH-02",
+                    "confidence": "High",
+                    "netId": "NET-LG1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorNote": "Previously unresolved. Confirmed LG1 by direct comparison against SHK-EH-02.",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "ORN",
+                    "colorNote": "Suspected faded reading of ORN \u2014 confirmed via VX-EH-06 (same circuit, unfaded)",
+                    "guess": "CYP sensor (+) / CYPP",
+                    "confidence": "High",
+                    "netId": "NET-CYP-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "WHT",
+                    "guess": "CYP sensor ground (CYPG)",
+                    "confidence": "High",
+                    "netId": "NET-CYP-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "ORN/BLU",
+                    "colorNote": "Suspected faded reading of ORN/BLU \u2014 confirmed via VX-EH-06 (same circuit, unfaded)",
+                    "guess": "TDC sensor (+) / TDCP",
+                    "confidence": "High",
+                    "netId": "NET-TDC-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "WHT/BLU",
+                    "guess": "TDC sensor ground (TDCG)",
+                    "confidence": "High",
+                    "netId": "NET-TDC-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              },
+              {
+                "row": 3,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BLU/GRN",
+                    "guess": "CKP sensor (+) / CKPP",
+                    "confidence": "High",
+                    "netId": "NET-CKP-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "BLU/YEL",
+                    "guess": "CKP sensor ground (CKPG)",
+                    "confidence": "High",
+                    "netId": "NET-CKP-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 3,
+                    "populated": false
+                  }
+                ]
+              }
+            ],
+            "description": "Bulkhead/firewall passthrough carrying distributor CYP/TDC/CKP position-sensor circuits en route to ECU. Not the distributor connector itself (see VX-EH-06). PHYSICAL INTERFACE MATCH: same connector shell as CRV-EH-02 (NOT CRV-EH-03, despite matching number) \u2014 10-pin distributor/thermostat passthrough. Numbering diverged between harnesses; use CRV-EH-02 as the de-pin reference for this connector.",
+            "status": "Unconfirmed",
+            "condition": "Not noted",
+            "gender": "TBD",
+            "sameCircuitAs": [],
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "Distributor plug"
           }
-         },
-         {
-          "position": 3,
-          "populated": false
-         }
         ]
-       },
-       {
-        "row": 2,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": false
-         },
-         {
-          "position": 2,
-          "populated": false
-         },
-         {
-          "position": 3,
-          "populated": false
-         },
-         {
-          "position": 4,
-          "populated": false
-         }
+      }
+    },
+    {
+      "key": "SHK",
+      "label": "Firewall harness",
+      "sub": "3 plugs. Wires connect to the engine harness and ECU.",
+      "repeatable": false,
+      "harness": {
+        "id": "SHK",
+        "title": "Firewall harness",
+        "tab": "Firewall",
+        "kind": "harness",
+        "connectors": [
+          {
+            "id": "SHK-EH-01",
+            "name": "Firewall/bulkhead crossing connector \u2014 bundles circuits from ECU-A, B, and D blocks",
+            "location": "Taped with 3 other plugs, exact harness membership uncertain \u2014 user flagged for cross-check",
+            "shape": "round-3-4-4-3",
+            "shapeNote": "ECU/component-side shapes not yet canonicalized",
+            "housingColor": "black",
+            "totalPositions": 14,
+            "populatedPositions": 14,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "ORN/WHT",
+                    "guess": "VTS",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "ORN/BLK",
+                    "guess": "PO2SHTC",
+                    "confidence": "High",
+                    "netId": "NET-PO2SHTC",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "WHT/YEL",
+                    "guess": "ALTC",
+                    "confidence": "High",
+                    "colorNote": "CONFLICT: VX-EH-18 shows this same color as ELD, not ALTC. Same ambiguity independently observed on the CR-V harness (CRV-EH-01 vs CRV-EH-18). Needs continuity test.",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "ORN/BLU",
+                    "guess": "TDC P",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "YEL/GRN",
+                    "guess": "FANC",
+                    "confidence": "High",
+                    "colorNote": "CONFLICT: VX-EH-01/06/20 all show this same color as ICM (High confidence, independently supported by the confirmed distributor connector VX-EH-06). Not resolved \u2014 needs continuity test.",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "PNK/WHT",
+                    "guess": "Unresolved \u2014 no match found",
+                    "confidence": "Low",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "GRN/BLU",
+                    "guess": "LAF IP-/VS- (VX-specific)",
+                    "confidence": "Med-High",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  }
+                ]
+              },
+              {
+                "row": 3,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "RED/BLK",
+                    "guess": "ACC",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "YEL/WHT",
+                    "guess": "VCC2",
+                    "confidence": "High",
+                    "netId": "NET-TPS-VCC",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "GRN/WHT",
+                    "guess": "BKSW, SG1, or SG2 \u2014 ambiguous",
+                    "confidence": "Low-Med",
+                    "colorNote": "VX-EH-01 shows this same color as \"shared sensor ground bus\" (High confidence) \u2014 corroborates SG1/SG2 (a sensor ground) over BKSW (brake switch signal), though not specific enough to pick SG1 vs SG2.",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "PNK/BLK",
+                    "guess": "CLSW",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              },
+              {
+                "row": 4,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "PNK",
+                    "guess": "ALT F",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "RED/WHT",
+                    "guess": "ECT",
+                    "confidence": "High",
+                    "netId": "NET-ECT-VX",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "RED/YEL",
+                    "guess": "IAT",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  }
+                ]
+              }
+            ],
+            "description": "11 of 14 wires match known circuits spanning all 3 ECU blocks. Exactly the expected signature for a genuine firewall bulkhead crossing connector \u2014 bundling circuits from multiple ECU blocks rather than one. AUDIT NOTE: exhaustively tested all row-order and per-row-flip combinations against both documented 14-pin references (passenger C223/C103 and driver C304/C126) \u2014 best fit was 4/14, no meaningful improvement over the unordered 3/14. This connector's individual wire-function identifications remain based on general aggregate matching, not verified position order.",
+            "status": "Confirmed at function-level only (individual colors matched against general ECU-A/B/D lists) \u2014 POSITION-LEVEL match against the specific named 14-pin reference NOT achieved despite exhaustive orientation testing (best fit only 4/14). Likely genuine vehicle-specific wire color variance, not a transcription error. Needs physical re-read to resolve, not further geometric guessing.",
+            "condition": "Not noted",
+            "buildAction": "Strong candidate for actual ECU-EH-to-VX-EH crossing point; verify against VX-EH-01/03 for wire continuity once accessible",
+            "partNumber": "",
+            "gender": "",
+            "shapeProvisional": true,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "ECU bundle plug"
+          },
+          {
+            "id": "SHK-EH-02",
+            "name": "Likely same family as VX-EH-03/CRV-EH-02 (thermostat housing / CYP-TDC passthrough) \u2014 variant, not exact match",
+            "location": "Taped with other plugs, harness membership uncertain",
+            "shape": "round-3-4-3",
+            "shapeNote": "ECU/component-side shapes not yet canonicalized",
+            "housingColor": "black",
+            "totalPositions": 10,
+            "populatedPositions": 8,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BLK/RED",
+                    "guess": "LG1",
+                    "confidence": "High",
+                    "netId": "NET-LG1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 2,
+                    "populated": false
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BRN/BLK",
+                    "guess": "LG2",
+                    "confidence": "High",
+                    "netId": "NET-LG2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "WHT/BLU",
+                    "guess": "TDC M",
+                    "confidence": "High",
+                    "netId": "NET-TDC-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "ORN/BLK",
+                    "guess": "TDC P (documented as ORN/BLU \u2014 plausible misread)",
+                    "confidence": "Med",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "WHT",
+                    "guess": "CYP M",
+                    "confidence": "High",
+                    "netId": "NET-CYP-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "ORN",
+                    "guess": "CYP P",
+                    "confidence": "High",
+                    "netId": "NET-CYP-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  }
+                ]
+              },
+              {
+                "row": 3,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BRN/BLK",
+                    "guess": "LG2 (repeat)",
+                    "confidence": "High",
+                    "netId": "NET-LG2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 2,
+                    "populated": false
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BLK/RED",
+                    "guess": "LG1 (repeat)",
+                    "confidence": "High",
+                    "netId": "NET-LG1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              }
+            ],
+            "description": null,
+            "status": "Confirmed (partial, 3-4 of 8) \u2014 Med-High; ground pair pattern Unconfirmed",
+            "condition": "Not noted",
+            "buildAction": "Needs continuity/physical confirmation of ground pair role before finalizing",
+            "partNumber": "",
+            "gender": "",
+            "shapeProvisional": true,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "Distributor sensor plug"
+          },
+          {
+            "id": "SHK-EH-04",
+            "name": "Injector driver connector",
+            "location": "Taped with other 3 plugs",
+            "shape": "square-4pin",
+            "housingColor": "black",
+            "totalPositions": 4,
+            "populatedPositions": 4,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 2,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BRN",
+                    "guess": "INJ1",
+                    "confidence": "High",
+                    "netId": "NET-INJ1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "RED",
+                    "guess": "INJ2",
+                    "confidence": "High",
+                    "netId": "NET-INJ2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 2,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "LT BLU",
+                    "guess": "INJ3",
+                    "confidence": "High",
+                    "netId": "NET-INJ3",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "YEL",
+                    "guess": "INJ4",
+                    "confidence": "High",
+                    "netId": "NET-INJ4",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              }
+            ],
+            "description": "Clean match to the same injector pattern confirmed multiple times elsewhere. Matches ECU-A pins 1,3,5,2 directly. No anomaly \u2014 exactly as expected.",
+            "status": "Confirmed",
+            "condition": "Not noted",
+            "buildAction": "Cross-check against ECU-A pins 1/2/3/5",
+            "sameCircuitAs": [
+              "VX-EH-02"
+            ],
+            "partNumber": "",
+            "gender": "",
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "Injector driver plug"
+          }
         ]
-       },
-       {
-        "row": 3,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "RED/BLU",
-          "guess": "Unknown",
-          "confidence": "Low",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
+      }
+    },
+    {
+      "key": "ECU",
+      "label": "ECU",
+      "sub": "3 plugs",
+      "repeatable": false,
+      "harness": {
+        "id": "ECU",
+        "title": "ECU",
+        "tab": "ECU",
+        "kind": "harness",
+        "connectors": [
+          {
+            "id": "ECU-EH-01",
+            "name": "ECU Connector A (26-pin)",
+            "location": "Original Civic harness, plugs into ECU, through firewall",
+            "shape": "rectangular-block",
+            "shapeNote": "ECU/component-side shapes not yet canonicalized \u2014 matches p75-ecu-model.json ECU Connector A shape",
+            "housingColor": "black",
+            "totalPositions": 26,
+            "populatedPositions": 19,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 13,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BRN",
+                    "guess": "INJ1",
+                    "confidence": "High",
+                    "netId": "NET-INJ1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "RED",
+                    "guess": "INJ2",
+                    "confidence": "High",
+                    "netId": "NET-INJ2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "LT BLU",
+                    "guess": "INJ3",
+                    "confidence": "High",
+                    "netId": "NET-INJ3",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "GRN/YEL",
+                    "guess": "FLR",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 5,
+                    "populated": true,
+                    "color": "GRN/WHT",
+                    "guess": "IACV",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 6,
+                    "populated": true,
+                    "color": "PNK/GRN",
+                    "guess": "SIL (Upshift Light) \u2014 see anomaly note",
+                    "confidence": "Med",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 7,
+                    "populated": true,
+                    "color": "GRN/ORN",
+                    "guess": "MIL",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 8,
+                    "populated": true,
+                    "color": "BLK/RED",
+                    "guess": "ACC",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 9,
+                    "populated": false,
+                    "guess": "IAB SOL (GSR-only pin) \u2014 plausibly unpopulated on this non-GSR application"
+                  },
+                  {
+                    "position": 10,
+                    "populated": false,
+                    "guess": "ICS (H22A-only pin) \u2014 plausibly unpopulated on this non-H22A application"
+                  },
+                  {
+                    "position": 11,
+                    "populated": true,
+                    "color": "RED/GRN",
+                    "guess": "ICM",
+                    "confidence": "High",
+                    "netId": "NET-ICM",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 12,
+                    "populated": true,
+                    "color": "BLK",
+                    "guess": "PG1",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 13,
+                    "populated": true,
+                    "color": "YEL/BLK",
+                    "guess": "IGP2",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 13,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "YEL",
+                    "guess": "INJ4",
+                    "confidence": "High",
+                    "netId": "NET-INJ4",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "ORN/WHT",
+                    "guess": "VTS",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "ORN",
+                    "guess": "PO2SHTC (partial match)",
+                    "confidence": "Med-High",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": false
+                  },
+                  {
+                    "position": 5,
+                    "populated": false
+                  },
+                  {
+                    "position": 6,
+                    "populated": true,
+                    "color": "YEL/GRN",
+                    "guess": "FANC",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 7,
+                    "populated": false
+                  },
+                  {
+                    "position": 8,
+                    "populated": true,
+                    "color": "WHT/YEL",
+                    "guess": "ALTC",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 9,
+                    "populated": false
+                  },
+                  {
+                    "position": 10,
+                    "populated": true,
+                    "color": "RED",
+                    "guess": "PCS",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 11,
+                    "populated": false,
+                    "guess": "ICM redundant (Civic-only duplicate) \u2014 plausibly unpopulated"
+                  },
+                  {
+                    "position": 12,
+                    "populated": true,
+                    "color": "BLK",
+                    "guess": "PG2",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 13,
+                    "populated": true,
+                    "color": "BLK/RED",
+                    "guess": "LG1",
+                    "confidence": "High",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              }
+            ],
+            "description": "Near-exact match (24-25 of 26 pins) to documented OBD1 ECU Connector A pinout.",
+            "anomalies": [
+              "Pin 11 (row1 pos6): reads PNK/GRN, generic reference expects ORN/BLU (EGR Control Solenoid). PNK/GRN matches SIL (Upshift Light) elsewhere \u2014 possible genuine VX-specific pinout substitution rather than an error. NOT YET RESOLVED \u2014 do not silently correct."
+            ],
+            "status": "Confirmed",
+            "condition": "Not noted",
+            "buildAction": "Anchor connector for full P75 pinout cross-reference; pin11 anomaly needs resolution (EGR vs SIL/upshift light)",
+            "partNumber": "",
+            "gender": "",
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "ECU plug A"
+          },
+          {
+            "id": "ECU-EH-02",
+            "name": "ECU Connector B (16-pin)",
+            "location": "Same harness as ECU-EH-01",
+            "shape": "rectangular-block",
+            "shapeNote": "ECU/component-side shapes not yet canonicalized \u2014 matches p75-ecu-model.json ECU Connector B shape",
+            "housingColor": "black",
+            "totalPositions": 16,
+            "populatedPositions": 12,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 8,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "YEL/BLK",
+                    "guess": "IGP1 (confirmed, true pin 1)",
+                    "confidence": "High",
+                    "netId": "NET-IGP1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 2,
+                    "populated": false
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BLU/RED",
+                    "guess": "ACS (confirmed, true pin 5)",
+                    "confidence": "High",
+                    "netId": "NET-ACS",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "PNK/BLK",
+                    "guess": "CLSW (confirmed, true pin 7)",
+                    "confidence": "High",
+                    "netId": "NET-CLSW",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 5,
+                    "populated": true,
+                    "color": "BLU/WHT",
+                    "guess": "STS (confirmed, true pin 9)",
+                    "confidence": "High",
+                    "netId": "NET-STS",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 6,
+                    "populated": true,
+                    "color": "ORN",
+                    "guess": "CYP P (confirmed, true pin 11)",
+                    "confidence": "High",
+                    "netId": "NET-CYP-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 7,
+                    "populated": true,
+                    "color": "ORN/BLU",
+                    "guess": "TDC P (confirmed, true pin 13)",
+                    "confidence": "High",
+                    "netId": "NET-TDC-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 8,
+                    "populated": true,
+                    "color": "BLU/GRN",
+                    "guess": "CKP P (confirmed, true pin 15)",
+                    "confidence": "High",
+                    "netId": "NET-CKP-P",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 8,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BRN/BLK",
+                    "guess": "LG2 (confirmed, true pin 2)",
+                    "confidence": "High",
+                    "netId": "NET-LG2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 2,
+                    "populated": false
+                  },
+                  {
+                    "position": 3,
+                    "populated": false
+                  },
+                  {
+                    "position": 4,
+                    "populated": false
+                  },
+                  {
+                    "position": 5,
+                    "populated": true,
+                    "color": "YEL/BLU",
+                    "guess": "VSS (confirmed, true pin 10)",
+                    "confidence": "High",
+                    "netId": "NET-VSS",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 6,
+                    "populated": true,
+                    "color": "WHT",
+                    "guess": "CYP M (confirmed, true pin 12)",
+                    "confidence": "High",
+                    "netId": "NET-CYP-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 7,
+                    "populated": true,
+                    "color": "WHT/BLU",
+                    "guess": "TDC M (confirmed, true pin 14)",
+                    "confidence": "High",
+                    "netId": "NET-TDC-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 8,
+                    "populated": true,
+                    "color": "BLU/YEL",
+                    "guess": "CKP M (confirmed, true pin 16)",
+                    "confidence": "High",
+                    "netId": "NET-CKP-M",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              }
+            ],
+            "description": "Near-perfect match (12 of 13 expected pins) to documented ECU Connector B, matched by wire content rather than strict slot position. Only pin 8 (PSP SW, Power Steering Pressure Switch) unpopulated \u2014 plausible if this build lacks power steering wired through this circuit. Directly confirms VX-EH-06 distributor circuits by function. ORIENTATION CORRECTED: rows were swapped (top/bottom, not left/right) relative to the reference numbering \u2014 after correction, matches 12/12 true-pin positions against the documented ECU-B pinout.",
+            "status": "Confirmed (12 of 12 true-pin positions) \u2014 High",
+            "condition": "Not noted",
+            "buildAction": "Anchor connector for P75 pinout cross-reference; matches VX-EH-06 distributor circuits directly by function",
+            "sameCircuitAs": [],
+            "partNumber": "",
+            "gender": "",
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "ECU plug B"
+          },
+          {
+            "id": "ECU-EH-03",
+            "name": "ECU Connector D (22-pin)",
+            "location": "Same harness as ECU-EH-01/02",
+            "shape": "rectangular-block",
+            "shapeNote": "ECU/component-side shapes not yet canonicalized \u2014 matches p75-ecu-model.json ECU Connector D shape",
+            "housingColor": "black",
+            "totalPositions": 22,
+            "populatedPositions": 21,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 11,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "WHT/BLU",
+                    "guess": "VBU (confirmed, true pin 1)",
+                    "confidence": "High",
+                    "netId": "NET-VBU",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "BLU/YEL",
+                    "guess": "Unresolved \u2014 no clean D-block match found",
+                    "confidence": "Low",
+                    "colorNote": "After row-order correction: true pin 3 expected 'RED/BLU' (KS), physical color read is 'BLU/YEL' \u2014 mismatch, needs re-check.",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": false,
+                    "guess": "Matches unused pin5 slot in reference layout"
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "LT BLU",
+                    "guess": "DLC (confirmed, true pin 7)",
+                    "confidence": "High",
+                    "netId": "NET-DLC",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 5,
+                    "populated": true,
+                    "color": "PNK",
+                    "guess": "ALT F (confirmed, true pin 9)",
+                    "confidence": "High",
+                    "netId": "NET-ALT-F",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 6,
+                    "populated": true,
+                    "color": "PNK/BLK",
+                    "guess": "Unresolved \u2014 no clean D-block match found",
+                    "confidence": "Low",
+                    "colorNote": "After row-order correction: true pin 11 expected 'LT GRN to RED/BLU (Civic), RED/BLK (Integra)' (TPS), physical color read is 'PNK/BLK' \u2014 mismatch, needs re-check.",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 7,
+                    "populated": true,
+                    "color": "RED/WHT",
+                    "guess": "ECT (confirmed, true pin 13)",
+                    "confidence": "High",
+                    "netId": "NET-ECT",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 8,
+                    "populated": true,
+                    "color": "RED/YEL",
+                    "guess": "IAT (confirmed, true pin 15)",
+                    "confidence": "High",
+                    "netId": "NET-IAT",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 9,
+                    "populated": true,
+                    "color": "PNK/WHT",
+                    "guess": "Unresolved \u2014 no clean D-block match found",
+                    "confidence": "Low",
+                    "colorNote": "After row-order correction: true pin 17 expected 'WHT (Civic) or WHT/YEL (Integra)' (MAP), physical color read is 'PNK/WHT' \u2014 mismatch, needs re-check.",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 10,
+                    "populated": true,
+                    "color": "YEL/GRN",
+                    "guess": "VCC1 (confirmed, true pin 19)",
+                    "confidence": "High",
+                    "netId": "NET-VCC1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 11,
+                    "populated": true,
+                    "color": "GRN/BLU",
+                    "guess": "SG1 (confirmed, true pin 21)",
+                    "confidence": "High",
+                    "netId": "NET-SG1",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 11,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "GRN/WHT",
+                    "guess": "BKSW (confirmed, true pin 2)",
+                    "confidence": "High",
+                    "netId": "NET-BKSW",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "BRN",
+                    "guess": "SCS (confirmed, true pin 4)",
+                    "confidence": "High",
+                    "netId": "NET-SCS",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "ORN/WHT",
+                    "guess": "Unresolved \u2014 no clean D-block match found",
+                    "confidence": "Low",
+                    "colorNote": "After row-order correction: true pin 6 expected 'ORN/BLU (Civic) to BLU/BLK' (VTP SW), physical color read is 'ORN/WHT' \u2014 mismatch, needs re-check.",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "WHT/BLU",
+                    "guess": "LAF VS+ (confirmed, true pin 8)",
+                    "confidence": "High",
+                    "netId": "NET-LAF-VS+",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 5,
+                    "populated": true,
+                    "color": "GRN/RED",
+                    "guess": "ELD (confirmed, true pin 10)",
+                    "confidence": "High",
+                    "netId": "NET-ELD",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 1,
+                      "isOrphan": true,
+                      "signal": "Low"
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 6,
+                    "populated": true,
+                    "color": "WHT",
+                    "guess": "EGRL (confirmed, true pin 12)",
+                    "confidence": "High",
+                    "netId": "NET-EGRL",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 7,
+                    "populated": true,
+                    "color": "ORN/BLU",
+                    "guess": "LAF IP+ (VX-specific) or VTP SW \u2014 ambiguous",
+                    "confidence": "Low-Med",
+                    "colorNote": "After row-order correction: true pin 14 expected 'WHT (Civic), WHT/RED (Integra)' (PHO2S), physical color read is 'ORN/BLU' \u2014 mismatch, needs re-check.",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 8,
+                    "populated": true,
+                    "color": "BLU/GRN",
+                    "guess": "LAF IP-, VS- (confirmed, true pin 16)",
+                    "confidence": "High",
+                    "netId": "NET-LAF-IP-,-VS-",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 3,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 9,
+                    "populated": true,
+                    "color": "PNK/GRN",
+                    "guess": "SIL (confirmed, true pin 18)",
+                    "confidence": "High",
+                    "netId": "NET-SIL",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 2,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 10,
+                    "populated": true,
+                    "color": "YEL",
+                    "guess": "VCC2 (confirmed, true pin 20)",
+                    "confidence": "High",
+                    "netId": "NET-VCC2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 4,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "power",
+                    "gauge": 16
+                  },
+                  {
+                    "position": 11,
+                    "populated": true,
+                    "color": "GRN/WHT",
+                    "guess": "SG2 (confirmed, true pin 22)",
+                    "confidence": "High",
+                    "netId": "NET-SG2",
+                    "netType": "vx-ecu-vehicle-harness",
+                    "colorCrossRef": {
+                      "matchCount": 5,
+                      "isOrphan": false,
+                      "signal": null
+                    },
+                    "role": "signal",
+                    "gauge": 20
+                  }
+                ]
+              }
+            ],
+            "description": "Pin count confirms this is ECU Connector D. 8 of 21 wire-pairs match strongly. Remaining ambiguity likely explained by this being a VX-specific P75-target ECU harness \u2014 the VX uses a unique 5-wire LAF wideband O2 system, and ECU-D pins 3/8/14/16 are documented as having VX-specific alternate colors not fully captured by the generic reference table. Needs dedicated LAF-circuit research. ORIENTATION CORRECTED: rows were swapped (top/bottom, not left/right) relative to the reference numbering \u2014 after correction, matches 16/21 true-pin positions against the documented ECU-D pinout.",
+            "status": "Confirmed (16 of 21 true-pin positions) \u2014 High",
+            "condition": "Not noted",
+            "buildAction": "Needs LAF-specific pinout research to resolve remaining ambiguous pins",
+            "partNumber": "",
+            "gender": "",
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "ECU plug D"
           }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "GRN/WHT",
-          "guess": "Shared sensor ground bus",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "YEL/WHT",
-          "guess": "TPS 5V reference (VCC2) — confirmed by SHK-EH-01",
-          "confidence": "High",
-          "netId": "NET-TPS-VCC",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "YEL/GRN",
-          "guess": "ICM ignition trigger output",
-          "confidence": "High",
-          "netId": "NET-ICM",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "CONFLICT: SHK-EH-01 shows this same color as FANC (High confidence), not ICM. Both readings are High confidence on their respective connectors. VX-EH-01's ICM identity is also independently supported by VX-EH-06 (confirmed distributor) and VX-EH-20. Not resolved — needs continuity test.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
         ]
-       },
-       {
-        "row": 4,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "RED/YEL",
-          "guess": "IAT — reconsidered (was TPS signal). TPS signal already established elsewhere as RED/BLU (VX-EH-13); SHK-EH-01 independently shows this color as IAT.",
-          "confidence": "Med-High",
-          "colorNote": "Original TPS-signal guess conflicts with VX-EH-13's confirmed TPS signal (RED/BLU). SHK-EH-01 shows RED/YEL as IAT, which is also the consistent match everywhere else in the data. IAT is the better-supported guess.",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
+      }
+    },
+    {
+      "key": "COMP",
+      "label": "Component",
+      "sub": "One plug you link to a plug on another harness",
+      "repeatable": true,
+      "harness": {
+        "id": "C",
+        "title": "Distributor",
+        "tab": "Distributor",
+        "kind": "component",
+        "connectors": [
+          {
+            "id": "CMP",
+            "name": "Bulkhead passthrough \u2014 distributor position sensor circuits",
+            "location": "",
+            "shape": "rectangular-block",
+            "housingColor": "black",
+            "totalPositions": 10,
+            "populatedPositions": 9,
+            "rows": [
+              {
+                "row": 1,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BRN/BLK",
+                    "guess": "LG2 (Logic Ground 2) \u2014 resolved via SHK-EH-02",
+                    "confidence": "High",
+                    "colorNote": "Previously unresolved. Confirmed LG2 by direct comparison against SHK-EH-02.",
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "WHT/PNK",
+                    "guess": "Unresolved",
+                    "confidence": "Low",
+                    "role": "signal",
+                    "gauge": 20
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "BLK/RED",
+                    "guess": "LG1 (Logic Ground 1) \u2014 resolved via SHK-EH-02",
+                    "confidence": "High",
+                    "colorNote": "Previously unresolved. Confirmed LG1 by direct comparison against SHK-EH-02.",
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              },
+              {
+                "row": 2,
+                "positions": 4,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "ORN",
+                    "colorNote": "Suspected faded reading of ORN \u2014 confirmed via VX-EH-06 (same circuit, unfaded)",
+                    "guess": "CYP sensor (+) / CYPP",
+                    "confidence": "High",
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "WHT",
+                    "guess": "CYP sensor ground (CYPG)",
+                    "confidence": "High",
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 3,
+                    "populated": true,
+                    "color": "ORN/BLU",
+                    "colorNote": "Suspected faded reading of ORN/BLU \u2014 confirmed via VX-EH-06 (same circuit, unfaded)",
+                    "guess": "TDC sensor (+) / TDCP",
+                    "confidence": "High",
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 4,
+                    "populated": true,
+                    "color": "WHT/BLU",
+                    "guess": "TDC sensor ground (TDCG)",
+                    "confidence": "High",
+                    "role": "ground",
+                    "gauge": 18
+                  }
+                ]
+              },
+              {
+                "row": 3,
+                "positions": 3,
+                "pins": [
+                  {
+                    "position": 1,
+                    "populated": true,
+                    "color": "BLU/GRN",
+                    "guess": "CKP sensor (+) / CKPP",
+                    "confidence": "High",
+                    "role": "signal",
+                    "gauge": 22
+                  },
+                  {
+                    "position": 2,
+                    "populated": true,
+                    "color": "BLU/YEL",
+                    "guess": "CKP sensor ground (CKPG)",
+                    "confidence": "High",
+                    "role": "ground",
+                    "gauge": 18
+                  },
+                  {
+                    "position": 3,
+                    "populated": false
+                  }
+                ]
+              }
+            ],
+            "description": "Bulkhead/firewall passthrough carrying distributor CYP/TDC/CKP position-sensor circuits en route to ECU. Not the distributor connector itself (see VX-EH-06). PHYSICAL INTERFACE MATCH: same connector shell as CRV-EH-02 (NOT CRV-EH-03, despite matching number) \u2014 10-pin distributor/thermostat passthrough. Numbering diverged between harnesses; use CRV-EH-02 as the de-pin reference for this connector.",
+            "status": "Unconfirmed",
+            "condition": "Not noted",
+            "gender": "TBD",
+            "sameCircuitAs": [],
+            "shapeProvisional": false,
+            "membershipUncertain": false,
+            "hasOpenIssue": false,
+            "displayName": "Distributor plug",
+            "noRef": true
           }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "RED/WHT",
-          "guess": "ECT — resolved via SHK-EH-01 (was Unknown/Low)",
-          "confidence": "High",
-          "netId": "NET-ECT-VX",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Previously logged as unresolved. Confirmed ECT by direct comparison against SHK-EH-01, which shows this same color as ECT with High confidence.",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BLU",
-          "colorNote": "solid",
-          "guess": "Tach output signal",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         }
         ]
-       }
-      ],
-      "description": "Not a single-sensor plug — likely a junction/pass-through block carrying several separate circuits rather than one component. Physical shell CONFIRMED identical to CRV-EH-01 (same 14-pin rectangular-block) — VX uses only 8 of 14 available cavities, CR-V uses all 14.",
-      "status": "Unconfirmed",
-      "condition": "Not noted",
-      "gender": "TBD",
-      "sameCircuitAs": [],
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "Main firewall plug"
-     },
-     {
-      "id": "VX-EH-02",
-      "name": "Fuel injector power supply connector",
-      "location": "Next to VX-EH-01 bulkhead plug",
-      "shape": "inline-block",
-      "housingColor": "black",
-      "totalPositions": 4,
-      "populatedPositions": 4,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "LT BLU",
-          "guess": "INJ3 supply",
-          "confidence": "High",
-          "netId": "NET-INJ3",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "YEL",
-          "guess": "INJ4 supply",
-          "confidence": "High",
-          "netId": "NET-INJ4",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BRN",
-          "guess": "INJ1 supply",
-          "confidence": "High",
-          "netId": "NET-INJ1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "RED",
-          "guess": "INJ2 supply",
-          "confidence": "High",
-          "netId": "NET-INJ2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Triple-confirmed: matches VX-EH-19 (individual injector connectors) and SHK-EH-04 (near-ECU injector driver connector) exactly.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": "Matches documented OBD1 injector color code (Brown=INJ1, Yellow=INJ4, Red=INJ2, Blue=INJ3) almost exactly. PHYSICAL INTERFACE MATCH: same connector shell as CRV-EH-03 (NOT CRV-EH-02, despite matching number) — 4-pin injector connector. Numbering diverged between harnesses; use CRV-EH-03 as the de-pin reference for this connector.",
-      "status": "Unconfirmed",
-      "sameCircuitAs": [],
-      "condition": "Not noted",
-      "gender": "TBD",
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "Injector power plug"
-     },
-     {
-      "id": "VX-EH-03",
-      "name": "Bulkhead passthrough — distributor position sensor circuits",
-      "location": "Bulkhead/firewall (not at distributor itself)",
-      "shape": "rectangular-block",
-      "housingColor": "black",
-      "totalPositions": 10,
-      "populatedPositions": 9,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BRN/BLK",
-          "guess": "LG2 (Logic Ground 2) — resolved via SHK-EH-02",
-          "confidence": "High",
-          "netId": "NET-LG2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Previously unresolved. Confirmed LG2 by direct comparison against SHK-EH-02.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "WHT/PNK",
-          "guess": "Unresolved",
-          "confidence": "Low",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BLK/RED",
-          "guess": "LG1 (Logic Ground 1) — resolved via SHK-EH-02",
-          "confidence": "High",
-          "netId": "NET-LG1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorNote": "Previously unresolved. Confirmed LG1 by direct comparison against SHK-EH-02.",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "ORN",
-          "colorNote": "Suspected faded reading of ORN — confirmed via VX-EH-06 (same circuit, unfaded)",
-          "guess": "CYP sensor (+) / CYPP",
-          "confidence": "High",
-          "netId": "NET-CYP-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "WHT",
-          "guess": "CYP sensor ground (CYPG)",
-          "confidence": "High",
-          "netId": "NET-CYP-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "ORN/BLU",
-          "colorNote": "Suspected faded reading of ORN/BLU — confirmed via VX-EH-06 (same circuit, unfaded)",
-          "guess": "TDC sensor (+) / TDCP",
-          "confidence": "High",
-          "netId": "NET-TDC-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "WHT/BLU",
-          "guess": "TDC sensor ground (TDCG)",
-          "confidence": "High",
-          "netId": "NET-TDC-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 3,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BLU/GRN",
-          "guess": "CKP sensor (+) / CKPP",
-          "confidence": "High",
-          "netId": "NET-CKP-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "BLU/YEL",
-          "guess": "CKP sensor ground (CKPG)",
-          "confidence": "High",
-          "netId": "NET-CKP-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": false
-         }
-        ]
-       }
-      ],
-      "description": "Bulkhead/firewall passthrough carrying distributor CYP/TDC/CKP position-sensor circuits en route to ECU. Not the distributor connector itself (see VX-EH-06). PHYSICAL INTERFACE MATCH: same connector shell as CRV-EH-02 (NOT CRV-EH-03, despite matching number) — 10-pin distributor/thermostat passthrough. Numbering diverged between harnesses; use CRV-EH-02 as the de-pin reference for this connector.",
-      "status": "Unconfirmed",
-      "condition": "Not noted",
-      "gender": "TBD",
-      "sameCircuitAs": [],
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "Distributor plug"
-     }
-    ]
-   }
-  },
-  {
-   "key": "SHK",
-   "label": "Firewall harness",
-   "sub": "3 plugs. Wires connect to the engine harness and ECU.",
-   "repeatable": false,
-   "harness": {
-    "id": "SHK",
-    "title": "Firewall harness",
-    "tab": "Firewall",
-    "kind": "harness",
-    "connectors": [
-     {
-      "id": "SHK-EH-01",
-      "name": "Firewall/bulkhead crossing connector — bundles circuits from ECU-A, B, and D blocks",
-      "location": "Taped with 3 other plugs, exact harness membership uncertain — user flagged for cross-check",
-      "shape": "round-3-4-4-3",
-      "shapeNote": "ECU/component-side shapes not yet canonicalized",
-      "housingColor": "black",
-      "totalPositions": 14,
-      "populatedPositions": 14,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "ORN/WHT",
-          "guess": "VTS",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "ORN/BLK",
-          "guess": "PO2SHTC",
-          "confidence": "High",
-          "netId": "NET-PO2SHTC",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "WHT/YEL",
-          "guess": "ALTC",
-          "confidence": "High",
-          "colorNote": "CONFLICT: VX-EH-18 shows this same color as ELD, not ALTC. Same ambiguity independently observed on the CR-V harness (CRV-EH-01 vs CRV-EH-18). Needs continuity test.",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "ORN/BLU",
-          "guess": "TDC P",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "YEL/GRN",
-          "guess": "FANC",
-          "confidence": "High",
-          "colorNote": "CONFLICT: VX-EH-01/06/20 all show this same color as ICM (High confidence, independently supported by the confirmed distributor connector VX-EH-06). Not resolved — needs continuity test.",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "PNK/WHT",
-          "guess": "Unresolved — no match found",
-          "confidence": "Low",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "GRN/BLU",
-          "guess": "LAF IP-/VS- (VX-specific)",
-          "confidence": "Med-High",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 3,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "RED/BLK",
-          "guess": "ACC",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "YEL/WHT",
-          "guess": "VCC2",
-          "confidence": "High",
-          "netId": "NET-TPS-VCC",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "GRN/WHT",
-          "guess": "BKSW, SG1, or SG2 — ambiguous",
-          "confidence": "Low-Med",
-          "colorNote": "VX-EH-01 shows this same color as \"shared sensor ground bus\" (High confidence) — corroborates SG1/SG2 (a sensor ground) over BKSW (brake switch signal), though not specific enough to pick SG1 vs SG2.",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "PNK/BLK",
-          "guess": "CLSW",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 4,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "PNK",
-          "guess": "ALT F",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "RED/WHT",
-          "guess": "ECT",
-          "confidence": "High",
-          "netId": "NET-ECT-VX",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "RED/YEL",
-          "guess": "IAT",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": "11 of 14 wires match known circuits spanning all 3 ECU blocks. Exactly the expected signature for a genuine firewall bulkhead crossing connector — bundling circuits from multiple ECU blocks rather than one. AUDIT NOTE: exhaustively tested all row-order and per-row-flip combinations against both documented 14-pin references (passenger C223/C103 and driver C304/C126) — best fit was 4/14, no meaningful improvement over the unordered 3/14. This connector's individual wire-function identifications remain based on general aggregate matching, not verified position order.",
-      "status": "Confirmed at function-level only (individual colors matched against general ECU-A/B/D lists) — POSITION-LEVEL match against the specific named 14-pin reference NOT achieved despite exhaustive orientation testing (best fit only 4/14). Likely genuine vehicle-specific wire color variance, not a transcription error. Needs physical re-read to resolve, not further geometric guessing.",
-      "condition": "Not noted",
-      "buildAction": "Strong candidate for actual ECU-EH-to-VX-EH crossing point; verify against VX-EH-01/03 for wire continuity once accessible",
-      "partNumber": "",
-      "gender": "",
-      "shapeProvisional": true,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "ECU bundle plug"
-     },
-     {
-      "id": "SHK-EH-02",
-      "name": "Likely same family as VX-EH-03/CRV-EH-02 (thermostat housing / CYP-TDC passthrough) — variant, not exact match",
-      "location": "Taped with other plugs, harness membership uncertain",
-      "shape": "round-3-4-3",
-      "shapeNote": "ECU/component-side shapes not yet canonicalized",
-      "housingColor": "black",
-      "totalPositions": 10,
-      "populatedPositions": 8,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BLK/RED",
-          "guess": "LG1",
-          "confidence": "High",
-          "netId": "NET-LG1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": false
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BRN/BLK",
-          "guess": "LG2",
-          "confidence": "High",
-          "netId": "NET-LG2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "WHT/BLU",
-          "guess": "TDC M",
-          "confidence": "High",
-          "netId": "NET-TDC-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "ORN/BLK",
-          "guess": "TDC P (documented as ORN/BLU — plausible misread)",
-          "confidence": "Med",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "WHT",
-          "guess": "CYP M",
-          "confidence": "High",
-          "netId": "NET-CYP-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "ORN",
-          "guess": "CYP P",
-          "confidence": "High",
-          "netId": "NET-CYP-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 3,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BRN/BLK",
-          "guess": "LG2 (repeat)",
-          "confidence": "High",
-          "netId": "NET-LG2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": false
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BLK/RED",
-          "guess": "LG1 (repeat)",
-          "confidence": "High",
-          "netId": "NET-LG1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": null,
-      "status": "Confirmed (partial, 3-4 of 8) — Med-High; ground pair pattern Unconfirmed",
-      "condition": "Not noted",
-      "buildAction": "Needs continuity/physical confirmation of ground pair role before finalizing",
-      "partNumber": "",
-      "gender": "",
-      "shapeProvisional": true,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "Distributor sensor plug"
-     },
-     {
-      "id": "SHK-EH-04",
-      "name": "Injector driver connector",
-      "location": "Taped with other 3 plugs",
-      "shape": "square-4pin",
-      "housingColor": "black",
-      "totalPositions": 4,
-      "populatedPositions": 4,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 2,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BRN",
-          "guess": "INJ1",
-          "confidence": "High",
-          "netId": "NET-INJ1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "RED",
-          "guess": "INJ2",
-          "confidence": "High",
-          "netId": "NET-INJ2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 2,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "LT BLU",
-          "guess": "INJ3",
-          "confidence": "High",
-          "netId": "NET-INJ3",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "YEL",
-          "guess": "INJ4",
-          "confidence": "High",
-          "netId": "NET-INJ4",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": "Clean match to the same injector pattern confirmed multiple times elsewhere. Matches ECU-A pins 1,3,5,2 directly. No anomaly — exactly as expected.",
-      "status": "Confirmed",
-      "condition": "Not noted",
-      "buildAction": "Cross-check against ECU-A pins 1/2/3/5",
-      "sameCircuitAs": [
-       "VX-EH-02"
-      ],
-      "partNumber": "",
-      "gender": "",
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "Injector driver plug"
-     }
-    ]
-   }
-  },
-  {
-   "key": "ECU",
-   "label": "ECU",
-   "sub": "3 plugs",
-   "repeatable": false,
-   "harness": {
-    "id": "ECU",
-    "title": "ECU",
-    "tab": "ECU",
-    "kind": "harness",
-    "connectors": [
-     {
-      "id": "ECU-EH-01",
-      "name": "ECU Connector A (26-pin)",
-      "location": "Original Civic harness, plugs into ECU, through firewall",
-      "shape": "rectangular-block",
-      "shapeNote": "ECU/component-side shapes not yet canonicalized — matches p75-ecu-model.json ECU Connector A shape",
-      "housingColor": "black",
-      "totalPositions": 26,
-      "populatedPositions": 19,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 13,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BRN",
-          "guess": "INJ1",
-          "confidence": "High",
-          "netId": "NET-INJ1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "RED",
-          "guess": "INJ2",
-          "confidence": "High",
-          "netId": "NET-INJ2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "LT BLU",
-          "guess": "INJ3",
-          "confidence": "High",
-          "netId": "NET-INJ3",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "GRN/YEL",
-          "guess": "FLR",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 5,
-          "populated": true,
-          "color": "GRN/WHT",
-          "guess": "IACV",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 6,
-          "populated": true,
-          "color": "PNK/GRN",
-          "guess": "SIL (Upshift Light) — see anomaly note",
-          "confidence": "Med",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 7,
-          "populated": true,
-          "color": "GRN/ORN",
-          "guess": "MIL",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 8,
-          "populated": true,
-          "color": "BLK/RED",
-          "guess": "ACC",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 9,
-          "populated": false,
-          "guess": "IAB SOL (GSR-only pin) — plausibly unpopulated on this non-GSR application"
-         },
-         {
-          "position": 10,
-          "populated": false,
-          "guess": "ICS (H22A-only pin) — plausibly unpopulated on this non-H22A application"
-         },
-         {
-          "position": 11,
-          "populated": true,
-          "color": "RED/GRN",
-          "guess": "ICM",
-          "confidence": "High",
-          "netId": "NET-ICM",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 12,
-          "populated": true,
-          "color": "BLK",
-          "guess": "PG1",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 13,
-          "populated": true,
-          "color": "YEL/BLK",
-          "guess": "IGP2",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 13,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "YEL",
-          "guess": "INJ4",
-          "confidence": "High",
-          "netId": "NET-INJ4",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "ORN/WHT",
-          "guess": "VTS",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "ORN",
-          "guess": "PO2SHTC (partial match)",
-          "confidence": "Med-High",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": false
-         },
-         {
-          "position": 5,
-          "populated": false
-         },
-         {
-          "position": 6,
-          "populated": true,
-          "color": "YEL/GRN",
-          "guess": "FANC",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 7,
-          "populated": false
-         },
-         {
-          "position": 8,
-          "populated": true,
-          "color": "WHT/YEL",
-          "guess": "ALTC",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 9,
-          "populated": false
-         },
-         {
-          "position": 10,
-          "populated": true,
-          "color": "RED",
-          "guess": "PCS",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 11,
-          "populated": false,
-          "guess": "ICM redundant (Civic-only duplicate) — plausibly unpopulated"
-         },
-         {
-          "position": 12,
-          "populated": true,
-          "color": "BLK",
-          "guess": "PG2",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 13,
-          "populated": true,
-          "color": "BLK/RED",
-          "guess": "LG1",
-          "confidence": "High",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": "Near-exact match (24-25 of 26 pins) to documented OBD1 ECU Connector A pinout.",
-      "anomalies": [
-       "Pin 11 (row1 pos6): reads PNK/GRN, generic reference expects ORN/BLU (EGR Control Solenoid). PNK/GRN matches SIL (Upshift Light) elsewhere — possible genuine VX-specific pinout substitution rather than an error. NOT YET RESOLVED — do not silently correct."
-      ],
-      "status": "Confirmed",
-      "condition": "Not noted",
-      "buildAction": "Anchor connector for full P75 pinout cross-reference; pin11 anomaly needs resolution (EGR vs SIL/upshift light)",
-      "partNumber": "",
-      "gender": "",
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "ECU plug A"
-     },
-     {
-      "id": "ECU-EH-02",
-      "name": "ECU Connector B (16-pin)",
-      "location": "Same harness as ECU-EH-01",
-      "shape": "rectangular-block",
-      "shapeNote": "ECU/component-side shapes not yet canonicalized — matches p75-ecu-model.json ECU Connector B shape",
-      "housingColor": "black",
-      "totalPositions": 16,
-      "populatedPositions": 12,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 8,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "YEL/BLK",
-          "guess": "IGP1 (confirmed, true pin 1)",
-          "confidence": "High",
-          "netId": "NET-IGP1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": false
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BLU/RED",
-          "guess": "ACS (confirmed, true pin 5)",
-          "confidence": "High",
-          "netId": "NET-ACS",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "PNK/BLK",
-          "guess": "CLSW (confirmed, true pin 7)",
-          "confidence": "High",
-          "netId": "NET-CLSW",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 5,
-          "populated": true,
-          "color": "BLU/WHT",
-          "guess": "STS (confirmed, true pin 9)",
-          "confidence": "High",
-          "netId": "NET-STS",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 6,
-          "populated": true,
-          "color": "ORN",
-          "guess": "CYP P (confirmed, true pin 11)",
-          "confidence": "High",
-          "netId": "NET-CYP-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 7,
-          "populated": true,
-          "color": "ORN/BLU",
-          "guess": "TDC P (confirmed, true pin 13)",
-          "confidence": "High",
-          "netId": "NET-TDC-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 8,
-          "populated": true,
-          "color": "BLU/GRN",
-          "guess": "CKP P (confirmed, true pin 15)",
-          "confidence": "High",
-          "netId": "NET-CKP-P",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 8,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BRN/BLK",
-          "guess": "LG2 (confirmed, true pin 2)",
-          "confidence": "High",
-          "netId": "NET-LG2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": false
-         },
-         {
-          "position": 3,
-          "populated": false
-         },
-         {
-          "position": 4,
-          "populated": false
-         },
-         {
-          "position": 5,
-          "populated": true,
-          "color": "YEL/BLU",
-          "guess": "VSS (confirmed, true pin 10)",
-          "confidence": "High",
-          "netId": "NET-VSS",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 6,
-          "populated": true,
-          "color": "WHT",
-          "guess": "CYP M (confirmed, true pin 12)",
-          "confidence": "High",
-          "netId": "NET-CYP-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 7,
-          "populated": true,
-          "color": "WHT/BLU",
-          "guess": "TDC M (confirmed, true pin 14)",
-          "confidence": "High",
-          "netId": "NET-TDC-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 8,
-          "populated": true,
-          "color": "BLU/YEL",
-          "guess": "CKP M (confirmed, true pin 16)",
-          "confidence": "High",
-          "netId": "NET-CKP-M",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": "Near-perfect match (12 of 13 expected pins) to documented ECU Connector B, matched by wire content rather than strict slot position. Only pin 8 (PSP SW, Power Steering Pressure Switch) unpopulated — plausible if this build lacks power steering wired through this circuit. Directly confirms VX-EH-06 distributor circuits by function. ORIENTATION CORRECTED: rows were swapped (top/bottom, not left/right) relative to the reference numbering — after correction, matches 12/12 true-pin positions against the documented ECU-B pinout.",
-      "status": "Confirmed (12 of 12 true-pin positions) — High",
-      "condition": "Not noted",
-      "buildAction": "Anchor connector for P75 pinout cross-reference; matches VX-EH-06 distributor circuits directly by function",
-      "sameCircuitAs": [],
-      "partNumber": "",
-      "gender": "",
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "ECU plug B"
-     },
-     {
-      "id": "ECU-EH-03",
-      "name": "ECU Connector D (22-pin)",
-      "location": "Same harness as ECU-EH-01/02",
-      "shape": "rectangular-block",
-      "shapeNote": "ECU/component-side shapes not yet canonicalized — matches p75-ecu-model.json ECU Connector D shape",
-      "housingColor": "black",
-      "totalPositions": 22,
-      "populatedPositions": 21,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 11,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "WHT/BLU",
-          "guess": "VBU (confirmed, true pin 1)",
-          "confidence": "High",
-          "netId": "NET-VBU",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "BLU/YEL",
-          "guess": "Unresolved — no clean D-block match found",
-          "confidence": "Low",
-          "colorNote": "After row-order correction: true pin 3 expected 'RED/BLU' (KS), physical color read is 'BLU/YEL' — mismatch, needs re-check.",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": false,
-          "guess": "Matches unused pin5 slot in reference layout"
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "LT BLU",
-          "guess": "DLC (confirmed, true pin 7)",
-          "confidence": "High",
-          "netId": "NET-DLC",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 5,
-          "populated": true,
-          "color": "PNK",
-          "guess": "ALT F (confirmed, true pin 9)",
-          "confidence": "High",
-          "netId": "NET-ALT-F",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 6,
-          "populated": true,
-          "color": "PNK/BLK",
-          "guess": "Unresolved — no clean D-block match found",
-          "confidence": "Low",
-          "colorNote": "After row-order correction: true pin 11 expected 'LT GRN to RED/BLU (Civic), RED/BLK (Integra)' (TPS), physical color read is 'PNK/BLK' — mismatch, needs re-check.",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 7,
-          "populated": true,
-          "color": "RED/WHT",
-          "guess": "ECT (confirmed, true pin 13)",
-          "confidence": "High",
-          "netId": "NET-ECT",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 8,
-          "populated": true,
-          "color": "RED/YEL",
-          "guess": "IAT (confirmed, true pin 15)",
-          "confidence": "High",
-          "netId": "NET-IAT",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 9,
-          "populated": true,
-          "color": "PNK/WHT",
-          "guess": "Unresolved — no clean D-block match found",
-          "confidence": "Low",
-          "colorNote": "After row-order correction: true pin 17 expected 'WHT (Civic) or WHT/YEL (Integra)' (MAP), physical color read is 'PNK/WHT' — mismatch, needs re-check.",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 10,
-          "populated": true,
-          "color": "YEL/GRN",
-          "guess": "VCC1 (confirmed, true pin 19)",
-          "confidence": "High",
-          "netId": "NET-VCC1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 11,
-          "populated": true,
-          "color": "GRN/BLU",
-          "guess": "SG1 (confirmed, true pin 21)",
-          "confidence": "High",
-          "netId": "NET-SG1",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 11,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "GRN/WHT",
-          "guess": "BKSW (confirmed, true pin 2)",
-          "confidence": "High",
-          "netId": "NET-BKSW",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "BRN",
-          "guess": "SCS (confirmed, true pin 4)",
-          "confidence": "High",
-          "netId": "NET-SCS",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "ORN/WHT",
-          "guess": "Unresolved — no clean D-block match found",
-          "confidence": "Low",
-          "colorNote": "After row-order correction: true pin 6 expected 'ORN/BLU (Civic) to BLU/BLK' (VTP SW), physical color read is 'ORN/WHT' — mismatch, needs re-check.",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "WHT/BLU",
-          "guess": "LAF VS+ (confirmed, true pin 8)",
-          "confidence": "High",
-          "netId": "NET-LAF-VS+",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 5,
-          "populated": true,
-          "color": "GRN/RED",
-          "guess": "ELD (confirmed, true pin 10)",
-          "confidence": "High",
-          "netId": "NET-ELD",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 1,
-           "isOrphan": true,
-           "signal": "Low"
-          }
-         },
-         {
-          "position": 6,
-          "populated": true,
-          "color": "WHT",
-          "guess": "EGRL (confirmed, true pin 12)",
-          "confidence": "High",
-          "netId": "NET-EGRL",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 7,
-          "populated": true,
-          "color": "ORN/BLU",
-          "guess": "LAF IP+ (VX-specific) or VTP SW — ambiguous",
-          "confidence": "Low-Med",
-          "colorNote": "After row-order correction: true pin 14 expected 'WHT (Civic), WHT/RED (Integra)' (PHO2S), physical color read is 'ORN/BLU' — mismatch, needs re-check.",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 8,
-          "populated": true,
-          "color": "BLU/GRN",
-          "guess": "LAF IP-, VS- (confirmed, true pin 16)",
-          "confidence": "High",
-          "netId": "NET-LAF-IP-,-VS-",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 3,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 9,
-          "populated": true,
-          "color": "PNK/GRN",
-          "guess": "SIL (confirmed, true pin 18)",
-          "confidence": "High",
-          "netId": "NET-SIL",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 2,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 10,
-          "populated": true,
-          "color": "YEL",
-          "guess": "VCC2 (confirmed, true pin 20)",
-          "confidence": "High",
-          "netId": "NET-VCC2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 4,
-           "isOrphan": false,
-           "signal": null
-          }
-         },
-         {
-          "position": 11,
-          "populated": true,
-          "color": "GRN/WHT",
-          "guess": "SG2 (confirmed, true pin 22)",
-          "confidence": "High",
-          "netId": "NET-SG2",
-          "netType": "vx-ecu-vehicle-harness",
-          "colorCrossRef": {
-           "matchCount": 5,
-           "isOrphan": false,
-           "signal": null
-          }
-         }
-        ]
-       }
-      ],
-      "description": "Pin count confirms this is ECU Connector D. 8 of 21 wire-pairs match strongly. Remaining ambiguity likely explained by this being a VX-specific P75-target ECU harness — the VX uses a unique 5-wire LAF wideband O2 system, and ECU-D pins 3/8/14/16 are documented as having VX-specific alternate colors not fully captured by the generic reference table. Needs dedicated LAF-circuit research. ORIENTATION CORRECTED: rows were swapped (top/bottom, not left/right) relative to the reference numbering — after correction, matches 16/21 true-pin positions against the documented ECU-D pinout.",
-      "status": "Confirmed (16 of 21 true-pin positions) — High",
-      "condition": "Not noted",
-      "buildAction": "Needs LAF-specific pinout research to resolve remaining ambiguous pins",
-      "partNumber": "",
-      "gender": "",
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "ECU plug D"
-     }
-    ]
-   }
-  },
-  {
-   "key": "COMP",
-   "label": "Component",
-   "sub": "One plug you link to a plug on another harness",
-   "repeatable": true,
-   "harness": {
-    "id": "C",
-    "title": "Distributor",
-    "tab": "Distributor",
-    "kind": "component",
-    "connectors": [
-     {
-      "id": "CMP",
-      "name": "Bulkhead passthrough — distributor position sensor circuits",
-      "location": "",
-      "shape": "rectangular-block",
-      "housingColor": "black",
-      "totalPositions": 10,
-      "populatedPositions": 9,
-      "rows": [
-       {
-        "row": 1,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BRN/BLK",
-          "guess": "LG2 (Logic Ground 2) — resolved via SHK-EH-02",
-          "confidence": "High",
-          "colorNote": "Previously unresolved. Confirmed LG2 by direct comparison against SHK-EH-02."
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "WHT/PNK",
-          "guess": "Unresolved",
-          "confidence": "Low"
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "BLK/RED",
-          "guess": "LG1 (Logic Ground 1) — resolved via SHK-EH-02",
-          "confidence": "High",
-          "colorNote": "Previously unresolved. Confirmed LG1 by direct comparison against SHK-EH-02."
-         }
-        ]
-       },
-       {
-        "row": 2,
-        "positions": 4,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "ORN",
-          "colorNote": "Suspected faded reading of ORN — confirmed via VX-EH-06 (same circuit, unfaded)",
-          "guess": "CYP sensor (+) / CYPP",
-          "confidence": "High"
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "WHT",
-          "guess": "CYP sensor ground (CYPG)",
-          "confidence": "High"
-         },
-         {
-          "position": 3,
-          "populated": true,
-          "color": "ORN/BLU",
-          "colorNote": "Suspected faded reading of ORN/BLU — confirmed via VX-EH-06 (same circuit, unfaded)",
-          "guess": "TDC sensor (+) / TDCP",
-          "confidence": "High"
-         },
-         {
-          "position": 4,
-          "populated": true,
-          "color": "WHT/BLU",
-          "guess": "TDC sensor ground (TDCG)",
-          "confidence": "High"
-         }
-        ]
-       },
-       {
-        "row": 3,
-        "positions": 3,
-        "pins": [
-         {
-          "position": 1,
-          "populated": true,
-          "color": "BLU/GRN",
-          "guess": "CKP sensor (+) / CKPP",
-          "confidence": "High"
-         },
-         {
-          "position": 2,
-          "populated": true,
-          "color": "BLU/YEL",
-          "guess": "CKP sensor ground (CKPG)",
-          "confidence": "High"
-         },
-         {
-          "position": 3,
-          "populated": false
-         }
-        ]
-       }
-      ],
-      "description": "Bulkhead/firewall passthrough carrying distributor CYP/TDC/CKP position-sensor circuits en route to ECU. Not the distributor connector itself (see VX-EH-06). PHYSICAL INTERFACE MATCH: same connector shell as CRV-EH-02 (NOT CRV-EH-03, despite matching number) — 10-pin distributor/thermostat passthrough. Numbering diverged between harnesses; use CRV-EH-02 as the de-pin reference for this connector.",
-      "status": "Unconfirmed",
-      "condition": "Not noted",
-      "gender": "TBD",
-      "sameCircuitAs": [],
-      "shapeProvisional": false,
-      "membershipUncertain": false,
-      "hasOpenIssue": false,
-      "displayName": "Distributor plug",
-      "noRef": true
-     }
-    ]
-   }
-  }
- ]
+      }
+    }
+  ]
 }

@@ -146,7 +146,7 @@ struct PlugSheet: View {
                     Text(p.guess ?? "Not labeled")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(.white)
-                    Text(WireColor.label(p.color) + (p.confidence.map { " · \($0)" } ?? ""))
+                    Text(WireColor.label(p.color) + (p.gauge.map { " · \($0) AWG" } ?? "") + (p.confidence.map { " · \($0)" } ?? ""))
                         .font(.system(size: 11))
                         .foregroundStyle(Palette.nameText)
                 }
@@ -155,6 +155,9 @@ struct PlugSheet: View {
                     Text("goes to pin \(n)")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(Palette.amber)
+                }
+                if let role = WireRole(rawValue: p.role ?? "") {
+                    RoleBadge(role: role, size: 20)
                 }
             } else {
                 Text("Empty")

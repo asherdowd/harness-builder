@@ -78,6 +78,7 @@ private struct PlugItemView: View {
     let item: PlacedPlug
     let shiftX: CGFloat
     let selected: Bool
+    let showRoles: Bool
     let onTap: () -> Void
 
     var body: some View {
@@ -94,7 +95,7 @@ private struct PlugItemView: View {
                     .allowsHitTesting(false)
             }
 
-            PlugArt(model: item.art)
+            PlugArt(model: item.art, showRoles: showRoles)
                 .position(x: cx, y: item.y)
 
             Text(item.connector.title)
@@ -133,6 +134,7 @@ struct HarnessCanvasView: View {
     @State private var dragBase: CGSize = .zero
     @State private var pinch: PinchBase?
     @State private var viewSize: CGSize = .zero
+    @State private var showRoles = false
 
     var body: some View {
         GeometryReader { geo in
@@ -169,7 +171,7 @@ struct HarnessCanvasView: View {
             TrunkLayer(layout: layout).allowsHitTesting(false)
             LeadsLayer(layout: layout).allowsHitTesting(false)
             ForEach(layout.items) { item in
-                PlugItemView(item: item, shiftX: layout.shiftX, selected: item.id == selectedID) {
+                PlugItemView(item: item, shiftX: layout.shiftX, selected: item.id == selectedID, showRoles: showRoles) {
                     onSelect(item.id)
                 }
             }
@@ -177,15 +179,27 @@ struct HarnessCanvasView: View {
     }
 
     private func fitButton(_ layout: HarnessLayout, _ size: CGSize) -> some View {
-        Button {
-            fit(layout, in: size, animated: true)
-        } label: {
-            Text("Fit all")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Palette.chipText)
-                .padding(.horizontal, 13)
-                .frame(height: 32)
-                .background(Capsule().fill(Color(hex: 0x282c34, opacity: 0.9)))
+        HStack(spacing: 8) {
+            Button {
+                showRoles.toggle()
+            } label: {
+                Text("Roles")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(showRoles ? Palette.amberText : Palette.chipText)
+                    .padding(.horizontal, 13)
+                    .frame(height: 32)
+                    .background(Capsule().fill(showRoles ? Palette.amber : Color(hex: 0x282c34, opacity: 0.9)))
+            }
+            Button {
+                fit(layout, in: size, animated: true)
+            } label: {
+                Text("Fit all")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Palette.chipText)
+                    .padding(.horizontal, 13)
+                    .frame(height: 32)
+                    .background(Capsule().fill(Color(hex: 0x282c34, opacity: 0.9)))
+            }
         }
         .padding(.top, 8)
         .padding(.trailing, 12)
