@@ -55,7 +55,7 @@
     {"id": "E1", "title": "New tab", "steps": "Tap the dashed New tab.", "expected": "The Add a harness sheet opens."},
     {"id": "E2", "title": "Create a blank harness", "steps": "Tap Create a harness.", "expected": "A new tab and an empty canvas appear. Adding a plug works."},
     {"id": "E3", "title": "Start from a template", "steps": "Add each of Engine, Firewall and ECU from templates.", "expected": "Each creates an editable copy with plugs. You can edit plugs, pins and names."},
-    {"id": "E4", "title": "Repeat a template", "steps": "Add the Component template twice. Then add Engine a second time.", "expected": "Component can be added repeatedly. Record whether a second Engine is allowed.", "tag": "unv"},
+    {"id": "E4", "title": "Repeat a template", "steps": "Add the Component template twice. Then open Add a harness again and look at Engine, Firewall and ECU once each has been added.", "expected": "Component can be added repeatedly. Engine, Firewall and ECU can only be added once: they show Already added and are grayed out."},
     {"id": "E5", "title": "Rename a harness", "steps": "Tap the three-dot menu, rename, save.", "expected": "The tab title updates and survives a relaunch."},
     {"id": "E6", "title": "Delete a harness warning", "steps": "Tap the three-dot menu and choose delete on a harness with plugs, wires and links. Cancel. Then delete and confirm.", "expected": "The alert lists how many plugs, wires and links would be lost. Cancel keeps everything. Confirming removes the tab."},
     {"id": "E7", "title": "Delete the only harness", "steps": "Delete every harness.", "expected": "The app shows a sensible first-open state (no crash).", "tag": "unv"},

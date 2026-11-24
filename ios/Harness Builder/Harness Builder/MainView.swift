@@ -211,35 +211,39 @@ struct MainView: View {
     }
 
     private var tabRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(store.harnesses) { h in
-                    let on = h.id == store.state.activeID
-                    Button {
-                        selectedID = nil
-                        store.setActive(h.id)
-                    } label: {
-                        Text((h.kind == .component ? "◇ " : "") + h.tabLabel)
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(on ? Palette.amberText : Palette.chipText)
-                            .padding(.horizontal, 11)
-                            .padding(.vertical, 6)
-                            .background(Capsule().fill(on ? Palette.amber : Palette.chipFill))
+        // "＋ New" stays pinned at the right edge; only the harness tabs scroll.
+        HStack(spacing: 8) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(store.harnesses) { h in
+                        let on = h.id == store.state.activeID
+                        Button {
+                            selectedID = nil
+                            store.setActive(h.id)
+                        } label: {
+                            Text((h.kind == .component ? "◇ " : "") + h.tabLabel)
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(on ? Palette.amberText : Palette.chipText)
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 6)
+                                .background(Capsule().fill(on ? Palette.amber : Palette.chipFill))
+                        }
                     }
                 }
-                Button {
-                    selectedID = nil
-                    panel = .addHarness
-                } label: {
-                    Text("＋ New")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Palette.amber)
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 6)
-                        .overlay(Capsule().stroke(Palette.amber.opacity(0.7), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
-                }
+                .padding(.leading, 14)
             }
-            .padding(.horizontal, 14)
+            Button {
+                selectedID = nil
+                panel = .addHarness
+            } label: {
+                Text("＋ New")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Palette.amber)
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 6)
+                    .overlay(Capsule().stroke(Palette.amber.opacity(0.7), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+            }
+            .padding(.trailing, 14)
         }
         .padding(.bottom, 8)
     }
