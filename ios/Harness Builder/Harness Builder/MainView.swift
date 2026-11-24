@@ -74,7 +74,9 @@ struct MainView: View {
             Divider().overlay(Palette.divider)
             ZStack(alignment: .bottom) {
                 HarnessCanvasView(harness: store.active, selectedID: selectedID,
-                                  onSelect: { selectedID = $0 }, showRoles: showRoles, fitTick: fitTick)
+                                  onSelect: { selectedID = $0 }, showRoles: showRoles,
+                                  onMove: { id, delta in store.movePlug(id: id, by: delta) },
+                                  fitTick: fitTick)
                 if store.isBlank {
                     firstOpenCard
                 }

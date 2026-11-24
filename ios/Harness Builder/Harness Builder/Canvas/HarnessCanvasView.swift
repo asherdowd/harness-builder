@@ -79,7 +79,26 @@ private struct PlugItemView: View {
     let shiftX: CGFloat
     let selected: Bool
     let showRoles: Bool
+    let canUp: Bool
+    let canDown: Bool
+    /// Scale that keeps the move buttons a steady size on screen at any zoom.
+    let counterScale: CGFloat
+    let onMove: (Int) -> Void
     let onTap: () -> Void
+
+    private func moveButton(_ symbol: String, enabled: Bool, delta: Int) -> some View {
+        Button {
+            onMove(delta)
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(enabled ? Palette.amberText : Palette.nameText)
+                .frame(width: 34, height: 34)
+                .background(Circle().fill(enabled ? Palette.amber : Palette.chipFill))
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+    }
 
     var body: some View {
         let cx = shiftX + item.x
@@ -118,6 +137,15 @@ private struct PlugItemView: View {
                 .contentShape(Rectangle())
                 .onTapGesture(perform: onTap)
                 .position(x: cx, y: item.y + 14)
+
+            if selected {
+                VStack(spacing: 8) {
+                    moveButton("chevron.up", enabled: canUp, delta: -1)
+                    moveButton("chevron.down", enabled: canDown, delta: 1)
+                }
+                .scaleEffect(counterScale)
+                .position(x: cx + item.side * (w / 2 + 9 + 17 * counterScale + 8), y: item.y + 20)
+            }
         }
     }
 }
@@ -130,6 +158,8 @@ struct HarnessCanvasView: View {
     let onSelect: (String?) -> Void
     /// Show the wire-type symbols on pins.
     var showRoles: Bool = false
+    /// Moves a plug up (-1) or down (+1) along the trunk.
+    var onMove: (String, Int) -> Void = { _, _ in }
     /// Changes whenever the parent wants the view fitted to the whole harness.
     var fitTick: Int = 0
 
@@ -202,10 +232,14 @@ struct HarnessCanvasView: View {
         ZStack(alignment: .topLeading) {
             TrunkLayer(layout: layout).allowsHitTesting(false)
             LeadsLayer(layout: layout).allowsHitTesting(false)
-            ForEach(layout.items) { item in
-                PlugItemView(item: item, shiftX: layout.shiftX, selected: item.id == selectedID, showRoles: showRoles) {
-                    onSelect(item.id)
-                }
+            ForEach(Array(layout.items.enumerated()), id: \.element.id) { pair in
+                PlugItemView(item: pair.element, shiftX: layout.shiftX, selected: pair.element.id == selectedID,
+                             showRoles: showRoles,
+                             canUp: pair.offset > 0,
+                             canDown: pair.offset < layout.items.count - 1,
+                             counterScale: min(max(1 / max(scale, 0.01), 0.4), 2.5),
+                             onMove: { delta in onMove(pair.element.id, delta) },
+                             onTap: { onSelect(pair.element.id) })
             }
         }
     }
@@ -247,7 +281,7 @@ struct HarnessCanvasView: View {
 
     private func fit(_ layout: HarnessLayout, in size: CGSize, animated: Bool) {
         guard size.width > 0 else { return }
-        let bw = layout.maxX - layout.minX + 56
+        let bw = layout.maxX - layout.minX + 56 + 96
         let k = min(max(min(1, size.width / bw), 0.15), 1)
         let cx = (layout.minX + layout.maxX) / 2 + layout.shiftX
         let newOffset = CGSize(width: size.width / 2 - cx * k, height: 14)

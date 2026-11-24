@@ -3,7 +3,7 @@
 //  Harness Builder
 //
 //  The bottom sheet for one plug: numbered pinout, wire list, component link
-//  cards, and Edit / move / Remove.
+//  cards, and Edit / Remove. (Moving a plug along the trunk is on the canvas.)
 //  Tapping a wire selects it; Edit then opens the wizard on that pin.
 //
 
@@ -34,8 +34,6 @@ struct PlugSheet: View {
 
     private func content(_ ref: PlugRef) -> some View {
         let c = ref.connector
-        let siblings = ref.harness.connectors
-        let index = siblings.firstIndex { $0.id == c.id } ?? 0
         let target = store.linkTarget(of: c)
         let linkedFrom = store.linkedComponents(to: c.id)
 
@@ -57,7 +55,7 @@ struct PlugSheet: View {
 
                 wireList(c, target: target?.connector)
 
-                actions(c, index: index, count: siblings.count)
+                actions(c)
             }
             .padding(16)
         }
@@ -201,24 +199,12 @@ struct PlugSheet: View {
         .padding(.vertical, 9)
     }
 
-    private func actions(_ c: Connector, index: Int, count: Int) -> some View {
+    private func actions(_ c: Connector) -> some View {
         HStack(spacing: 8) {
             Button("Edit") {
                 onEdit(c, selectedPin)
             }
             Spacer()
-            Button {
-                store.movePlug(id: c.id, by: -1)
-            } label: {
-                Image(systemName: "arrow.up")
-            }
-            .disabled(index == 0)
-            Button {
-                store.movePlug(id: c.id, by: 1)
-            } label: {
-                Image(systemName: "arrow.down")
-            }
-            .disabled(index >= count - 1)
             Button("Remove", role: .destructive) {
                 confirmRemove = true
             }
