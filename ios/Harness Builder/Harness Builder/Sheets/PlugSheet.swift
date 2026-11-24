@@ -23,12 +23,23 @@ struct PlugSheet: View {
 
     @State private var confirmRemove = false
     @State private var selectedPin: Int?
+    @State private var notesOpen = false
+    @State private var editingNote = false
+    @State private var noteText = ""
 
     var body: some View {
-        if let ref = store.plug(id: plugID) {
-            content(ref)
-        } else {
-            Color.clear
+        Group {
+            if let ref = store.plug(id: plugID) {
+                content(ref)
+            } else {
+                Color.clear
+            }
+        }
+        // Another plug was opened in this same sheet: start fresh.
+        .onChange(of: plugID) { _, _ in
+            selectedPin = nil
+            notesOpen = false
+            editingNote = false
         }
     }
 
@@ -40,6 +51,8 @@ struct PlugSheet: View {
         return ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 header(c)
+
+                notesSection(c)
 
                 if ref.harness.kind == .component {
                     linkSection(c, target: target)
@@ -89,12 +102,6 @@ struct PlugSheet: View {
             Text("\(c.pinCount) pins")
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.nameText)
-            if let d = c.description, !d.isEmpty {
-                Text(d)
-                    .font(.system(size: 13))
-                    .foregroundStyle(Palette.chipText)
-                    .padding(.top, 2)
-            }
         }
     }
 
@@ -117,6 +124,81 @@ struct PlugSheet: View {
             .buttonStyle(.bordered)
             .tint(Palette.amber)
         }
+    }
+
+    /// Notes: collapsed by default; always there so a first note can be added.
+    private func notesSection(_ c: Connector) -> some View {
+        let text = c.description ?? ""
+        let firstLine = text.split(separator: "\n").first.map(String.init) ?? ""
+        return VStack(alignment: .leading, spacing: 0) {
+            Button {
+                withAnimation(.easeOut(duration: 0.2)) { notesOpen.toggle() }
+                if !notesOpen { editingNote = false }
+            } label: {
+                HStack(spacing: 8) {
+                    Text("Notes")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Palette.chipText)
+                    if !notesOpen, !firstLine.isEmpty {
+                        Text(firstLine)
+                            .font(.system(size: 13))
+                            .foregroundStyle(Palette.nameText)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    Image(systemName: notesOpen ? "chevron.up" : "chevron.down")
+                        .foregroundStyle(Palette.nameText)
+                }
+                .padding(12)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            if notesOpen {
+                VStack(alignment: .leading, spacing: 10) {
+                    if editingNote {
+                        TextEditor(text: $noteText)
+                            .scrollContentBackground(.hidden)
+                            .foregroundStyle(.white)
+                            .frame(minHeight: 120)
+                            .padding(8)
+                            .background(RoundedRectangle(cornerRadius: 10).fill(Color(hex: 0x1d2128)))
+                        HStack {
+                            Button("Cancel") { editingNote = false }
+                            Spacer()
+                            Button("Save") {
+                                let trimmed = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+                                store.updatePlug(id: c.id) { $0.description = trimmed.isEmpty ? nil : trimmed }
+                                editingNote = false
+                            }
+                            .fontWeight(.bold)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(Palette.amber)
+                    } else {
+                        if text.isEmpty {
+                            Text("No notes yet.")
+                                .font(.system(size: 13))
+                                .foregroundStyle(Palette.nameText)
+                        } else {
+                            Text(text)
+                                .font(.system(size: 13))
+                                .foregroundStyle(Palette.chipText)
+                                .textSelection(.enabled)
+                        }
+                        Button(text.isEmpty ? "Add a note" : "Edit note") {
+                            noteText = text
+                            editingNote = true
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(Palette.amber)
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.bottom, 12)
+            }
+        }
+        .background(RoundedRectangle(cornerRadius: 12).fill(Palette.chipFill))
     }
 
     private func linkCard(label: String, ref: PlugRef, onJump: @escaping (PlugRef) -> Void) -> some View {
