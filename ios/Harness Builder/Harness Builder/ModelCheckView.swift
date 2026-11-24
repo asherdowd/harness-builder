@@ -2,8 +2,8 @@
 //  ModelCheckView.swift
 //  Harness Builder
 //
-//  TEMPORARY screen for checking the data model, templates and saving.
-//  It is not the app's UI and will be deleted once the real canvas exists.
+//  TEMPORARY test tools (opened from the wrench button on the main screen).
+//  Not the app's UI; deleted once the real sheets and screens exist.
 //
 //  Try: Try the example -> switch tabs -> Add a template (Component) -> link
 //  its plug -> force-quit and reopen the app -> everything should still be there.
@@ -12,7 +12,8 @@
 import SwiftUI
 
 struct ModelCheckView: View {
-    @State private var store = HarnessStore()
+    let store: HarnessStore
+    @Environment(\.dismiss) private var dismiss
     @State private var lastAction = "Nothing tapped yet"
 
     private func note(_ text: String) {
@@ -118,11 +119,16 @@ struct ModelCheckView: View {
                     if let e = store.saveError { Text("Save failed: \(e)").font(.caption).foregroundStyle(.red) }
                 }
             }
-            .navigationTitle("Model check")
+            .navigationTitle("Test tools")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }
 
 #Preview {
-    ModelCheckView()
+    ModelCheckView(store: HarnessStore())
 }

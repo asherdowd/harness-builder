@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        ModelCheckView() // temporary check screen; replaced by the real canvas later
+        MainView()
     }
 }
 
