@@ -18,6 +18,8 @@ struct PlugSheet: View {
     let onRemoved: () -> Void
     /// Open the wizard to edit this plug, on the selected pin (0-based) if there is one.
     let onEdit: (Connector, Int?) -> Void
+    /// Open the link picker for this (component) plug.
+    let onLink: (Connector) -> Void
 
     @State private var confirmRemove = false
     @State private var selectedPin: Int?
@@ -41,8 +43,8 @@ struct PlugSheet: View {
             VStack(alignment: .leading, spacing: 14) {
                 header(c)
 
-                if let target {
-                    linkCard(label: "Linked to", ref: target, onJump: onJump)
+                if ref.harness.kind == .component {
+                    linkSection(c, target: target)
                 }
                 ForEach(linkedFrom) { other in
                     linkCard(label: "Linked component", ref: other, onJump: onJump)
@@ -95,6 +97,27 @@ struct PlugSheet: View {
                     .foregroundStyle(Palette.chipText)
                     .padding(.top, 2)
             }
+        }
+    }
+
+    /// Component plugs: shows what the plug is linked to and lets you change it.
+    private func linkSection(_ c: Connector, target: PlugRef?) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let target {
+                linkCard(label: "Linked to", ref: target, onJump: onJump)
+            } else {
+                Text("Not linked yet. Link it to the plug on another harness that it connects to.")
+                    .font(.system(size: 13))
+                    .foregroundStyle(Palette.nameText)
+            }
+            HStack(spacing: 8) {
+                Button(target == nil ? "Link to a plug" : "Change link") { onLink(c) }
+                if target != nil {
+                    Button("Unlink") { store.setLink(from: c.id, to: nil) }
+                }
+            }
+            .buttonStyle(.bordered)
+            .tint(Palette.amber)
         }
     }
 

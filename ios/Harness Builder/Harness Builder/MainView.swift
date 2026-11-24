@@ -3,8 +3,7 @@
 //  Harness Builder
 //
 //  The app's main screen: harness tabs and the canvas.
-//  Tapping a plug opens the plug sheet; "+" opens the add-plug wizard. (The "Add a harness" sheet
-//  comes next; until then the wrench button opens the temporary test tools.)
+//  Tapping a plug opens the plug sheet; "+" adds a plug; "＋ New" adds a harness; "⋯" is the harness menu.
 //
 
 import SwiftUI
@@ -14,9 +13,18 @@ import SwiftUI
 private enum ActiveSheet: Identifiable {
     case plug(String)
     case wizard(WizardRequest)
-    case tools
+    case addHarness
+    case harnessMenu
+    case linkPicker(String)
 
     var id: String { "sheet" }
+}
+
+/// Sheets opened from the header, the tab row, or a component plug.
+private enum Panel {
+    case addHarness
+    case harnessMenu
+    case linkPicker(String)
 }
 
 private struct WizardRequest {
@@ -29,21 +37,27 @@ struct MainView: View {
     @State private var store = HarnessStore()
     @State private var selectedID: String?
     @State private var wizard: WizardRequest?
-    @State private var showTools = false
+    @State private var panel: Panel?
     @State private var showRoles = false
     @State private var fitTick = 0
 
     private var activeSheet: Binding<ActiveSheet?> {
         Binding(
             get: {
-                if showTools { return .tools }
+                if let p = panel {
+                    switch p {
+                    case .addHarness: return .addHarness
+                    case .harnessMenu: return .harnessMenu
+                    case .linkPicker(let id): return .linkPicker(id)
+                    }
+                }
                 if let w = wizard { return .wizard(w) }
                 if let id = selectedID, store.plug(id: id) != nil { return .plug(id) }
                 return nil
             },
             set: { newValue in
                 guard newValue == nil else { return }
-                if showTools { showTools = false }
+                if panel != nil { panel = nil }
                 else if wizard != nil { wizard = nil }
                 else { selectedID = nil }
             }
@@ -79,7 +93,8 @@ struct MainView: View {
                           onRemoved: { selectedID = nil },
                           onEdit: { plug, pin in
                               wizard = WizardRequest(harnessID: store.active.id, editing: plug, startPin: pin)
-                          })
+                          },
+                          onLink: { plug in panel = .linkPicker(plug.id) })
                     .presentationDetents([.fraction(0.46), .large])
                     .presentationBackgroundInteraction(.enabled(upThrough: .fraction(0.46)))
                     .presentationBackground(Color(hex: 0x1b1f26))
@@ -92,8 +107,24 @@ struct MainView: View {
                            })
                     .presentationDetents([.large])
                     .presentationBackground(Color(hex: 0x1b1f26))
-            case .tools:
-                ModelCheckView(store: store)
+            case .addHarness:
+                AddHarnessSheet(store: store, onClose: {
+                    selectedID = nil
+                    panel = nil
+                })
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Color(hex: 0x1b1f26))
+            case .harnessMenu:
+                HarnessMenuSheet(store: store, harnessID: store.active.id, onClose: {
+                    selectedID = nil
+                    panel = nil
+                })
+                    .presentationDetents([.medium])
+                    .presentationBackground(Color(hex: 0x1b1f26))
+            case .linkPicker(let id):
+                LinkPickerSheet(store: store, plugID: id, onClose: { panel = nil })
+                    .presentationDetents([.large])
+                    .presentationBackground(Color(hex: 0x1b1f26))
             }
         }
     }
@@ -134,13 +165,15 @@ struct MainView: View {
                     .background(Capsule().fill(Palette.amber))
             }
             Button {
-                showTools = true
+                selectedID = nil
+                panel = .harnessMenu
             } label: {
-                Image(systemName: "wrench.and.screwdriver")
+                Image(systemName: "ellipsis")
                     .foregroundStyle(Palette.chipText)
                     .frame(width: 36, height: 32)
                     .background(Capsule().fill(Palette.chipFill))
             }
+            .accessibilityLabel("Harness menu")
         }
         .padding(.horizontal, 14)
         .padding(.top, 8)
@@ -163,6 +196,17 @@ struct MainView: View {
                             .padding(.vertical, 6)
                             .background(Capsule().fill(on ? Palette.amber : Palette.chipFill))
                     }
+                }
+                Button {
+                    selectedID = nil
+                    panel = .addHarness
+                } label: {
+                    Text("＋ New")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Palette.amber)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 6)
+                        .overlay(Capsule().stroke(Palette.amber.opacity(0.7), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                 }
             }
             .padding(.horizontal, 14)
