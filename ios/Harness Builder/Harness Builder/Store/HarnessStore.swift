@@ -27,7 +27,7 @@ final class HarnessStore {
 
     // MARK: setup
 
-    static var defaultFileURL: URL {
+    nonisolated static var defaultFileURL: URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         return base.appendingPathComponent("HarnessBuilder", isDirectory: true)
             .appendingPathComponent("state.json")
