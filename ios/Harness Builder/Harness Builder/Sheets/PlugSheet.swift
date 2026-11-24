@@ -72,10 +72,17 @@ struct PlugSheet: View {
                 if let idx = selectedPin, let fp = c.flatPins.first(where: { $0.number == idx + 1 }) {
                     traceSection(c, fp)
                 }
-
-                actions(c)
             }
             .padding(16)
+        }
+        // Edit / Remove stay pinned at the bottom so a long wire list never hides them.
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            actions(c)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(Color(hex: 0x1b1f26))
+                .overlay(alignment: .top) { Divider().overlay(Palette.divider) }
         }
         .background(Color(hex: 0x1b1f26))
         .confirmationDialog("Remove this plug?", isPresented: $confirmRemove, titleVisibility: .visible) {
@@ -347,7 +354,6 @@ struct PlugSheet: View {
             }
         }
         .buttonStyle(.bordered)
-        .padding(.top, 6)
     }
 
     /// Placeholder rule for "goes to pin N": same netId, else same function text.

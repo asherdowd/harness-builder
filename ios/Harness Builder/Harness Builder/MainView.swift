@@ -40,7 +40,7 @@ struct MainView: View {
     @State private var selectedID: String?
     @State private var wizard: WizardRequest?
     @State private var panel: Panel?
-    @State private var showRoles = true
+    @State private var showRoles = false
     @State private var fitTick = 0
     @State private var selectedPin: Int?
     @State private var focusID: String?
