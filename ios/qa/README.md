@@ -25,7 +25,22 @@ Two kinds of checks, and both are recorded in this repo before every App Store u
 
 ## Unit tests
 
-Run with Cmd-U in Xcode before every archive. Paste the pass/fail summary into the chat (or the failing test names) and it is added to the same results file under "Unit tests".
+Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the test host, so the tests use the real bundled templates. The whole suite runs in a few seconds, apart from the export file tests.
+
+| File | Covers |
+| --- | --- |
+| `ModelTests` | Decoding the web JSON, role and gauge fields, pin numbering, save and load |
+| `WireColorTests` | Color codes, names, the wizard's color parts |
+| `PlugDraftTests` | Wizard sizes and limits (60 pins), changing shape, the data-loss count |
+| `StoreTests` | Harness and plug actions, links, templates, saving, unreadable save file |
+| `TraceTests` | Wire tracing, canvas outlines, "goes to pin N" matching |
+| `LayoutTests` | Plug placement on the trunk, drawing every shape |
+| `TemplateTests` | Bundled examples load, are consistent, and stay free of research notes, codes and personal names |
+| `ExportTests` | Wire table page splitting, real PDF and PNG files, 60-pin harnesses |
+
+Run with Cmd-U in Xcode before every archive. Paste the pass/fail summary (or the failing test names) into the chat and it is added to the results file under "Unit tests".
+
+Not covered by unit tests (the manual run covers these): gestures, sheets, the drawn canvas, share sheet, icons, iPad layout.
 
 ## Gate before archiving
 
