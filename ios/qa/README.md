@@ -41,6 +41,7 @@ Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the te
 | `PrintExportTests` | Print-friendly export: real files, white page, dark export unchanged |
 | `SVGExportTests` | SVG export: well-formed, every pin and name drawn, every shape, palette colors |
 | `PlugDraftStoreTests` | Unsaved plug draft: kept, resumed, cleared, dropped when stale, not in backups |
+| `ConsistencyChecksTests` | Wire disagreements (power vs ground, gauge, function), spare pins with data, and the warning before a pin is moved off its wire |
 | `LayoutTests` | Plug placement on the trunk, drawing every shape |
 | `TemplateTests` | Bundled examples load, are consistent, and stay free of research notes, codes and personal names |
 | `ExportTests` | Wire table page splitting, real PDF and PNG files, 60-pin harnesses |

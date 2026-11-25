@@ -22,7 +22,7 @@ struct MapChecksTests {
     }
 
     @Test func aPlugWithNoWiresIsANote() {
-        let a = Fixture.connector("A", pins: [Fixture.pin(1, populated: false)])
+        let a = Fixture.connector("A", pins: [Fixture.pin(1, color: nil, guess: nil, populated: false)])
         let issues = run(Fixture.harness("H1", plugs: [a]))
         #expect(titles(issues) == ["No wires set"])
         #expect(issues[0].severity == .note)

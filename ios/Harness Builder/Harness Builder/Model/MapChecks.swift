@@ -41,6 +41,18 @@ enum MapChecks {
                                        plugID: c.id, pinNumber: nil))
             }
 
+            // An empty pin that still holds wire data was probably emptied by hand and not cleaned up.
+            for fp in c.flatPins where !fp.pin.populated {
+                let p = fp.pin
+                let leftover = !(p.color ?? "").isEmpty || !(p.guess ?? "").isEmpty || !(p.netId ?? "").isEmpty
+                    || !(p.role ?? "").isEmpty || p.gauge != nil
+                if leftover {
+                    issues.append(MapIssue(severity: .note, title: "Spare pin has wire data",
+                                           detail: "\(c.title) · pin \(fp.number) is marked empty but still has a color, function, role, gauge or connection on it.",
+                                           plugID: c.id, pinNumber: fp.number))
+                }
+            }
+
             for fp in wired {
                 let p = fp.pin
                 if (p.color ?? "").isEmpty {
@@ -71,13 +83,32 @@ enum MapChecks {
             }
         }
         for (net, list) in byNet {
-            var colors = Set(list.compactMap { $0.fp.pin.color }.filter { !$0.isEmpty })
+            // Every pin on this wire, on this harness and on the others.
+            var group = list.map(\.fp.pin)
             for h in all where h.id != harness.id {
                 for c in h.connectors {
-                    for fp in c.flatPins where fp.pin.netId == net && fp.pin.populated {
-                        if let col = fp.pin.color, !col.isEmpty { colors.insert(col) }
-                    }
+                    for fp in c.flatPins where fp.pin.netId == net && fp.pin.populated { group.append(fp.pin) }
                 }
+            }
+            let colors = Set(group.compactMap(\.color).filter { !$0.isEmpty })
+            let roles = Set(group.compactMap(\.role).filter { !$0.isEmpty })
+            let gauges = Set(group.compactMap(\.gauge))
+            let functions = Set(group.compactMap { $0.guess?.trimmingCharacters(in: .whitespaces).lowercased() }.filter { !$0.isEmpty })
+
+            if roles.contains("power"), roles.contains("ground"), let first = list.first {
+                issues.append(MapIssue(severity: .problem, title: "Power and ground on one wire",
+                                       detail: "One wire has pins marked power and pins marked ground. Check which is right.",
+                                       plugID: first.plug.id, pinNumber: first.fp.number))
+            }
+            if gauges.count > 1, let first = list.first {
+                issues.append(MapIssue(severity: .note, title: "Gauges differ along one wire",
+                                       detail: "\(gauges.sorted().map { "\($0) AWG" }.joined(separator: ", ")) are on the same wire. That can be right if the wire changes at a splice.",
+                                       plugID: first.plug.id, pinNumber: first.fp.number))
+            }
+            if functions.count > 1, let first = list.first {
+                issues.append(MapIssue(severity: .note, title: "Functions differ along one wire",
+                                       detail: "The pins on this wire are labeled differently. That can be right if each end names it its own way.",
+                                       plugID: first.plug.id, pinNumber: first.fp.number))
             }
             if colors.count > 1, let first = list.first {
                 issues.append(MapIssue(severity: .note, title: "Colors differ along one wire",

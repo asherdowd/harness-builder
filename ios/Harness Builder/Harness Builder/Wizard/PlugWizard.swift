@@ -22,6 +22,16 @@ struct PlugWizard: View {
     @State private var confirmDrop = false
     @State private var confirmDiscard = false
     @State private var pickingWire = false
+    @State private var pendingRewire: PendingRewire?
+    @State private var showRewire = false
+
+    /// A connection waiting for the user to confirm that it moves a pin off its wire.
+    private struct PendingRewire {
+        var plugID: String
+        var number: Int
+        var pin: Pin
+        var left: Int
+    }
 
     /// `startPin` is the pin (0-based) the editor opens on when editing.
     /// `resumed` is an unsaved draft picked up from where the user left off.
@@ -65,12 +75,30 @@ struct PlugWizard: View {
         .sheet(isPresented: $pickingWire) {
             WirePickerSheet(store: store, excludingPlugID: editing?.id,
                             onPick: { plugID, number, pin in
-                                draft?.connect(pin: sel, toPlug: plugID, pinNumber: number, targetPin: pin)
                                 pickingWire = false
+                                let left = draft?.pinsLeftBehind(pin: sel, movingTo: pin, in: store.harnesses) ?? 0
+                                if left > 0 {
+                                    pendingRewire = PendingRewire(plugID: plugID, number: number, pin: pin, left: left)
+                                    showRewire = true
+                                } else {
+                                    draft?.connect(pin: sel, toPlug: plugID, pinNumber: number, targetPin: pin)
+                                }
                             },
                             onClose: { pickingWire = false })
                 .presentationDetents([.large])
                 .presentationBackground(Palette.sheetBg)
+        }
+        .alert("Move this pin to another wire?", isPresented: $showRewire) {
+            Button("Cancel", role: .cancel) { pendingRewire = nil }
+            Button("Move it", role: .destructive) {
+                if let r = pendingRewire {
+                    draft?.connect(pin: sel, toPlug: r.plugID, pinNumber: r.number, targetPin: r.pin)
+                }
+                pendingRewire = nil
+            }
+        } message: {
+            let n = pendingRewire?.left ?? 0
+            Text("Pin \(sel + 1) is on a wire with \(n) other \(n == 1 ? "pin" : "pins"). Connecting it here takes it off that wire. The others stay together.")
         }
         .alert("Data will be lost", isPresented: $confirmDrop) {
             Button("Cancel", role: .cancel) {}

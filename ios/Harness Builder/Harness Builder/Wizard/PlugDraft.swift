@@ -174,6 +174,22 @@ struct PlugDraft: Codable, Equatable {
         stamps.append(NetStamp(pinIndex: index, plugID: plugID, pinNumber: pinNumber, net: net, netType: type))
     }
 
+    /// When connecting this pin would take it off a wire that other pins are on
+    /// (because the target pin is on a different wire), how many other pins stay
+    /// on the old wire. Zero means the connection moves nothing worth warning about.
+    func pinsLeftBehind(pin index: Int, movingTo target: Pin, in harnesses: [Harness]) -> Int {
+        guard pins.indices.contains(index),
+              let own = pins[index].netId, !own.isEmpty,
+              let theirs = target.netId, !theirs.isEmpty, own != theirs else { return 0 }
+        var count = pins.enumerated().filter { $0.offset != index && $0.element.netId == own }.count
+        for h in harnesses {
+            for c in h.connectors where c.id != base?.id {
+                count += c.flatPins.filter { $0.pin.netId == own }.count
+            }
+        }
+        return count
+    }
+
     /// Takes a pin off its net (the pins it was connected to keep theirs).
     mutating func disconnect(pin index: Int) {
         guard pins.indices.contains(index) else { return }
