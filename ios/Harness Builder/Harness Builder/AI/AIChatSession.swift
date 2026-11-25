@@ -51,6 +51,12 @@ final class AIChatSession {
         if let i = messages.firstIndex(where: { $0.id == id }) { messages[i].proposal = nil }
     }
 
+    /// Puts aside every waiting proposal, e.g. when the open harness changes
+    /// and a proposal made for the old one no longer applies.
+    func dismissAllProposals() {
+        for i in messages.indices { messages[i].proposal = nil }
+    }
+
     func clear() {
         messages = []
         errorText = nil

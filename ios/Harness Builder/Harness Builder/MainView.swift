@@ -19,6 +19,7 @@ private enum ActiveSheet: Identifiable {
     case settings
     case checks
     case linkPicker(String)
+    case aiReview(UUID)
 
     var id: String { "sheet" }
 }
@@ -31,6 +32,7 @@ private enum Panel {
     case settings
     case checks
     case linkPicker(String)
+    case aiReview(UUID)
 }
 
 private struct WizardRequest {
@@ -49,6 +51,11 @@ struct MainView: View {
     @State private var resumeOffer: SavedPlugDraft?
     @State private var showResumeOffer = false
     @State private var showRoles = false
+    @State private var chat: AIChatSession?
+    @State private var hasKey = false
+    @State private var chatOpen = false
+    /// Summary of the last applied assistant change; the Undo banner stays until dismissed.
+    @State private var undoNote: String?
     @AppStorage(AppearanceMode.storageKey) private var appearanceRaw = AppearanceMode.system.rawValue
     @State private var fitTick = 0
     @State private var selectedPin: Int?
@@ -83,6 +90,7 @@ struct MainView: View {
                     case .settings: return .settings
                     case .checks: return .checks
                     case .linkPicker(let id): return .linkPicker(id)
+                    case .aiReview(let id): return .aiReview(id)
                     }
                 }
                 if let w = wizard { return .wizard(w) }
@@ -116,15 +124,44 @@ struct MainView: View {
                 if store.isBlank {
                     firstOpenCard
                 }
+                if let note = undoNote {
+                    VStack {
+                        undoBanner(note)
+                        Spacer()
+                    }
+                }
+                if hasKey, let chat {
+                    AssistantPanel(session: chat, expanded: $chatOpen,
+                                   onReview: { id in
+                                       selectedID = nil
+                                       panel = .aiReview(id)
+                                   })
+                }
             }
         }
         .background(Palette.bg.ignoresSafeArea())
         .preferredColorScheme(AppearanceMode.from(appearanceRaw).scheme)
         .task {
+            refreshAssistant()
             if let draft = store.savedDraft() {
                 resumeOffer = draft
                 showResumeOffer = true
             }
+        }
+        .onChange(of: panel == nil) { _, closed in
+            if closed { refreshAssistant() }
+        }
+        .onChange(of: activeSheet.wrappedValue != nil) { _, open in
+            // Opening a plug, the wizard or any sheet puts the chat out of the way.
+            if open { chatOpen = false }
+        }
+        .onChange(of: store.state.activeID) { _, id in
+            // A proposal made for another harness no longer applies.
+            chat?.harnessID = id
+            chat?.dismissAllProposals()
+        }
+        .onChange(of: store.state.harnesses) { _, _ in
+            if undoNote != nil, store.aiUndoRecord() == nil { undoNote = nil }
         }
         .alert("Resume your unsaved plug?", isPresented: $showResumeOffer) {
             Button("Resume") {
@@ -201,8 +238,64 @@ struct MainView: View {
                 LinkPickerSheet(store: store, plugID: id, onClose: { panel = nil })
                     .presentationDetents([.large])
                     .presentationBackground(Palette.sheetBg)
+            case .aiReview(let id):
+                if let chat {
+                    AIReviewSheet(store: store, session: chat, messageID: id,
+                                  onClose: { panel = nil },
+                                  onApplied: { undoNote = $0.isEmpty ? "Assistant changes applied" : $0 })
+                        .presentationDetents([.medium, .large])
+                        .presentationBackground(Palette.sheetBg)
+                }
             }
         }
+    }
+
+    /// Shows or hides the assistant depending on whether a key is saved.
+    private func refreshAssistant() {
+        hasKey = KeychainStore().hasKey
+        guard hasKey else {
+            chat = nil
+            chatOpen = false
+            return
+        }
+        if chat == nil {
+            chat = AIChatSession(store: store, harnessID: store.active.id, makeClient: {
+                guard let key = KeychainStore().read() else { return nil }
+                let model = AIModels.resolve(UserDefaults.standard.string(forKey: AIModels.storageKey) ?? AIModels.defaultID)
+                return AnthropicClient(key: key, model: model)
+            })
+        }
+    }
+
+    private func undoBanner(_ note: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.circle.fill").foregroundStyle(Palette.amberInk)
+            Text(note)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Palette.text)
+                .lineLimit(2)
+            Spacer(minLength: 6)
+            Button("Undo") {
+                _ = store.undoAI()
+                undoNote = nil
+            }
+            .font(.system(size: 14, weight: .bold))
+            .foregroundStyle(Palette.amberInk)
+            Button {
+                undoNote = nil
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Palette.nameText)
+            }
+            .accessibilityLabel("Dismiss")
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Palette.sheetBg))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.cardStroke, lineWidth: 1))
+        .padding(.horizontal, 14)
+        .padding(.top, 8)
     }
 
     private var header: some View {
