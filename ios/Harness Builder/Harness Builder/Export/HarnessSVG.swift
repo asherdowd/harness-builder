@@ -53,8 +53,8 @@ enum HarnessSVG {
                 func byte(_ v: CGFloat) -> Int { Int((v * 255).rounded()) }
                 return String(format: "#%02x%02x%02x", byte(r), byte(g), byte(b))
             }
-            bg = hex(Palette.bg)
-            page = style == .print ? "#ffffff" : bg
+            page = style == .print ? "#ffffff" : hex(Palette.bg)
+            bg = page
             trunkFill = hex(Palette.trunkFill)
             trunkStroke = hex(Palette.trunkStroke)
             trunkStrand = hex(Palette.trunkStrand)

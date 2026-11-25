@@ -37,6 +37,8 @@ private struct WizardRequest {
     var harnessID: String
     var editing: Connector?
     var startPin: Int?
+    /// An unsaved draft to pick up where the user left off.
+    var resume: SavedPlugDraft?
 }
 
 struct MainView: View {
@@ -44,6 +46,8 @@ struct MainView: View {
     @State private var selectedID: String?
     @State private var wizard: WizardRequest?
     @State private var panel: Panel?
+    @State private var resumeOffer: SavedPlugDraft?
+    @State private var showResumeOffer = false
     @State private var showRoles = false
     @AppStorage(AppearanceMode.storageKey) private var appearanceRaw = AppearanceMode.system.rawValue
     @State private var fitTick = 0
@@ -116,6 +120,26 @@ struct MainView: View {
         }
         .background(Palette.bg.ignoresSafeArea())
         .preferredColorScheme(AppearanceMode.from(appearanceRaw).scheme)
+        .task {
+            if let draft = store.savedDraft() {
+                resumeOffer = draft
+                showResumeOffer = true
+            }
+        }
+        .alert("Resume your unsaved plug?", isPresented: $showResumeOffer) {
+            Button("Resume") {
+                guard let r = resumeOffer else { return }
+                store.setActive(r.harnessID)
+                selectedID = nil
+                wizard = WizardRequest(harnessID: r.harnessID,
+                                       editing: r.editingID.flatMap { store.plug(id: $0)?.connector },
+                                       startPin: nil, resume: r)
+            }
+            Button("Discard", role: .destructive) { store.clearDraft() }
+        } message: {
+            let name = resumeOffer?.draft.name.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            Text("You were in the middle of \(name.isEmpty ? "a plug" : "\"\(name)\""). Pick up where you left off, or discard it.")
+        }
         .sheet(item: activeSheet) { kind in
             switch kind {
             case .plug(let id):
@@ -134,6 +158,7 @@ struct MainView: View {
                     .presentationBackground(Palette.sheetBg)
             case .wizard(let req):
                 PlugWizard(store: store, harnessID: req.harnessID, editing: req.editing, startPin: req.startPin,
+                           resumed: req.resume,
                            onClose: { wizard = nil },
                            onSaved: { id in
                                selectedID = id

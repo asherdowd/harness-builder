@@ -49,7 +49,7 @@ enum ShapeCatalog {
 
 /// A connection chosen in the wizard that also has to be written onto the other
 /// plug's pin when the draft is saved (so both ends share one net).
-struct NetStamp: Equatable {
+struct NetStamp: Codable, Equatable {
     var pinIndex: Int       // 0-based pin on the plug being built or edited
     var plugID: String      // the plug at the other end
     var pinNumber: Int      // 1-based pin on that plug
@@ -57,7 +57,7 @@ struct NetStamp: Equatable {
     var netType: String
 }
 
-struct PlugDraft {
+struct PlugDraft: Codable, Equatable {
     var shape: String
     var rowCount: Int
     var colCount: Int

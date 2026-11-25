@@ -24,17 +24,19 @@ struct PlugWizard: View {
     @State private var pickingWire = false
 
     /// `startPin` is the pin (0-based) the editor opens on when editing.
+    /// `resumed` is an unsaved draft picked up from where the user left off.
     init(store: HarnessStore, harnessID: String, editing: Connector?, startPin: Int?,
+         resumed: SavedPlugDraft? = nil,
          onClose: @escaping () -> Void, onSaved: @escaping (String) -> Void) {
         self.store = store
         self.harnessID = harnessID
         self.editing = editing
         self.onClose = onClose
         self.onSaved = onSaved
-        let initial = editing.map { PlugDraft(editing: $0) }
+        let initial = resumed?.draft ?? editing.map { PlugDraft(editing: $0) }
         _draft = State(initialValue: initial)
         let count = initial?.pins.count ?? 1
-        _sel = State(initialValue: min(max(startPin ?? 0, 0), max(count - 1, 0)))
+        _sel = State(initialValue: min(max(resumed?.sel ?? startPin ?? 0, 0), max(count - 1, 0)))
     }
 
     var body: some View {
@@ -58,6 +60,8 @@ struct PlugWizard: View {
         .background(Palette.sheetBg)
         .scrollDismissesKeyboard(.interactively)
         .interactiveDismissDisabled(draft?.hasChanges ?? false)
+        .onChange(of: draft) { _, _ in persistDraft() }
+        .onChange(of: sel) { _, _ in persistDraft() }
         .sheet(isPresented: $pickingWire) {
             WirePickerSheet(store: store, excludingPlugID: editing?.id,
                             onPick: { plugID, number, pin in
@@ -106,7 +110,10 @@ struct PlugWizard: View {
         .padding(.bottom, 4)
         .tint(Palette.amberInk)
         .confirmationDialog("Discard your changes?", isPresented: $confirmDiscard, titleVisibility: .visible) {
-            Button("Discard changes", role: .destructive, action: onClose)
+            Button("Discard changes", role: .destructive) {
+                store.clearDraft()
+                onClose()
+            }
             Button("Keep editing", role: .cancel) {}
         } message: {
             Text("What you set on this plug has not been saved.")
@@ -384,6 +391,15 @@ struct PlugWizard: View {
 
     // MARK: saving
 
+    /// Keeps what is being built on the device, so closing the app doesn't lose it.
+    private func persistDraft() {
+        guard let d = draft, d.hasChanges else {
+            store.clearDraft()
+            return
+        }
+        store.saveDraft(SavedPlugDraft(harnessID: harnessID, editingID: editing?.id, sel: sel, draft: d))
+    }
+
     private func save(_ d: PlugDraft) {
         let rows = d.buildRows()
         let name = d.name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -400,12 +416,14 @@ struct PlugWizard: View {
                 }
             }
             store.stampNets(d.validStamps)
+            store.clearDraft()
             onSaved(editing.id)
         } else {
             var c = d.connector()
             c.name = name
             if let id = store.addPlug(c, toHarness: harnessID) {
                 store.stampNets(d.validStamps)
+                store.clearDraft()
                 onSaved(id)
             }
         }
