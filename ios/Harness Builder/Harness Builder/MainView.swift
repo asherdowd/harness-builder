@@ -157,7 +157,7 @@ struct MainView: View {
                     .presentationDetents([.medium, .large])
                     .presentationBackground(Palette.sheetBg)
             case .settings:
-                SettingsSheet(onClose: { panel = nil })
+                SettingsSheet(store: store, onClose: { panel = nil })
                     .presentationDetents([.medium, .large])
                     .presentationBackground(Palette.sheetBg)
             case .linkPicker(let id):

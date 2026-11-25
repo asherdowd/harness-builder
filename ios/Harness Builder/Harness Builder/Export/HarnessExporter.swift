@@ -3,8 +3,8 @@
 //  Harness Builder
 //
 //  Turns harnesses into a PDF (one file, a page for each harness plus its
-//  wire table pages) or PNG images (one per harness), saved in a temporary
-//  folder so they can be shared.
+//  wire table pages), PNG images (one per harness) or a CSV wire list,
+//  saved in a temporary folder so they can be shared.
 //
 
 import SwiftUI
@@ -25,7 +25,7 @@ enum ExportError: LocalizedError {
 @MainActor
 enum HarnessExporter {
     enum Format: Hashable {
-        case pdf, png
+        case pdf, png, csv
     }
 
     // US Letter, in points.
@@ -39,7 +39,7 @@ enum HarnessExporter {
     /// Keeps PNGs inside what the renderer handles reliably.
     private static let maxPixels: CGFloat = 10000
 
-    static func export(_ harnesses: [Harness], includeTable: Bool, format: Format) throws -> [URL] {
+    static func export(_ harnesses: [Harness], includeTable: Bool, format: Format, allHarnesses: [Harness]? = nil) throws -> [URL] {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("Export-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -49,6 +49,15 @@ enum HarnessExporter {
             let name = harnesses.count == 1 ? fileName(harnesses[0].title) : "Harnesses"
             let url = dir.appendingPathComponent(name + ".pdf")
             try writePDF(harnesses, includeTable: includeTable, to: url)
+            return [url]
+        case .csv:
+            let name = harnesses.count == 1 ? fileName(harnesses[0].title) + "-wires" : "Harnesses-wires"
+            let url = dir.appendingPathComponent(name + ".csv")
+            do {
+                try WireListCSV.csv(harnesses, allHarnesses: allHarnesses).write(to: url, atomically: true, encoding: .utf8)
+            } catch {
+                throw ExportError.couldNotCreate
+            }
             return [url]
         case .png:
             return try harnesses.enumerated().map { i, h in

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// How the app picks light or dark. System follows the phone.
 enum AppearanceMode: String, CaseIterable, Identifiable {
@@ -39,9 +40,17 @@ enum AppearanceMode: String, CaseIterable, Identifiable {
 }
 
 struct SettingsSheet: View {
+    let store: HarnessStore
     let onClose: () -> Void
 
     @AppStorage(AppearanceMode.storageKey) private var appearanceRaw = AppearanceMode.system.rawValue
+
+    @State private var backupURL: URL?
+    @State private var importing = false
+    @State private var pending: AppState?
+    @State private var confirmRestore = false
+    @State private var dataMessage: String?
+    @State private var dataError: String?
 
     private var version: String {
         let info = Bundle.main.infoDictionary
@@ -70,6 +79,9 @@ struct SettingsSheet: View {
                     .font(.system(size: 12))
                     .foregroundStyle(Palette.nameText)
 
+                header("YOUR DATA")
+                dataSection
+
                 header("BUILD WITH AI")
                 row(title: "Anthropic key",
                     sub: "Coming soon. You'll add your own key here to have a plug or harness drafted from a description.",
@@ -84,6 +96,89 @@ struct SettingsSheet: View {
             .padding(16)
         }
         .background(Palette.sheetBg)
+        .onAppear { makeBackup() }
+        .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
+            readBackup(result)
+        }
+        .alert("Replace everything?", isPresented: $confirmRestore) {
+            Button("Cancel", role: .cancel) { pending = nil }
+            Button("Replace", role: .destructive) {
+                if let pending { store.restore(pending) }
+                pending = nil
+                dataMessage = "Restored. Your previous data was kept as a copy on this device."
+                makeBackup()
+            }
+        } message: {
+            Text(restoreSummary)
+        }
+    }
+
+    private var restoreSummary: String {
+        guard let p = pending else { return "" }
+        let plugs = p.harnesses.reduce(0) { $0 + $1.connectors.count }
+        return "This backup has \(p.harnesses.count) harnesses and \(plugs) plugs. They will replace what is in the app now."
+    }
+
+    private var dataSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let backupURL {
+                ShareLink(item: backupURL) {
+                    Label("Back up to Files or share", systemImage: "square.and.arrow.up")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Palette.text)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 13)
+                        .background(RoundedRectangle(cornerRadius: 14).fill(Palette.chipFill))
+                }
+            }
+            Button {
+                dataMessage = nil
+                dataError = nil
+                importing = true
+            } label: {
+                Label("Restore from a backup", systemImage: "arrow.down.doc")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Palette.text)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 13)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(Palette.chipFill))
+            }
+            .buttonStyle(.plain)
+            Text("A backup is one file with every harness. Save it to Files or iCloud Drive, and restore it on this or another device.")
+                .font(.system(size: 12))
+                .foregroundStyle(Palette.nameText)
+            if let dataMessage {
+                Text(dataMessage)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Palette.text)
+            }
+            if let dataError {
+                Text(dataError)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Palette.warnStrong)
+            }
+        }
+    }
+
+    private func makeBackup() {
+        backupURL = try? store.writeBackupFile()
+    }
+
+    private func readBackup(_ result: Result<URL, Error>) {
+        switch result {
+        case .failure(let error):
+            dataError = error.localizedDescription
+        case .success(let url):
+            let access = url.startAccessingSecurityScopedResource()
+            defer { if access { url.stopAccessingSecurityScopedResource() } }
+            do {
+                let data = try Data(contentsOf: url)
+                pending = try HarnessStore.decodeBackup(data)
+                confirmRestore = true
+            } catch {
+                dataError = "That file isn't a Harness Builder backup. (\(error.localizedDescription))"
+            }
+        }
     }
 
     private func header(_ text: String) -> some View {

@@ -40,6 +40,7 @@
     {"id": "C8", "title": "Switching plugs starts fresh", "steps": "Open plug A, expand Notes and select a wire. Then tap plug B on the canvas.", "expected": "Plug B opens fresh: Notes collapsed and no wire selected."},
     {"id": "C9", "title": "Remove a plug", "steps": "Tap Remove, then Cancel. Tap Remove again and confirm.", "expected": "Cancel keeps the plug. Confirming removes it from the canvas and the sheet closes or swaps. The rest of the harness is untouched."},
     {"id": "C10", "title": "Sheet sizes", "steps": "Drag the sheet between half height and full height.", "expected": "It moves smoothly and content stays readable at both sizes."},
+    {"id": "C11", "title": "Wired and spare counts", "steps": "Open a plug with some empty pins.", "expected": "The header shows pins, wired and spare, and the three numbers add up."},
     {"id": "D1", "title": "Open the wizard", "steps": "Tap + in the harness row under the tabs.", "expected": "The shape picker opens showing each shape as a silhouette."},
     {"id": "D2", "title": "Build a plug", "steps": "Pick a shape, name it, set rows and pins, then for a few pins set color, stripe, shade, function, wire type, gauge, role and confidence. Tap Add.", "expected": "The plug is added at the end of the trunk with the pins you set. If you left the name alone it is called Plug 1 (then Plug 2 and so on)."},
     {"id": "D3", "title": "Two-tone wire", "steps": "Give a pin a main color plus a stripe color.", "expected": "The wire list shows a two-tone swatch and the right color names."},
@@ -97,6 +98,7 @@
     {"id": "I8", "title": "Print the PDF", "steps": "From the share sheet choose Print.", "expected": "The print preview shows all pages."},
     {"id": "I9", "title": "Dark background", "steps": "Look at an exported page.", "expected": "The export uses the app's dark background, which uses a lot of ink if printed. A white-background print option may be added later.", "tag": "known"},
     {"id": "I10", "title": "Nothing private in the export", "steps": "Export the example harnesses and read the PDF.", "expected": "No reference codes, research notes or personal names appear."},
+    {"id": "I11", "title": "CSV wire list", "steps": "Export as CSV for This harness, then All harnesses. Open the file in Numbers, Excel or Sheets.", "expected": "One row per wire with plug, pin, color, function, gauge, type and Connects to. Commas and quotes in names do not break the columns."},
     {"id": "J1", "title": "iPad layout", "steps": "Run on an iPad simulator in portrait. Open the app and the example.", "expected": "The header, tabs and first-open card look sensible on the wide screen. Nothing is stretched or lopsided."},
     {"id": "J2", "title": "Sheet on iPad", "steps": "Tap a plug.", "expected": "Record how the plug sheet appears (bottom sheet or floating panel). The canvas remains tappable and pannable with it open.", "tag": "unv"},
     {"id": "J3", "title": "Landscape", "steps": "Rotate the iPad to landscape and back.", "expected": "The harness and sheet stay usable. Fit all works in both orientations."},
@@ -124,6 +126,9 @@
     {"id": "L3", "title": "Empty states", "steps": "Remove every plug from a harness, then delete all harnesses.", "expected": "Sensible empty screens and no crash."},
     {"id": "L4", "title": "Rapid taps", "steps": "Quickly tap plug, arrows, Edit, Cancel and the harness menu in sequence.", "expected": "No stuck or stacked sheets. You can always dismiss and carry on."},
     {"id": "L5", "title": "Long names", "steps": "Give a plug and a harness very long names.", "expected": "Text truncates or wraps and the layout does not break."},
-    {"id": "L6", "title": "Special characters", "steps": "Use emoji, quotes and non-English letters in names, functions and notes.", "expected": "They save, display and export correctly."}
+    {"id": "L6", "title": "Special characters", "steps": "Use emoji, quotes and non-English letters in names, functions and notes.", "expected": "They save, display and export correctly."},
+    {"id": "L7", "title": "Back up", "steps": "In Settings tap Back up to Files or share and save the file to Files.", "expected": "A file named Harness Builder backup with today's date is saved."},
+    {"id": "L8", "title": "Restore", "steps": "Change something in the app. In Settings tap Restore from a backup and choose the file from L7. Confirm.", "expected": "A warning shows the number of harnesses and plugs. After confirming, the app matches the backup."},
+    {"id": "L9", "title": "Restore the wrong file", "steps": "In Settings tap Restore and choose a file that is not a backup (a photo or a PDF).", "expected": "A clear message says it isn't a Harness Builder backup, and nothing changes."}
   ]
 }

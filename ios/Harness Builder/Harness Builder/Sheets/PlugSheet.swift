@@ -103,7 +103,7 @@ struct PlugSheet: View {
                     .foregroundStyle(Palette.text)
                 Spacer()
             }
-            Text("\(c.pinCount) pins")
+            Text("\(c.pinCount) pins · \(c.wiredCount) wired · \(c.spareCount) spare")
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.nameText)
         }

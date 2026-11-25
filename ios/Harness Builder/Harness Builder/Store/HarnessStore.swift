@@ -86,6 +86,56 @@ final class HarnessStore {
         }
     }
 
+    // MARK: backup and restore
+
+    enum BackupError: LocalizedError {
+        case empty
+        var errorDescription: String? {
+            "That file has no harnesses in it."
+        }
+    }
+
+    /// The whole saved state as readable JSON.
+    func backupData() throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try encoder.encode(state)
+    }
+
+    /// Writes a dated backup file in a temporary folder, ready to share or save.
+    func writeBackupFile(date: Date = Date()) throws -> URL {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("Backup-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let url = dir.appendingPathComponent("Harness Builder backup \(f.string(from: date)).json")
+        try backupData().write(to: url, options: .atomic)
+        return url
+    }
+
+    /// Reads a backup file. Throws if it isn't a Harness Builder backup or holds no harnesses.
+    static func decodeBackup(_ data: Data) throws -> AppState {
+        let s = try JSONDecoder().decode(AppState.self, from: data)
+        guard !s.harnesses.isEmpty else { throw BackupError.empty }
+        return s
+    }
+
+    /// Replaces everything with a backup. What was here is kept next to it as
+    /// state.before-restore.json in case the restore was a mistake.
+    func restore(_ backup: AppState) {
+        let dir = fileURL.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        if let data = try? backupData() {
+            try? data.write(to: dir.appendingPathComponent("state.before-restore.json"), options: .atomic)
+        }
+        var next = backup
+        if !next.harnesses.contains(where: { $0.id == next.activeID }) {
+            next.activeID = next.harnesses[0].id
+        }
+        commit { $0 = next }
+    }
+
     // MARK: reading
 
     var harnesses: [Harness] { state.harnesses }

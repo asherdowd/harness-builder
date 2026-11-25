@@ -136,6 +136,13 @@ changes before writing Swift. The repo is public: never commit API keys.
 Example data shipped in the app must not contain research notes, internal
 reference codes or personal names (`ios/tools/clean_examples.py` cleans it).
 
+**Ideas parked (not planned yet):** wire calculator (AWG, resistance,
+round-trip voltage drop, thinnest gauge). If built, it should match the
+look of the main builder, with visuals that help people who are not
+electrical engineers (advanced hobbyist audience). It needs per-wire length
+and current, which the app doesn't store yet. Also parked: continuity test
+sheet from nets, cut list and BOM.
+
 **Verification gap:** there is no Swift compiler in the Claude sandbox, so
 every iOS change has to be built in Xcode on the Mac before it counts as
 working.

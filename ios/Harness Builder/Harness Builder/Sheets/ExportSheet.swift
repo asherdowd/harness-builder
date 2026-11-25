@@ -27,6 +27,14 @@ struct ExportSheet: View {
         scope == .this ? [store.active] : store.harnesses
     }
 
+    private var formatNote: String {
+        switch format {
+        case .pdf: return "One PDF with a page for each harness, then its wire table. Stays sharp when printed or zoomed."
+        case .png: return "One image for each harness, with the wire table underneath."
+        case .csv: return "One spreadsheet file with a row for every wire: plug, pin, color, function, gauge, type and where it connects. Opens in Numbers, Excel and Google Sheets."
+        }
+    }
+
     private func caption(_ text: String) -> some View {
         Text(text)
             .font(.system(size: 13))
@@ -50,15 +58,15 @@ struct ExportSheet: View {
                 SegRow(options: [(Scope.this, "This harness"), (Scope.all, "All harnesses")], selection: $scope)
 
                 caption("Format")
-                SegRow(options: [(HarnessExporter.Format.pdf, "PDF"), (HarnessExporter.Format.png, "PNG")], selection: $format)
-                caption(format == .pdf
-                        ? "One PDF with a page for each harness, then its wire table. Stays sharp when printed or zoomed."
-                        : "One image for each harness, with the wire table underneath.")
+                SegRow(options: [(HarnessExporter.Format.pdf, "PDF"), (HarnessExporter.Format.png, "PNG"), (HarnessExporter.Format.csv, "CSV")], selection: $format)
+                caption(formatNote)
 
-                Toggle("Include the wire table", isOn: $includeTable)
-                    .tint(Palette.amberInk)
-                    .foregroundStyle(Palette.chipText)
-                    .padding(.top, 4)
+                if format != .csv {
+                    Toggle("Include the wire table", isOn: $includeTable)
+                        .tint(Palette.amberInk)
+                        .foregroundStyle(Palette.chipText)
+                        .padding(.top, 4)
+                }
 
                 Button {
                     create()
@@ -109,13 +117,14 @@ struct ExportSheet: View {
         files = []
         errorText = nil
         let list = targets
+        let all = store.harnesses
         let table = includeTable
         let fmt = format
         Task {
             // Let "Creating…" show before the drawing work starts.
             try? await Task.sleep(nanoseconds: 80_000_000)
             do {
-                files = try HarnessExporter.export(list, includeTable: table, format: fmt)
+                files = try HarnessExporter.export(list, includeTable: table, format: fmt, allHarnesses: all)
             } catch {
                 errorText = error.localizedDescription
             }
