@@ -15,7 +15,7 @@ enum WireListCSV {
     /// so a wire on one harness can name a plug on another.
     static func csv(_ harnesses: [Harness], allHarnesses: [Harness]? = nil) -> String {
         let all = allHarnesses ?? harnesses
-        var lines = [columns.map(escape).joined(separator: ",")]
+        var lines = [columns.map { escape($0) }.joined(separator: ",")]
         for h in harnesses {
             for c in h.connectors {
                 for fp in c.flatPins where fp.pin.populated {
@@ -31,7 +31,7 @@ enum WireListCSV {
                         p.confidence ?? "",
                         connections(of: p, onPlug: c.id, pin: fp.number, in: all).joined(separator: "; "),
                     ]
-                    lines.append(fields.map(escape).joined(separator: ","))
+                    lines.append(fields.map { escape($0) }.joined(separator: ","))
                 }
             }
         }

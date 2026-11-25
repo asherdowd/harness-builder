@@ -64,14 +64,14 @@ enum MapChecks {
         }
 
         // Pins joined on one net that disagree on color are worth a look.
-        var byNet: [String: [(plug: Connector, pin: FlatPin)]] = [:]
+        var byNet: [String: [(plug: Connector, fp: FlatPin)]] = [:]
         for c in harness.connectors {
             for fp in c.flatPins where fp.pin.populated {
                 if let net = fp.pin.netId, !net.isEmpty { byNet[net, default: []].append((c, fp)) }
             }
         }
         for (net, list) in byNet {
-            var colors = Set(list.compactMap { $0.pin.color }.filter { !$0.isEmpty })
+            var colors = Set(list.compactMap { $0.fp.pin.color }.filter { !$0.isEmpty })
             for h in all where h.id != harness.id {
                 for c in h.connectors {
                     for fp in c.flatPins where fp.pin.netId == net && fp.pin.populated {
@@ -82,7 +82,7 @@ enum MapChecks {
             if colors.count > 1, let first = list.first {
                 issues.append(MapIssue(severity: .note, title: "Colors differ along one wire",
                                        detail: "\(colors.sorted().joined(separator: ", ")) are on the same wire. That can be right if the color changes at a splice or connector.",
-                                       plugID: first.plug.id, pinNumber: first.pin.number))
+                                       plugID: first.plug.id, pinNumber: first.fp.number))
             }
         }
 
