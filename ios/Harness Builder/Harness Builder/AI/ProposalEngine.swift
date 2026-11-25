@@ -29,7 +29,7 @@ struct FieldChange: Equatable, Identifiable {
     var id: String { "\(plugID)#\(pin)#\(field)" }
 
     /// True when a value that was already there would be replaced.
-    var isOverwrite: Bool { !(before ?? "").isEmpty && before != after }
+    var isOverwrite: Bool { field != "Pin" && !(before ?? "").isEmpty && before != after }
 }
 
 /// A pin that would be taken off a wire other pins are on.

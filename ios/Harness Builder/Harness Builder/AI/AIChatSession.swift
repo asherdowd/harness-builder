@@ -76,10 +76,10 @@ final class AIChatSession {
 
         do {
             var reply = try await ask(client, system, history)
-            if let problem = problem(with: reply) {
+            if let complaint = problem(with: reply) {
                 // One chance to fix it, with the app's exact complaint.
                 history.append(AIMessage(role: .assistant, text: reply.text.isEmpty ? "(proposal)" : reply.text))
-                history.append(AIMessage(role: .user, text: "The app could not use that proposal: \(problem) Fix it and propose again, or ask me a question if something is unclear."))
+                history.append(AIMessage(role: .user, text: "The app could not use that proposal: \(complaint) Fix it and propose again, or ask me a question if something is unclear."))
                 reply = try await ask(client, system, history)
                 if let still = problem(with: reply) {
                     messages.append(Message(role: .assistant,
