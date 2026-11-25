@@ -215,7 +215,7 @@ enum HarnessSVG {
             return #"<rect x="\#(n(-pw / 2))" y="\#(n(-ph / 2))" width="\#(n(pw))" height="\#(n(ph))" rx="4" fill="none" stroke="\#(c.bodyStroke)" stroke-width="1.25" stroke-dasharray="4 3" opacity="0.7"/>"#
 
         case .unknown:
-            return #"<circle r="18" fill="none" stroke="#ff0000" stroke-width="1" stroke-dasharray="3 3"/>"#
+            return ##"<circle r="18" fill="none" stroke="#ff0000" stroke-width="1" stroke-dasharray="3 3"/>"##
         }
     }
 
