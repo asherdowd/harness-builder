@@ -25,10 +25,7 @@ struct PrintExportTests {
         let space = CGColorSpaceCreateDeviceRGB()
         let ctx = try #require(CGContext(data: &px, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
                                          space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
-        ctx.draw(image, in: CGRect(x: 0, y: 0, width: 1, height: 1))   // scales the whole image to one pixel
-        _ = px
-        // Sample the real corner by drawing the image offset so its top-left pixel lands in the 1x1 context.
-        ctx.clear(CGRect(x: 0, y: 0, width: 1, height: 1))
+        // Draw the image offset so its top-left pixel lands in the 1x1 context.
         ctx.draw(image, in: CGRect(x: 0, y: -(image.height - 1), width: image.width, height: image.height))
         return (Double(px[0]) + Double(px[1]) + Double(px[2])) / (3 * 255)
     }
