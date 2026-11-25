@@ -18,6 +18,11 @@ struct AssistantPanel: View {
 
     @State private var text = ""
     @FocusState private var typing: Bool
+    /// Set once the user has agreed to what is sent to Anthropic.
+    @AppStorage(Self.noticeKey) private var noticeAccepted = false
+    @State private var showNotice = false
+
+    static let noticeKey = "aiDataNoticeAccepted"
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -213,9 +218,7 @@ struct AssistantPanel: View {
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 14).fill(Palette.field))
             Button {
-                let sent = text
-                text = ""
-                Task { await session.send(sent) }
+                if noticeAccepted { submit() } else { showNotice = true }
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.system(size: 32))
@@ -226,5 +229,20 @@ struct AssistantPanel: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
+        .alert("Send this to Anthropic?", isPresented: $showNotice) {
+            Button("Continue") {
+                noticeAccepted = true
+                submit()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("To answer, the app sends what you type, the open harness (its plugs, pins and wires), and the names of plugs on your other harnesses to Anthropic, using your own API key. Nothing else leaves your device, and nothing changes until you review it.")
+        }
+    }
+
+    private func submit() {
+        let sent = text
+        text = ""
+        Task { await session.send(sent) }
     }
 }

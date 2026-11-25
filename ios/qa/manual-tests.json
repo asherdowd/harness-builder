@@ -1,6 +1,6 @@
 {
   "title": "Harness Builder Test Run",
-  "updated": "Updated 2026-11-24 for the first full pre-archive run (Version 1.0, Build 1). Covers everything shipped so far, including iPad and iOS 17. Results cleared.",
+  "updated": "Updated 2026-11-25 for the first full pre-archive run (Version 1.0, Build 1). Covers everything shipped so far, including the Build with AI assistant, iPad and iOS 17. Results cleared.",
   "sections": [
     {
       "k": "A",
@@ -787,6 +787,18 @@
       "title": "Not now and changing harness",
       "steps": "Open a proposal's review and tap Not now. Ask for another, then switch to a different harness tab.",
       "expected": "Not now drops the proposal. Switching harness drops any waiting proposal and the tab dot goes away."
+    },
+    {
+      "id": "K25",
+      "title": "First-use notice before the first message",
+      "steps": "With a saved key, open the assistant on a fresh install (or after deleting and reinstalling the app) and send a first message. Tap Cancel on the notice, then send again and tap Continue. Send a second message.",
+      "expected": "The notice names what is sent (your text, the open harness, other plugs' names) and Anthropic. Cancel sends nothing and keeps what you typed. Continue sends the message. The notice does not appear again."
+    },
+    {
+      "id": "K26",
+      "title": "Privacy manifest and encryption flag in the build",
+      "steps": "Archive the app (Product > Archive), then in Organizer choose Generate Privacy Report, or check the built app's Info for the encryption key.",
+      "expected": "The report lists no tracking and the user-content entry. The app's Info has ITSAppUsesNonExemptEncryption set to NO."
     },
     {
       "id": "L1",
