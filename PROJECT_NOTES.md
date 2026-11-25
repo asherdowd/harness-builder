@@ -136,12 +136,11 @@ changes before writing Swift. The repo is public: never commit API keys.
 Example data shipped in the app must not contain research notes, internal
 reference codes or personal names (`ios/tools/clean_examples.py` cleans it).
 
-**Ideas parked (not planned yet):** wire calculator (AWG, resistance,
-round-trip voltage drop, thinnest gauge). If built, it should match the
-look of the main builder, with visuals that help people who are not
-electrical engineers (advanced hobbyist audience). It needs per-wire length
-and current, which the app doesn't store yet. Also parked: continuity test
-sheet from nets, cut list and BOM.
+**Planned after 1.0 (GitHub issues):** cut list and BOM (#13), wire
+calculator (#14: AWG, resistance, round-trip voltage drop, thinnest gauge;
+should match the look of the main builder and suit advanced hobbyists, not
+only electrical engineers), continuity test sheet (#15). The calculator and
+BOM need per-wire length and current, which the app doesn't store yet.
 
 **Planned after 1.0:** Bluetooth multimeter support (issue #12): a small
 driver layer, a "tested" record on a pin, a test mode that steps through a
