@@ -169,7 +169,7 @@ struct ExportCoverPage: View {
         }
         .padding(m)
         .frame(width: HarnessExporter.pageW, height: HarnessExporter.pageH, alignment: .topLeading)
-        .background(Palette.bg)
+        .exportBackground()
     }
 }
 
@@ -202,7 +202,7 @@ struct ExportTablePage: View {
         }
         .padding(m)
         .frame(width: HarnessExporter.pageW, height: HarnessExporter.pageH, alignment: .topLeading)
-        .background(Palette.bg)
+        .exportBackground()
     }
 }
 
@@ -261,6 +261,6 @@ struct ExportImageSheet: View {
         }
         .padding(Self.pad)
         .frame(width: Self.width, alignment: .topLeading)
-        .background(Palette.bg)
+        .exportBackground()
     }
 }

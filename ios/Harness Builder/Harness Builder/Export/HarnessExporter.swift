@@ -39,7 +39,7 @@ enum HarnessExporter {
     /// Keeps PNGs inside what the renderer handles reliably.
     private static let maxPixels: CGFloat = 10000
 
-    static func export(_ harnesses: [Harness], includeTable: Bool, format: Format, allHarnesses: [Harness]? = nil) throws -> [URL] {
+    static func export(_ harnesses: [Harness], includeTable: Bool, format: Format, allHarnesses: [Harness]? = nil, style: ExportStyle = .dark) throws -> [URL] {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("Export-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -48,7 +48,7 @@ enum HarnessExporter {
         case .pdf:
             let name = harnesses.count == 1 ? fileName(harnesses[0].title) : "Harnesses"
             let url = dir.appendingPathComponent(name + ".pdf")
-            try writePDF(harnesses, includeTable: includeTable, to: url)
+            try writePDF(harnesses, includeTable: includeTable, style: style, to: url)
             return [url]
         case .csv:
             let name = harnesses.count == 1 ? fileName(harnesses[0].title) + "-wires" : "Harnesses-wires"
@@ -63,7 +63,7 @@ enum HarnessExporter {
             return try harnesses.enumerated().map { i, h in
                 let prefix = harnesses.count > 1 ? "\(i + 1)-" : ""
                 let url = dir.appendingPathComponent(prefix + fileName(h.title) + ".png")
-                try writePNG(h, includeTable: includeTable, to: url)
+                try writePNG(h, includeTable: includeTable, style: style, to: url)
                 return url
             }
         }
@@ -77,23 +77,23 @@ enum HarnessExporter {
 
     // MARK: PDF
 
-    private static func writePDF(_ harnesses: [Harness], includeTable: Bool, to url: URL) throws {
+    private static func writePDF(_ harnesses: [Harness], includeTable: Bool, style: ExportStyle, to url: URL) throws {
         var box = CGRect(x: 0, y: 0, width: pageW, height: pageH)
         guard let ctx = CGContext(url as CFURL, mediaBox: &box, nil) else { throw ExportError.couldNotCreate }
         for h in harnesses {
-            addPage(ctx, ExportCoverPage(harness: h))
+            addPage(ctx, ExportCoverPage(harness: h), style: style)
             if includeTable {
                 let pages = paginate(h)
                 for (i, items) in pages.enumerated() {
-                    addPage(ctx, ExportTablePage(title: h.title, items: items, page: i + 1, pages: pages.count))
+                    addPage(ctx, ExportTablePage(title: h.title, items: items, page: i + 1, pages: pages.count), style: style)
                 }
             }
         }
         ctx.closePDF()
     }
 
-    private static func addPage<V: View>(_ ctx: CGContext, _ view: V) {
-        let renderer = ImageRenderer(content: view.environment(\.colorScheme, .dark))
+    private static func addPage<V: View>(_ ctx: CGContext, _ view: V, style: ExportStyle) {
+        let renderer = ImageRenderer(content: view.exportStyle(style))
         renderer.proposedSize = ProposedViewSize(width: pageW, height: pageH)
         renderer.render { _, draw in
             ctx.beginPDFPage(nil)
@@ -134,9 +134,9 @@ enum HarnessExporter {
 
     // MARK: PNG
 
-    private static func writePNG(_ harness: Harness, includeTable: Bool, to url: URL) throws {
+    private static func writePNG(_ harness: Harness, includeTable: Bool, style: ExportStyle, to url: URL) throws {
         let height = ExportImageSheet.height(harness, includeTable: includeTable)
-        let renderer = ImageRenderer(content: ExportImageSheet(harness: harness, includeTable: includeTable).environment(\.colorScheme, .dark))
+        let renderer = ImageRenderer(content: ExportImageSheet(harness: harness, includeTable: includeTable).exportStyle(style))
         renderer.scale = max(0.5, min(2, maxPixels / max(height, 1)))
         guard let image = renderer.uiImage, let data = image.pngData() else { throw ExportError.renderFailed }
         try data.write(to: url, options: .atomic)

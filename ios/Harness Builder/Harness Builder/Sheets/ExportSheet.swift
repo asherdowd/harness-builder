@@ -19,6 +19,7 @@ struct ExportSheet: View {
     @State private var scope: Scope = .this
     @State private var format: HarnessExporter.Format = .pdf
     @State private var includeTable = true
+    @State private var printFriendly = false
     @State private var busy = false
     @State private var files: [URL] = []
     @State private var errorText: String?
@@ -66,6 +67,9 @@ struct ExportSheet: View {
                         .tint(Palette.amberInk)
                         .foregroundStyle(Palette.chipText)
                         .padding(.top, 4)
+                    Toggle("Print-friendly (white page, light on ink)", isOn: $printFriendly)
+                        .tint(Palette.amberInk)
+                        .foregroundStyle(Palette.chipText)
                 }
 
                 Button {
@@ -110,6 +114,7 @@ struct ExportSheet: View {
         .onChange(of: scope) { _, _ in files = [] }
         .onChange(of: format) { _, _ in files = [] }
         .onChange(of: includeTable) { _, _ in files = [] }
+        .onChange(of: printFriendly) { _, _ in files = [] }
     }
 
     private func create() {
@@ -120,11 +125,12 @@ struct ExportSheet: View {
         let all = store.harnesses
         let table = includeTable
         let fmt = format
+        let style: ExportStyle = printFriendly ? .print : .dark
         Task {
             // Let "Creating…" show before the drawing work starts.
             try? await Task.sleep(nanoseconds: 80_000_000)
             do {
-                files = try HarnessExporter.export(list, includeTable: table, format: fmt, allHarnesses: all)
+                files = try HarnessExporter.export(list, includeTable: table, format: fmt, allHarnesses: all, style: style)
             } catch {
                 errorText = error.localizedDescription
             }

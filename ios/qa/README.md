@@ -38,6 +38,7 @@ Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the te
 | `SettingsTests` | Appearance setting and the light/dark palette |
 | `BackupAndCSVTests` | Backup and restore, CSV wire list, wired and spare counts |
 | `MapChecksTests` | The "Check this harness" rules |
+| `PrintExportTests` | Print-friendly export: real files, white page, dark export unchanged |
 | `LayoutTests` | Plug placement on the trunk, drawing every shape |
 | `TemplateTests` | Bundled examples load, are consistent, and stay free of research notes, codes and personal names |
 | `ExportTests` | Wire table page splitting, real PDF and PNG files, 60-pin harnesses |

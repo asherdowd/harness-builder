@@ -40,6 +40,11 @@ struct PinDotView: View {
 }
 
 struct PlugArt: View {
+    @Environment(\.exportPrint) private var printStyle
+
+    /// Plain white in the print-friendly export, to save ink.
+    private var bodyFill: Color { printStyle ? .white : Palette.bodyFill }
+
     let model: ArtModel
     var showRoles: Bool = false
 
@@ -91,7 +96,7 @@ struct PlugArt: View {
     /// Small locking tab used on round housings.
     private func smallTab(centerX: CGFloat, topY: CGFloat) -> some View {
         RoundedRectangle(cornerRadius: 2)
-            .fill(Palette.bodyFill)
+            .fill(bodyFill)
             .overlay(RoundedRectangle(cornerRadius: 2).stroke(Palette.bodyStroke, lineWidth: 1.25))
             .frame(width: 12, height: 7)
             .position(x: centerX, y: topY + 3.5)
@@ -108,7 +113,7 @@ struct PlugArt: View {
         case .round3Blade(let d):
             ZStack {
                 Circle()
-                    .fill(Palette.bodyFill)
+                    .fill(bodyFill)
                     .overlay(Circle().stroke(Palette.bodyStroke, lineWidth: 1.5))
                     .frame(width: d, height: d)
                     .position(x: w / 2, y: h / 2)
@@ -118,7 +123,7 @@ struct PlugArt: View {
         case .capsule(let cw, let ch):
             ZStack {
                 RoundedRectangle(cornerRadius: cw / 2.4)
-                    .fill(Palette.bodyFill)
+                    .fill(bodyFill)
                     .overlay(RoundedRectangle(cornerRadius: cw / 2.4).stroke(Palette.bodyStroke, lineWidth: 1.5))
                     .frame(width: cw, height: ch)
                     .position(x: w / 2, y: h / 2)
@@ -130,7 +135,7 @@ struct PlugArt: View {
                 layer(centered(line(CGPoint(x: 0, y: -bh / 2 - 18), CGPoint(x: 0, y: -bh / 2)), w, h),
                       stroke: Palette.leadStroke, lineWidth: 2.5)
                 RoundedRectangle(cornerRadius: bw / 2)
-                    .fill(Palette.bodyFill)
+                    .fill(bodyFill)
                     .overlay(RoundedRectangle(cornerRadius: bw / 2).stroke(Palette.bodyStroke, lineWidth: 1.5))
                     .frame(width: bw, height: bh)
                     .position(x: w / 2, y: h / 2)
@@ -140,7 +145,7 @@ struct PlugArt: View {
             ZStack {
                 layer(centered(line(CGPoint(x: -sw / 2 - 20, y: 0), CGPoint(x: -sw / 2, y: 0)), w, h),
                       stroke: Palette.leadStroke, lineWidth: 2.5)
-                layer(centered(spadePath(sw, sh), w, h), fill: Palette.bodyFill, stroke: Palette.bodyStroke)
+                layer(centered(spadePath(sw, sh), w, h), fill: bodyFill, stroke: Palette.bodyStroke)
             }
 
         case .lug(let r):
@@ -163,7 +168,7 @@ struct PlugArt: View {
                     layer(centered(line(.zero, item.element), w, h), stroke: Palette.leadStroke, lineWidth: 2)
                 }
                 Circle()
-                    .fill(Palette.bodyFill)
+                    .fill(bodyFill)
                     .overlay(Circle().stroke(Palette.bodyStroke, lineWidth: 1.5))
                     .frame(width: 18, height: 18)
                     .position(x: w / 2, y: h / 2)
@@ -207,8 +212,8 @@ struct PlugArt: View {
             CGPoint(x: -tabW / 2 + 2, y: -bh / 2 + 2),
         ]
         ZStack {
-            layer(centered(roundedPolyPath(body, radius: t.corner), w, h), fill: Palette.bodyFill, stroke: Palette.bodyStroke, lineWidth: 1.5)
-            layer(centered(roundedPolyPath(tab, radius: 2), w, h), fill: Palette.bodyFill, stroke: Palette.bodyStroke, lineWidth: 1.25)
+            layer(centered(roundedPolyPath(body, radius: t.corner), w, h), fill: bodyFill, stroke: Palette.bodyStroke, lineWidth: 1.5)
+            layer(centered(roundedPolyPath(tab, radius: 2), w, h), fill: bodyFill, stroke: Palette.bodyStroke, lineWidth: 1.25)
             if t.ridge {
                 layer(centered(line(CGPoint(x: -topW / 2 + 4, y: -bh / 2 + 7), CGPoint(x: topW / 2 - 4, y: -bh / 2 + 7)), w, h),
                       stroke: Palette.bodyStroke, lineWidth: 1, opacity: 0.55)
