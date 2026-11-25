@@ -42,6 +42,9 @@ Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the te
 | `SVGExportTests` | SVG export: well-formed, every pin and name drawn, every shape, palette colors |
 | `PlugDraftStoreTests` | Unsaved plug draft: kept, resumed, cleared, dropped when stale, not in backups |
 | `ConsistencyChecksTests` | Wire disagreements (power vs ground, gauge, function), spare pins with data, and the warning before a pin is moved off its wire |
+| `ProposalEngineTests` | AI safety layer: change format, every refusal, previews change nothing, overwrites and moves listed, new problems flagged |
+| `AIUndoTests` | Applying an AI preview and undoing it, and when each is refused |
+| `KeychainStoreTests` | The Anthropic key's storage (own test service, never the real key) |
 | `LayoutTests` | Plug placement on the trunk, drawing every shape |
 | `TemplateTests` | Bundled examples load, are consistent, and stay free of research notes, codes and personal names |
 | `ExportTests` | Wire table page splitting, real PDF and PNG files, 60-pin harnesses |

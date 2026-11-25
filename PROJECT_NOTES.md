@@ -125,6 +125,20 @@ tracing across harnesses with jump and zoom; "Connects to" on a wire you build (
 only) and role (hot, signal, ground) symbols; export to PDF or PNG with an
 optional wire table; light, dark and tinted app icons.
 
+**Build with AI, safety layer (built, not yet on any screen; issue #27):**
+the AI never edits data. It returns an `AIProposal`, a list of typed changes
+(`add_plug`, `set_pin`, `connect`; no deletes). `ProposalEngine.preview`
+checks it against the app's own rules (known shapes, colors, roles, gauges,
+pin limits), works out the new state without applying it, lists every value
+it would replace and every pin it would move off a wire, and adds the
+"Check this harness" problems the proposal would introduce. Pins it fills
+are marked Guess. `HarnessStore.applyAI` saves an undo snapshot first
+(`ai-undo.json`) and refuses a stale preview; `undoAI` is only offered while
+the data is exactly as the AI left it. The key lives in `KeychainStore`.
+Still to build: the Anthropic client and tool schema, the key sheet and model
+choice in Settings, the preview screen, plug-from-text in the wizard, the
+harness chat, and the test-run placeholder.
+
 **Planned next:** "Build with AI" (bring your own Anthropic key, key in the
 iOS Keychain, structured tool call, preview with every wire marked "Guess").
 See the Civic project doc `ios-swift-progress.md` for the agreed design.

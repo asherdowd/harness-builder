@@ -136,6 +136,12 @@ final class HarnessStore {
         commit { $0 = next }
     }
 
+    /// Swaps in a whole new state and saves it. Used by the AI apply and undo,
+    /// which have already checked that the new state is what the user approved.
+    func replaceState(_ next: AppState) {
+        commit { $0 = next }
+    }
+
     // MARK: reading
 
     var harnesses: [Harness] { state.harnesses }
