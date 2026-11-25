@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// How a pin looks for each confidence level (not color-coded on purpose).
-private func confidenceStyle(_ confidence: String?) -> (opacity: Double, dashed: Bool) {
+func confidenceStyle(_ confidence: String?) -> (opacity: Double, dashed: Bool) {
     switch confidence {
     case "High": return (1, false)
     case "Med-High": return (0.85, false)

@@ -32,6 +32,7 @@ struct ExportSheet: View {
         switch format {
         case .pdf: return "One PDF with a page for each harness, then its wire table. Stays sharp when printed or zoomed."
         case .png: return "One image for each harness, with the wire table underneath."
+        case .svg: return "One vector drawing for each harness (no wire table). Opens in Illustrator, Inkscape, Figma and browsers, and scales without losing sharpness."
         case .csv: return "One spreadsheet file with a row for every wire: plug, pin, color, function, gauge, type and where it connects. Opens in Numbers, Excel and Google Sheets."
         }
     }
@@ -59,14 +60,16 @@ struct ExportSheet: View {
                 SegRow(options: [(Scope.this, "This harness"), (Scope.all, "All harnesses")], selection: $scope)
 
                 caption("Format")
-                SegRow(options: [(HarnessExporter.Format.pdf, "PDF"), (HarnessExporter.Format.png, "PNG"), (HarnessExporter.Format.csv, "CSV")], selection: $format)
+                SegRow(options: [(HarnessExporter.Format.pdf, "PDF"), (HarnessExporter.Format.png, "PNG"), (HarnessExporter.Format.svg, "SVG"), (HarnessExporter.Format.csv, "CSV")], selection: $format)
                 caption(formatNote)
 
-                if format != .csv {
+                if format == .pdf || format == .png {
                     Toggle("Include the wire table", isOn: $includeTable)
                         .tint(Palette.amberInk)
                         .foregroundStyle(Palette.chipText)
                         .padding(.top, 4)
+                }
+                if format != .csv {
                     Toggle("Print-friendly (white page, light on ink)", isOn: $printFriendly)
                         .tint(Palette.amberInk)
                         .foregroundStyle(Palette.chipText)

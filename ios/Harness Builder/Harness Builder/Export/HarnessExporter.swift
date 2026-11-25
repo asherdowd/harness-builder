@@ -3,7 +3,7 @@
 //  Harness Builder
 //
 //  Turns harnesses into a PDF (one file, a page for each harness plus its
-//  wire table pages), PNG images (one per harness) or a CSV wire list,
+//  wire table pages), PNG images or SVG drawings (one per harness) or a CSV wire list,
 //  saved in a temporary folder so they can be shared.
 //
 
@@ -25,7 +25,7 @@ enum ExportError: LocalizedError {
 @MainActor
 enum HarnessExporter {
     enum Format: Hashable {
-        case pdf, png, csv
+        case pdf, png, svg, csv
     }
 
     // US Letter, in points.
@@ -50,6 +50,17 @@ enum HarnessExporter {
             let url = dir.appendingPathComponent(name + ".pdf")
             try writePDF(harnesses, includeTable: includeTable, style: style, to: url)
             return [url]
+        case .svg:
+            return try harnesses.enumerated().map { i, h in
+                let prefix = harnesses.count > 1 ? "\(i + 1)-" : ""
+                let url = dir.appendingPathComponent(prefix + fileName(h.title) + ".svg")
+                do {
+                    try HarnessSVG.svg(for: h, style: style).write(to: url, atomically: true, encoding: .utf8)
+                } catch {
+                    throw ExportError.couldNotCreate
+                }
+                return url
+            }
         case .csv:
             let name = harnesses.count == 1 ? fileName(harnesses[0].title) + "-wires" : "Harnesses-wires"
             let url = dir.appendingPathComponent(name + ".csv")
