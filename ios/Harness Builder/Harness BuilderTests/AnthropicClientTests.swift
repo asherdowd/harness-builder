@@ -64,7 +64,7 @@ struct AnthropicClientTests {
         #expect(req.value(forHTTPHeaderField: "content-type") == "application/json")
     }
 
-    @Test func theBodyCarriesTheModelSystemMessagesAndTheStrictTool() async throws {
+    @Test func theBodyCarriesTheModelSystemMessagesAndTheTool() async throws {
         let script = Script([(200, textReply("Hi"))])
         _ = try await client(script, model: "claude-sonnet-5-5")
             .ask(system: "be brief", messages: [AIMessage(role: .user, text: "one"), AIMessage(role: .assistant, text: "two"), AIMessage(role: .user, text: "three")])
@@ -77,7 +77,7 @@ struct AnthropicClientTests {
         let tools = try #require(body["tools"] as? [[String: Any]])
         #expect(tools.count == 1)
         #expect(tools[0]["name"] as? String == "propose_changes")
-        #expect(tools[0]["strict"] as? Bool == true)
+        #expect(tools[0]["strict"] == nil)
         #expect((body["max_tokens"] as? Int ?? 0) > 0)
     }
 

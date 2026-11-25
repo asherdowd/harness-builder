@@ -7,7 +7,7 @@
 //  (propose_changes) and its reply is turned into text plus an optional
 //  AIProposal. Sending is a closure so tests can supply canned replies.
 //
-//  The tool is called with tool_choice "auto" and a strict schema, not forced:
+//  The tool is called with tool_choice "auto", not forced:
 //  forcing a tool is rejected by some of the models offered here.
 //
 

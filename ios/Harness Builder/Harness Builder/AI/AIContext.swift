@@ -2,7 +2,7 @@
 //  AIContext.swift
 //  Harness Builder
 //
-//  What the assistant is told: the one tool it may use (with a strict schema),
+//  What the assistant is told: the one tool it may use (with a schema),
 //  the rules, the app's own lists of shapes, colors, roles and gauges, and the
 //  open harness. Only the open harness is described in full. Plugs on other
 //  harnesses are listed by name so a wire can be connected to them.
@@ -17,8 +17,9 @@ enum AIContext {
 
     // MARK: the tool
 
-    /// The tool definition, as sent to the API. `strict` makes the API hold
-    /// the assistant to this schema. The app still checks every proposal itself.
+    /// The tool definition, as sent to the API. It is not marked `strict`: the
+    /// API refused the schema as too complex to compile. The app checks every
+    /// proposal itself and sends the exact complaint back once if one is bad.
     static var tool: [String: Any] {
         func str(_ d: String) -> [String: Any] { ["type": "string", "description": d] }
         func int(_ d: String) -> [String: Any] { ["type": "integer", "description": d] }
@@ -63,7 +64,6 @@ enum AIContext {
         var tool: [String: Any] = [:]
         tool["name"] = toolName
         tool["description"] = "Propose changes to the open harness. The user reviews every change before anything is applied. Use this whenever the user describes plugs, pins, wires or connections to record."
-        tool["strict"] = true
         tool["input_schema"] = schema
         return tool
     }

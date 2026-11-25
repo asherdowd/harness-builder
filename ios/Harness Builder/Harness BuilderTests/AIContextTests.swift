@@ -36,9 +36,9 @@ struct AIContextTests {
         return try #require(items["properties"] as? [String: Any])
     }
 
-    @Test func theToolIsStrictAndNamed() {
+    @Test func theToolIsNamedAndNotStrict() {
         #expect(tool()["name"] as? String == "propose_changes")
-        #expect(tool()["strict"] as? Bool == true)
+        #expect(tool()["strict"] == nil)   // the API refused the schema as too complex when strict
         let schema = tool()["input_schema"] as? [String: Any]
         #expect(schema?["additionalProperties"] as? Bool == false)
         #expect((schema?["required"] as? [String])?.sorted() == ["changes", "summary"])
