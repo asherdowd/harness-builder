@@ -90,6 +90,7 @@ struct PlugSheet: View {
                 store.removePlug(id: c.id)
                 onRemoved()
             }
+            Button("Cancel", role: .cancel) {}
         }
     }
 
