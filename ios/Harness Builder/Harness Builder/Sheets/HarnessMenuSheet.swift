@@ -14,6 +14,8 @@ struct HarnessMenuSheet: View {
     let onClose: () -> Void
     /// Open the export sheet.
     let onExport: () -> Void
+    /// Open the map checks.
+    let onChecks: () -> Void
 
     @State private var name = ""
     @State private var loaded = false
@@ -62,6 +64,18 @@ struct HarnessMenuSheet: View {
                     .tint(Palette.amberInk)
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || name == harness?.title)
             }
+
+            Button {
+                onChecks()
+            } label: {
+                Label("Check this harness", systemImage: "checkmark.seal")
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 13)
+            }
+            .buttonStyle(.bordered)
+            .tint(Palette.amberInk)
+            .padding(.top, 6)
 
             Button {
                 onExport()

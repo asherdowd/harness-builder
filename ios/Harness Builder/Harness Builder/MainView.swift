@@ -17,6 +17,7 @@ private enum ActiveSheet: Identifiable {
     case harnessMenu
     case export
     case settings
+    case checks
     case linkPicker(String)
 
     var id: String { "sheet" }
@@ -28,6 +29,7 @@ private enum Panel {
     case harnessMenu
     case export
     case settings
+    case checks
     case linkPicker(String)
 }
 
@@ -75,6 +77,7 @@ struct MainView: View {
                     case .harnessMenu: return .harnessMenu
                     case .export: return .export
                     case .settings: return .settings
+                    case .checks: return .checks
                     case .linkPicker(let id): return .linkPicker(id)
                     }
                 }
@@ -149,11 +152,20 @@ struct MainView: View {
                 HarnessMenuSheet(store: store, harnessID: store.active.id, onClose: {
                     selectedID = nil
                     panel = nil
-                }, onExport: { panel = .export })
+                }, onExport: { panel = .export }, onChecks: { panel = .checks })
                     .presentationDetents([.medium])
                     .presentationBackground(Palette.sheetBg)
             case .export:
                 ExportSheet(store: store, onClose: { panel = nil })
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Palette.sheetBg)
+            case .checks:
+                ChecksSheet(store: store,
+                            onJump: { id in
+                                panel = nil
+                                select(id)
+                            },
+                            onClose: { panel = nil })
                     .presentationDetents([.medium, .large])
                     .presentationBackground(Palette.sheetBg)
             case .settings:

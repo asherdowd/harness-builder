@@ -35,6 +35,9 @@ Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the te
 | `StoreTests` | Harness and plug actions, links, templates, saving, unreadable save file |
 | `TraceTests` | Wire tracing, canvas outlines, "goes to pin N" matching |
 | `WireConnectTests` | Connecting wires you build to pins on other plugs: draft, store, and tracing from both ends |
+| `SettingsTests` | Appearance setting and the light/dark palette |
+| `BackupAndCSVTests` | Backup and restore, CSV wire list, wired and spare counts |
+| `MapChecksTests` | The "Check this harness" rules |
 | `LayoutTests` | Plug placement on the trunk, drawing every shape |
 | `TemplateTests` | Bundled examples load, are consistent, and stay free of research notes, codes and personal names |
 | `ExportTests` | Wire table page splitting, real PDF and PNG files, 60-pin harnesses |

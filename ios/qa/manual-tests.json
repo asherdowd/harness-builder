@@ -62,6 +62,8 @@
     {"id": "E7", "title": "Delete the only harness", "steps": "Delete every harness.", "expected": "The app shows a sensible first-open state (no crash).", "tag": "unv"},
     {"id": "E8", "title": "Export entry in the menu", "steps": "Open the three-dot menu.", "expected": "There is an Export as PDF or image button."},
     {"id": "E9", "title": "Switching tabs", "steps": "Switch between several harness tabs quickly.", "expected": "Each shows its own plugs. No stale selection or stuck sheet.", "tag": "unv"},
+    {"id": "E10", "title": "Check this harness", "steps": "Open the harness menu and tap Check this harness on a harness with a missing color, an unlabeled wire and an empty plug.", "expected": "The sheet lists likely mistakes first, then things worth a look. Tapping an item closes the sheet and selects that plug."},
+    {"id": "E11", "title": "Check finds nothing", "steps": "Run Check this harness on a harness where every wire has a color and label.", "expected": "It says nothing looks wrong."},
     {"id": "F1", "title": "Component harness", "steps": "Add the Component template and open its plug.", "expected": "The plug sheet has a link section for linking to a plug on another harness."},
     {"id": "F2", "title": "Link picker", "steps": "Tap to link and look at the list.", "expected": "It lists plugs on the other harnesses (not the component's own)."},
     {"id": "F3", "title": "Linked state", "steps": "Pick a plug to link to.", "expected": "A Linked to card shows the target. Wires that match show goes to pin N."},
