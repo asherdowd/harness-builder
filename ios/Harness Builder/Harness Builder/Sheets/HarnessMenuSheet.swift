@@ -39,11 +39,11 @@ struct HarnessMenuSheet: View {
             HStack {
                 Text("Harness")
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Spacer()
                 Button("Done", action: onClose)
                     .font(.system(size: 14, weight: .semibold))
-                    .tint(Palette.amber)
+                    .tint(Palette.amberInk)
             }
 
             Text("Name")
@@ -53,13 +53,13 @@ struct HarnessMenuSheet: View {
                 TextField("Harness name", text: $name)
                     .textFieldStyle(.plain)
                     .padding(12)
-                    .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
-                    .foregroundStyle(.white)
+                    .background(RoundedRectangle(cornerRadius: 11).fill(Palette.field))
+                    .foregroundStyle(Palette.text)
                     .submitLabel(.done)
                     .onSubmit(saveName)
                 Button("Rename", action: saveName)
                     .buttonStyle(.bordered)
-                    .tint(Palette.amber)
+                    .tint(Palette.amberInk)
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || name == harness?.title)
             }
 
@@ -72,7 +72,7 @@ struct HarnessMenuSheet: View {
                     .padding(.vertical, 13)
             }
             .buttonStyle(.bordered)
-            .tint(Palette.amber)
+            .tint(Palette.amberInk)
             .padding(.top, 6)
 
             if !store.isBlank {
@@ -90,7 +90,7 @@ struct HarnessMenuSheet: View {
             Spacer()
         }
         .padding(16)
-        .background(Color(hex: 0x1b1f26))
+        .background(Palette.sheetBg)
         .onAppear {
             if !loaded {
                 name = harness?.title ?? ""

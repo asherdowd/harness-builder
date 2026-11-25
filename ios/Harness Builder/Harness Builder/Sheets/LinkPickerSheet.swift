@@ -23,11 +23,11 @@ struct LinkPickerSheet: View {
                 HStack {
                     Text("Link to a plug")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.text)
                     Spacer()
                     Button("Cancel", action: onClose)
                         .font(.system(size: 14, weight: .semibold))
-                        .tint(Palette.amber)
+                        .tint(Palette.amberInk)
                 }
                 Text("Pick the plug on another harness that this one connects to. You can then jump between them.")
                     .font(.system(size: 13))
@@ -55,7 +55,7 @@ struct LinkPickerSheet: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(target.connector.title)
                                         .font(.system(size: 15, weight: .semibold))
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(Palette.text)
                                     Text("\(target.connector.pinCount) pins")
                                         .font(.system(size: 12))
                                         .foregroundStyle(Palette.nameText)
@@ -72,6 +72,6 @@ struct LinkPickerSheet: View {
             }
             .padding(16)
         }
-        .background(Color(hex: 0x1b1f26))
+        .background(Palette.sheetBg)
     }
 }

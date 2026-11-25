@@ -81,10 +81,10 @@ struct PlugSheet: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
-                .background(Color(hex: 0x1b1f26))
+                .background(Palette.sheetBg)
                 .overlay(alignment: .top) { Divider().overlay(Palette.divider) }
         }
-        .background(Color(hex: 0x1b1f26))
+        .background(Palette.sheetBg)
         .confirmationDialog("Remove this plug?", isPresented: $confirmRemove, titleVisibility: .visible) {
             Button("Remove", role: .destructive) {
                 store.removePlug(id: c.id)
@@ -100,7 +100,7 @@ struct PlugSheet: View {
             HStack(alignment: .firstTextBaseline) {
                 Text(c.title)
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Spacer()
             }
             Text("\(c.pinCount) pins")
@@ -126,7 +126,7 @@ struct PlugSheet: View {
                 }
             }
             .buttonStyle(.bordered)
-            .tint(Palette.amber)
+            .tint(Palette.amberInk)
         }
     }
 
@@ -163,10 +163,10 @@ struct PlugSheet: View {
                     if editingNote {
                         TextEditor(text: $noteText)
                             .scrollContentBackground(.hidden)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Palette.text)
                             .frame(minHeight: 120)
                             .padding(8)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(Color(hex: 0x1d2128)))
+                            .background(RoundedRectangle(cornerRadius: 10).fill(Palette.field))
                         HStack {
                             Button("Cancel") { editingNote = false }
                             Spacer()
@@ -178,7 +178,7 @@ struct PlugSheet: View {
                             .fontWeight(.bold)
                         }
                         .buttonStyle(.bordered)
-                        .tint(Palette.amber)
+                        .tint(Palette.amberInk)
                     } else {
                         if text.isEmpty {
                             Text("No notes yet.")
@@ -195,7 +195,7 @@ struct PlugSheet: View {
                             editingNote = true
                         }
                         .buttonStyle(.bordered)
-                        .tint(Palette.amber)
+                        .tint(Palette.amberInk)
                     }
                 }
                 .padding(.horizontal, 12)
@@ -236,7 +236,7 @@ struct PlugSheet: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text(title.uppercased())
                     .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Palette.amber)
+                    .foregroundStyle(Palette.amberInk)
                 ForEach(items) { l in
                     Button {
                         if let ref = store.plug(id: l.plugID) { onJump(ref) }
@@ -246,7 +246,7 @@ struct PlugSheet: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(l.plugTitle + (l.pinNumber.map { " · pin \($0)" } ?? ""))
                                     .font(.system(size: 15, weight: .semibold))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Palette.text)
                                 Text("\(l.harnessTitle), \(sub)")
                                     .font(.system(size: 12))
                                     .foregroundStyle(Palette.nameText)
@@ -271,10 +271,10 @@ struct PlugSheet: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(label.uppercased())
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(Palette.amber)
+                        .foregroundStyle(Palette.amberInk)
                     Text(ref.connector.title)
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.text)
                     Text(ref.harness.tabLabel)
                         .font(.system(size: 12))
                         .foregroundStyle(Palette.nameText)
@@ -297,12 +297,12 @@ struct PlugSheet: View {
             ForEach(c.flatPins, id: \.number) { fp in
                 wireRow(fp, target: target)
                     .contentShape(Rectangle())
-                    .background(selectedPin == fp.number - 1 ? Palette.amber.opacity(0.14) : Color.clear)
+                    .background(selectedPin == fp.number - 1 ? Palette.amberInk.opacity(0.14) : Color.clear)
                     .onTapGesture {
                         guard fp.pin.populated else { return }
                         selectedPin = selectedPin == fp.number - 1 ? nil : fp.number - 1
                     }
-                Divider().overlay(Color(hex: 0x2a2e35))
+                Divider().overlay(Palette.rowDivider)
             }
         }
     }
@@ -319,7 +319,7 @@ struct PlugSheet: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(p.guess ?? "Not labeled")
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.text)
                     Text(WireColor.label(p.color) + (p.gauge.map { " · \($0) AWG" } ?? "") + (p.confidence.map { " · \($0)" } ?? ""))
                         .font(.system(size: 11))
                         .foregroundStyle(Palette.nameText)
@@ -328,7 +328,7 @@ struct PlugSheet: View {
                 if let target, let n = Self.matchPin(for: p, in: target) {
                     Text("goes to pin \(n)")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(Palette.amber)
+                        .foregroundStyle(Palette.amberInk)
                 }
                 if let role = WireRole(rawValue: p.role ?? "") {
                     RoleBadge(role: role, size: 20)

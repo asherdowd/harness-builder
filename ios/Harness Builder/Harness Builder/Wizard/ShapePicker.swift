@@ -41,7 +41,7 @@ struct ShapePicker: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("What kind of plug?")
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Text("Pick the shape that matches the real one. The pin layout follows.")
                     .font(.system(size: 13))
                     .foregroundStyle(Palette.nameText)

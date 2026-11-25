@@ -157,7 +157,7 @@ struct ExportCoverPage: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(harness.title)
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Text("\(harness.connectors.count) plugs")
                     .font(.system(size: 11))
                     .foregroundStyle(Palette.nameText)
@@ -239,7 +239,7 @@ struct ExportImageSheet: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(harness.title)
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Text("\(harness.connectors.count) plugs")
                     .font(.system(size: 11))
                     .foregroundStyle(Palette.nameText)

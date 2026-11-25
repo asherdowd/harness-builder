@@ -108,9 +108,9 @@ struct PlugItemView: View {
         ZStack {
             if selected || linked {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(selected ? Palette.amber.opacity(0.10) : Color(hex: 0x6fb3c9, opacity: 0.10))
+                    .fill(selected ? Palette.amber.opacity(0.10) : Palette.linkOutline.opacity(0.10))
                     .overlay(RoundedRectangle(cornerRadius: 12)
-                        .stroke(selected ? Palette.amber : Color(hex: 0x6fb3c9),
+                        .stroke(selected ? Palette.amberInk : Palette.linkOutline,
                                 style: StrokeStyle(lineWidth: selected ? 2.2 : 1.8, dash: selected ? [] : [5, 4])))
                     .frame(width: w + 18, height: h + 58)
                     .position(x: cx, y: item.y + 20)

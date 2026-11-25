@@ -76,7 +76,7 @@ struct ColorSwatch: View {
                             if let hex = item.element.hex {
                                 Color(hex: hex)
                             } else {
-                                Color(hex: 0x2a2e35)
+                                Palette.chipFill
                                 Text("?").font(.system(size: 10, weight: .bold)).foregroundStyle(Color(hex: 0xc99a4a))
                             }
                         }

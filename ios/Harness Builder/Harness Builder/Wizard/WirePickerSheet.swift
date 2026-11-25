@@ -39,7 +39,7 @@ struct WirePickerSheet: View {
                     Button("Cancel", action: onClose)
                         .font(.system(size: 14, weight: .semibold))
                 }
-                .tint(Palette.amber)
+                .tint(Palette.amberInk)
 
                 if let ref = chosen {
                     pins(of: ref)
@@ -49,7 +49,7 @@ struct WirePickerSheet: View {
             }
             .padding(16)
         }
-        .background(Color(hex: 0x1b1f26))
+        .background(Palette.sheetBg)
     }
 
     // MARK: step one
@@ -62,7 +62,7 @@ struct WirePickerSheet: View {
         return VStack(alignment: .leading, spacing: 12) {
             Text("Connect to a pin")
                 .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Palette.text)
             Text("Pick the plug this wire continues to.")
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.nameText)
@@ -98,7 +98,7 @@ struct WirePickerSheet: View {
         return VStack(alignment: .leading, spacing: 12) {
             Text(ref.connector.title)
                 .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Palette.text)
             Text("Pick the pin this wire connects to.")
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.nameText)
@@ -121,10 +121,10 @@ struct WirePickerSheet: View {
                         ColorSwatch(code: fp.pin.color)
                         Text(fp.pin.guess ?? "Not labeled")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Palette.text)
                         Spacer()
                         if !(fp.pin.netId ?? "").isEmpty {
-                            Image(systemName: "link").foregroundStyle(Palette.amber)
+                            Image(systemName: "link").foregroundStyle(Palette.amberInk)
                         }
                     }
                     .padding(12)
@@ -140,7 +140,7 @@ struct WirePickerSheet: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Text(sub)
                     .font(.system(size: 12))
                     .foregroundStyle(Palette.nameText)

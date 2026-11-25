@@ -16,6 +16,7 @@ private enum ActiveSheet: Identifiable {
     case addHarness
     case harnessMenu
     case export
+    case settings
     case linkPicker(String)
 
     var id: String { "sheet" }
@@ -26,6 +27,7 @@ private enum Panel {
     case addHarness
     case harnessMenu
     case export
+    case settings
     case linkPicker(String)
 }
 
@@ -41,6 +43,7 @@ struct MainView: View {
     @State private var wizard: WizardRequest?
     @State private var panel: Panel?
     @State private var showRoles = false
+    @AppStorage(AppearanceMode.storageKey) private var appearanceRaw = AppearanceMode.system.rawValue
     @State private var fitTick = 0
     @State private var selectedPin: Int?
     @State private var focusID: String?
@@ -71,6 +74,7 @@ struct MainView: View {
                     case .addHarness: return .addHarness
                     case .harnessMenu: return .harnessMenu
                     case .export: return .export
+                    case .settings: return .settings
                     case .linkPicker(let id): return .linkPicker(id)
                     }
                 }
@@ -90,8 +94,9 @@ struct MainView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 0) {
-                header
                 tabRow
+                Divider().overlay(Palette.divider)
+                header
             }
             .background(Palette.surface)
             Divider().overlay(Palette.divider)
@@ -107,7 +112,7 @@ struct MainView: View {
             }
         }
         .background(Palette.bg.ignoresSafeArea())
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(AppearanceMode.from(appearanceRaw).scheme)
         .sheet(item: activeSheet) { kind in
             switch kind {
             case .plug(let id):
@@ -123,7 +128,7 @@ struct MainView: View {
                           onLink: { plug in panel = .linkPicker(plug.id) })
                     .presentationDetents([.fraction(0.46), .large])
                     .presentationBackgroundInteraction(.enabled(upThrough: .fraction(0.46)))
-                    .presentationBackground(Color(hex: 0x1b1f26))
+                    .presentationBackground(Palette.sheetBg)
             case .wizard(let req):
                 PlugWizard(store: store, harnessID: req.harnessID, editing: req.editing, startPin: req.startPin,
                            onClose: { wizard = nil },
@@ -132,29 +137,33 @@ struct MainView: View {
                                wizard = nil
                            })
                     .presentationDetents([.large])
-                    .presentationBackground(Color(hex: 0x1b1f26))
+                    .presentationBackground(Palette.sheetBg)
             case .addHarness:
                 AddHarnessSheet(store: store, onClose: {
                     selectedID = nil
                     panel = nil
                 })
                     .presentationDetents([.medium, .large])
-                    .presentationBackground(Color(hex: 0x1b1f26))
+                    .presentationBackground(Palette.sheetBg)
             case .harnessMenu:
                 HarnessMenuSheet(store: store, harnessID: store.active.id, onClose: {
                     selectedID = nil
                     panel = nil
                 }, onExport: { panel = .export })
                     .presentationDetents([.medium])
-                    .presentationBackground(Color(hex: 0x1b1f26))
+                    .presentationBackground(Palette.sheetBg)
             case .export:
                 ExportSheet(store: store, onClose: { panel = nil })
                     .presentationDetents([.medium, .large])
-                    .presentationBackground(Color(hex: 0x1b1f26))
+                    .presentationBackground(Palette.sheetBg)
+            case .settings:
+                SettingsSheet(onClose: { panel = nil })
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Palette.sheetBg)
             case .linkPicker(let id):
                 LinkPickerSheet(store: store, plugID: id, onClose: { panel = nil })
                     .presentationDetents([.large])
-                    .presentationBackground(Color(hex: 0x1b1f26))
+                    .presentationBackground(Palette.sheetBg)
             }
         }
     }
@@ -163,7 +172,7 @@ struct MainView: View {
         HStack(spacing: 8) {
             Text(store.active.title)
                 .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Palette.text)
                 .lineLimit(1)
             Spacer()
             Button {
@@ -213,6 +222,17 @@ struct MainView: View {
     private var tabRow: some View {
         // "＋ New" stays pinned at the right edge; only the harness tabs scroll.
         HStack(spacing: 8) {
+            Button {
+                selectedID = nil
+                panel = .settings
+            } label: {
+                Image(systemName: "gearshape")
+                    .foregroundStyle(Palette.chipText)
+                    .frame(width: 36, height: 32)
+                    .background(Capsule().fill(Palette.chipFill))
+            }
+            .accessibilityLabel("Settings")
+            .padding(.leading, 14)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(store.harnesses) { h in
@@ -230,7 +250,6 @@ struct MainView: View {
                         }
                     }
                 }
-                .padding(.leading, 14)
             }
             Button {
                 selectedID = nil
@@ -238,13 +257,14 @@ struct MainView: View {
             } label: {
                 Text("＋ New")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Palette.amber)
+                    .foregroundStyle(Palette.amberInk)
                     .padding(.horizontal, 11)
                     .padding(.vertical, 6)
-                    .overlay(Capsule().stroke(Palette.amber.opacity(0.7), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                    .overlay(Capsule().stroke(Palette.amberInk.opacity(0.7), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
             }
             .padding(.trailing, 14)
         }
+        .padding(.top, 8)
         .padding(.bottom, 8)
     }
 
@@ -253,7 +273,7 @@ struct MainView: View {
             VStack(spacing: 10) {
                 Text("Build a harness")
                     .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.text)
                 Text("Start with an example to see how a harness looks, then make it your own.")
                     .font(.system(size: 15))
                     .foregroundStyle(Palette.nameText)
@@ -282,8 +302,8 @@ struct MainView: View {
                 }
             }
             .padding(22)
-            .background(RoundedRectangle(cornerRadius: 20).fill(Color(hex: 0x1b1f26)))
-            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color(hex: 0x3a414c), lineWidth: 1))
+            .background(RoundedRectangle(cornerRadius: 20).fill(Palette.sheetBg))
+            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Palette.cardStroke, lineWidth: 1))
             .padding(.horizontal, 24)
             .padding(.top, 70)
             Spacer()

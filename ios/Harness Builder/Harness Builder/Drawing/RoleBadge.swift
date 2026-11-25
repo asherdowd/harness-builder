@@ -20,9 +20,9 @@ enum WireRole: String, CaseIterable {
 
     var color: Color {
         switch self {
-        case .power: return Color(hex: 0xef6a5b)
-        case .signal: return Color(hex: 0x5cb0ee)
-        case .ground: return Color(hex: 0xaab3be)
+        case .power: return Color(light: 0xd6402f, dark: 0xef6a5b)
+        case .signal: return Color(light: 0x2a7fc0, dark: 0x5cb0ee)
+        case .ground: return Color(light: 0x6b7480, dark: 0xaab3be)
         }
     }
 }

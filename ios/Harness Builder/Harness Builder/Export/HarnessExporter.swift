@@ -84,7 +84,7 @@ enum HarnessExporter {
     }
 
     private static func addPage<V: View>(_ ctx: CGContext, _ view: V) {
-        let renderer = ImageRenderer(content: view)
+        let renderer = ImageRenderer(content: view.environment(\.colorScheme, .dark))
         renderer.proposedSize = ProposedViewSize(width: pageW, height: pageH)
         renderer.render { _, draw in
             ctx.beginPDFPage(nil)
@@ -127,7 +127,7 @@ enum HarnessExporter {
 
     private static func writePNG(_ harness: Harness, includeTable: Bool, to url: URL) throws {
         let height = ExportImageSheet.height(harness, includeTable: includeTable)
-        let renderer = ImageRenderer(content: ExportImageSheet(harness: harness, includeTable: includeTable))
+        let renderer = ImageRenderer(content: ExportImageSheet(harness: harness, includeTable: includeTable).environment(\.colorScheme, .dark))
         renderer.scale = max(0.5, min(2, maxPixels / max(height, 1)))
         guard let image = renderer.uiImage, let data = image.pngData() else { throw ExportError.renderFailed }
         try data.write(to: url, options: .atomic)

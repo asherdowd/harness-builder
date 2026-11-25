@@ -22,7 +22,7 @@ struct SegRow<T: Hashable>: View {
                 } label: {
                     Text(item.element.1)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(on ? Palette.amberText : Color(hex: 0xaeb4bd))
+                        .foregroundStyle(on ? Palette.amberText : Palette.segText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 9)
                         .background(RoundedRectangle(cornerRadius: 8).fill(on ? Palette.amber : Color.clear))
@@ -31,7 +31,7 @@ struct SegRow<T: Hashable>: View {
             }
         }
         .padding(3)
-        .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
+        .background(RoundedRectangle(cornerRadius: 11).fill(Palette.field))
     }
 }
 
@@ -70,11 +70,11 @@ struct PinEditor: View {
         Button(action: action) {
             VStack(spacing: 3) {
                 ColorSwatch(code: code, width: 30, height: 30)
-                Text(name).font(.system(size: 10.5)).foregroundStyle(Color(hex: 0x9aa2ad))
+                Text(name).font(.system(size: 10.5)).foregroundStyle(Palette.captionText)
             }
             .padding(4)
             .frame(maxWidth: .infinity)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(selected ? Palette.amber : Color.clear, lineWidth: 2))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(selected ? Palette.amberInk : Color.clear, lineWidth: 2))
             .opacity(disabled ? 0.35 : 1)
         }
         .buttonStyle(.plain)
@@ -102,11 +102,11 @@ struct PinEditor: View {
                     } label: {
                         VStack(spacing: 3) {
                             ColorSwatch(code: nil, width: 30, height: 30)
-                            Text("None").font(.system(size: 10.5)).foregroundStyle(Color(hex: 0x9aa2ad))
+                            Text("None").font(.system(size: 10.5)).foregroundStyle(Palette.captionText)
                         }
                         .padding(4)
                         .frame(maxWidth: .infinity)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(parts.stripe.isEmpty ? Palette.amber : Color.clear, lineWidth: 2))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(parts.stripe.isEmpty ? Palette.amberInk : Color.clear, lineWidth: 2))
                     }
                     .buttonStyle(.plain)
                     ForEach(wireTokens.filter { $0.code != parts.main }, id: \.code) { t in
@@ -124,8 +124,8 @@ struct PinEditor: View {
                           text: Binding(get: { pin.guess ?? "" }, set: { pin.guess = $0.isEmpty ? nil : $0 }))
                     .textFieldStyle(.plain)
                     .padding(12)
-                    .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
-                    .foregroundStyle(.white)
+                    .background(RoundedRectangle(cornerRadius: 11).fill(Palette.field))
+                    .foregroundStyle(Palette.text)
 
                 caption("Connects to (optional)")
                 connectsTo
@@ -154,11 +154,11 @@ struct PinEditor: View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(connections) { c in
                 HStack(spacing: 10) {
-                    Image(systemName: "link").foregroundStyle(Palette.amber)
+                    Image(systemName: "link").foregroundStyle(Palette.amberInk)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(c.title)
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Palette.text)
                         Text(c.sub)
                             .font(.system(size: 12))
                             .foregroundStyle(Palette.nameText)
@@ -166,12 +166,12 @@ struct PinEditor: View {
                     Spacer()
                 }
                 .padding(10)
-                .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
+                .background(RoundedRectangle(cornerRadius: 11).fill(Palette.field))
             }
             HStack(spacing: 8) {
                 Button(connections.isEmpty ? "Connect to a pin" : "Connect to another pin", action: onConnect)
                     .buttonStyle(.bordered)
-                    .tint(Palette.amber)
+                    .tint(Palette.amberInk)
                 if pin.netId != nil {
                     Button("Clear", role: .destructive, action: onDisconnect)
                         .buttonStyle(.bordered)
@@ -190,8 +190,8 @@ struct PinEditor: View {
                 .foregroundStyle(Palette.chipText)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(RoundedRectangle(cornerRadius: 10).fill(Color(hex: 0x1d2128)))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(on ? Palette.amber : Color.clear, lineWidth: 2))
+                .background(RoundedRectangle(cornerRadius: 10).fill(Palette.field))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(on ? Palette.amberInk : Color.clear, lineWidth: 2))
         }
         .buttonStyle(.plain)
     }

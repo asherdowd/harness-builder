@@ -39,11 +39,11 @@ struct ExportSheet: View {
                 HStack {
                     Text("Export")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.text)
                     Spacer()
                     Button("Done", action: onClose)
                         .font(.system(size: 14, weight: .semibold))
-                        .tint(Palette.amber)
+                        .tint(Palette.amberInk)
                 }
 
                 caption("What to export")
@@ -56,7 +56,7 @@ struct ExportSheet: View {
                         : "One image for each harness, with the wire table underneath.")
 
                 Toggle("Include the wire table", isOn: $includeTable)
-                    .tint(Palette.amber)
+                    .tint(Palette.amberInk)
                     .foregroundStyle(Palette.chipText)
                     .padding(.top, 4)
 
@@ -82,7 +82,7 @@ struct ExportSheet: View {
                         Label(files.count == 1 ? "Share or print the file" : "Share \(files.count) files",
                               systemImage: "square.and.arrow.up")
                             .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Palette.text)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
                             .background(RoundedRectangle(cornerRadius: 14).fill(Palette.chipFill))
@@ -92,12 +92,12 @@ struct ExportSheet: View {
                 if let errorText {
                     Text(errorText)
                         .font(.system(size: 13))
-                        .foregroundStyle(Color(hex: 0xff8a7a))
+                        .foregroundStyle(Palette.warnStrong)
                 }
             }
             .padding(16)
         }
-        .background(Color(hex: 0x1b1f26))
+        .background(Palette.sheetBg)
         // Changing a choice means the file made earlier no longer matches.
         .onChange(of: scope) { _, _ in files = [] }
         .onChange(of: format) { _, _ in files = [] }

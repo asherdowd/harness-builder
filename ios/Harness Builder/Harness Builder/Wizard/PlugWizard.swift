@@ -55,7 +55,7 @@ struct PlugWizard: View {
                 }
             }
         }
-        .background(Color(hex: 0x1b1f26))
+        .background(Palette.sheetBg)
         .scrollDismissesKeyboard(.interactively)
         .interactiveDismissDisabled(draft?.hasChanges ?? false)
         .sheet(isPresented: $pickingWire) {
@@ -66,7 +66,7 @@ struct PlugWizard: View {
                             },
                             onClose: { pickingWire = false })
                 .presentationDetents([.large])
-                .presentationBackground(Color(hex: 0x1b1f26))
+                .presentationBackground(Palette.sheetBg)
         }
         .alert("Data will be lost", isPresented: $confirmDrop) {
             Button("Cancel", role: .cancel) {}
@@ -104,7 +104,7 @@ struct PlugWizard: View {
         .padding(.horizontal, 16)
         .padding(.top, 14)
         .padding(.bottom, 4)
-        .tint(Palette.amber)
+        .tint(Palette.amberInk)
         .confirmationDialog("Discard your changes?", isPresented: $confirmDiscard, titleVisibility: .visible) {
             Button("Discard changes", role: .destructive, action: onClose)
             Button("Keep editing", role: .cancel) {}
@@ -123,7 +123,7 @@ struct PlugWizard: View {
         return VStack(spacing: 0) {
             Text(title)
                 .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Palette.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
 
@@ -142,8 +142,8 @@ struct PlugWizard: View {
                     TextField("e.g. Fuel pump relay plug", text: d.name)
                         .textFieldStyle(.plain)
                         .padding(12)
-                        .background(RoundedRectangle(cornerRadius: 11).fill(Color(hex: 0x1d2128)))
-                        .foregroundStyle(.white)
+                        .background(RoundedRectangle(cornerRadius: 11).fill(Palette.field))
+                        .foregroundStyle(Palette.text)
 
                     shapeRow(value)
                     sizeControls(d)
@@ -156,7 +156,7 @@ struct PlugWizard: View {
 
                     Text("Pin \(sel + 1)")
                         .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.text)
                         .padding(.top, 4)
                     if value.pins.indices.contains(sel) {
                         PinEditor(pin: Binding(
@@ -172,15 +172,15 @@ struct PlugWizard: View {
                     if value.droppedWiredCount > 0 {
                         HStack(alignment: .top, spacing: 10) {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(Color(hex: 0xff6b5b))
+                                .foregroundStyle(Palette.warnStrong)
                             Text("Warning: \(value.droppedWiredCount) pins that have wires set on them are gone from this layout. Saving will delete them for good. Add pins back to keep them.")
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(Color(hex: 0xffb4ab))
+                                .foregroundStyle(Palette.warnText)
                         }
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: 0x4a1f1b)))
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: 0xff6b5b), lineWidth: 1.5))
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Palette.warnFill))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Palette.warnStrong, lineWidth: 1.5))
                         .padding(.top, 8)
                     }
 
@@ -191,7 +191,7 @@ struct PlugWizard: View {
                             } label: {
                                 Text("Next pin")
                                     .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Palette.text)
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 14)
                                     .background(RoundedRectangle(cornerRadius: 14).fill(Palette.chipFill))
@@ -237,7 +237,7 @@ struct PlugWizard: View {
             Spacer()
             Button("Change shape") { pickingShape = true }
                 .buttonStyle(.bordered)
-                .tint(Palette.amber)
+                .tint(Palette.amberInk)
         }
         .padding(.top, 4)
     }
@@ -284,14 +284,14 @@ struct PlugWizard: View {
             }
             Text("\(value)")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Palette.text)
                 .frame(minWidth: 26)
             Button { set(max(min(range.upperBound, value + 1), min(value, range.upperBound))) } label: {
                 Image(systemName: "plus").frame(width: 38, height: 34)
             }
         }
         .buttonStyle(.bordered)
-        .tint(Palette.amber)
+        .tint(Palette.amberInk)
     }
 
     /// The plug's pins as tappable color chips, laid out in rows.
@@ -352,8 +352,8 @@ struct PlugWizard: View {
                 Text("\(i + 1)").font(.system(size: compact ? 9 : 11)).foregroundStyle(Palette.nameText)
             }
             .padding(compact ? 3 : 6)
-            .background(RoundedRectangle(cornerRadius: 8).fill(on ? Color(hex: 0x2d2a22) : Color.clear))
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(on ? Palette.amber : Color.clear, lineWidth: 2))
+            .background(RoundedRectangle(cornerRadius: 8).fill(on ? Palette.selectedFill : Color.clear))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(on ? Palette.amberInk : Color.clear, lineWidth: 2))
         }
         .buttonStyle(.plain)
     }
