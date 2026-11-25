@@ -143,6 +143,12 @@ electrical engineers (advanced hobbyist audience). It needs per-wire length
 and current, which the app doesn't store yet. Also parked: continuity test
 sheet from nets, cut list and BOM.
 
+**Planned after 1.0:** Bluetooth multimeter support (issue #12): a small
+driver layer, a "tested" record on a pin, a test mode that steps through a
+plug pin by pin, and AI logging. Not in version 1. Any table built before
+it (wire table, CSV, test sheet, BOM, calculator) should leave room for a
+measured value: resistance, voltage, and when and how it was measured.
+
 **Verification gap:** there is no Swift compiler in the Claude sandbox, so
 every iOS change has to be built in Xcode on the Mac before it counts as
 working.
