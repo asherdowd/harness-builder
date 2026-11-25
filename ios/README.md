@@ -20,7 +20,7 @@ with plugs branching off, pan and pinch zoom) is the product.
 | `Sheets/` | Plug sheet, pinout, Add a harness, harness menu, link picker, export sheet |
 | `Wizard/` | Add/edit plug wizard (shape picker, pin editor, draft model, wire picker for "Connects to") |
 | `Export/` | PDF, PNG, SVG and CSV export |
-| `AI/` | Build with AI safety layer: the change format (`AIProposal`), the checker and previewer (`ProposalEngine`), and Keychain key storage. Not wired to any screen yet |
+| `AI/` | Build with AI safety layer: the change format (`AIProposal`), the checker and previewer (`ProposalEngine`), and Keychain key storage. The key and model are in Settings; the chat panel and review screen are not built yet |
 | `Resources/Templates.json` | Bundled example harnesses (cleaned, see below) |
 | `MainView.swift` | Header, tabs, first-open card, and the single bottom sheet that swaps content |
 

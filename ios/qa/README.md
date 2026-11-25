@@ -45,6 +45,9 @@ Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the te
 | `ProposalEngineTests` | AI safety layer: change format, every refusal, previews change nothing, overwrites and moves listed, new problems flagged |
 | `AIUndoTests` | Applying an AI preview and undoing it, and when each is refused |
 | `KeychainStoreTests` | The Anthropic key's storage (own test service, never the real key) |
+| `AnthropicClientTests` | The API client with canned replies: request shape, forced-tool avoidance, reading replies, every failure, models |
+| `AIContextTests` | The assistant's tool schema and prompt match the app's lists and share only what was agreed |
+| `AIChatSessionTests` | The conversation: history, proposals, the one retry, failures |
 | `LayoutTests` | Plug placement on the trunk, drawing every shape |
 | `TemplateTests` | Bundled examples load, are consistent, and stay free of research notes, codes and personal names |
 | `ExportTests` | Wire table page splitting, real PDF and PNG files, 60-pin harnesses |

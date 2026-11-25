@@ -2,7 +2,7 @@
 //  SettingsSheet.swift
 //  Harness Builder
 //
-//  App settings: appearance, a placeholder for Build with AI, and about.
+//  App settings: appearance, your data, Build with AI (key and model), and about.
 //
 
 import SwiftUI
@@ -83,9 +83,7 @@ struct SettingsSheet: View {
                 dataSection
 
                 header("BUILD WITH AI")
-                row(title: "Anthropic key",
-                    sub: "Coming soon. You'll add your own key here to have a plug or harness drafted from a description.",
-                    icon: "lock")
+                AIKeySection()
 
                 header("ABOUT")
                 row(title: "Version", sub: version, icon: nil)
