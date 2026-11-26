@@ -40,6 +40,10 @@ struct AIReviewSheet: View {
             .padding(.top, 18)
             .padding(.bottom, 10)
 
+            Rectangle()
+                .fill(Palette.divider)
+                .frame(height: 1)
+
             if let p = preview {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
@@ -55,7 +59,14 @@ struct AIReviewSheet: View {
                         }
                     }
                     .padding(.horizontal, 18)
+                    .padding(.top, 12)
                     .padding(.bottom, 12)
+                }
+                .overlay(alignment: .top) {
+                    LinearGradient(colors: [Palette.sheetBg, Palette.sheetBg.opacity(0)],
+                                   startPoint: .top, endPoint: .bottom)
+                        .frame(height: 12)
+                        .allowsHitTesting(false)
                 }
                 footer(p)
             } else {
