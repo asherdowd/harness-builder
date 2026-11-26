@@ -90,7 +90,7 @@ struct ExportPlugHeader: View {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Palette.idText)
                 Spacer()
-                Text("\(connector.pinCount) pins")
+                Text(pinCountText(connector.pinCount))
                     .font(.system(size: 10))
                     .foregroundStyle(Palette.nameText)
             }

@@ -49,7 +49,7 @@ struct AIKeySection: View {
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(Palette.nameText)
                 .padding(.top, 6)
-            Text("Only the open harness, the names of plugs on your other harnesses, and what you type. It goes straight to Anthropic with your key, with no server in between. Your key stays in this phone's Keychain and is never in a backup or an export. You pay Anthropic for each use. The app works fully without a key.")
+            Text("Only the open harness, the names of plugs on your other harnesses, and what you type. It goes straight to Anthropic with your key, with no server in between. Your key stays in this device's Keychain and is never in a backup or an export. You pay Anthropic for each use. The app works fully without a key.")
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.chipText)
                 .padding(12)

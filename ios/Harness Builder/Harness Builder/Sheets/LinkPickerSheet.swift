@@ -56,7 +56,7 @@ struct LinkPickerSheet: View {
                                     Text(target.connector.title)
                                         .font(.system(size: 15, weight: .semibold))
                                         .foregroundStyle(Palette.text)
-                                    Text("\(target.connector.pinCount) pins")
+                                    Text(pinCountText(target.connector.pinCount))
                                         .font(.system(size: 12))
                                         .foregroundStyle(Palette.nameText)
                                 }

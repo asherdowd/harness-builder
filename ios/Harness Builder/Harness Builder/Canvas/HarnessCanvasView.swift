@@ -120,15 +120,17 @@ struct PlugItemView: View {
             PlugArt(model: item.art, showRoles: showRoles)
                 .position(x: cx, y: item.y)
 
+            // A long name shrinks and then trims rather than running into the trunk.
             Text(item.connector.title)
                 .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(Palette.idText)
                 .lineLimit(1)
-                .fixedSize()
+                .minimumScaleFactor(0.7)
+                .frame(width: max(w + 24, 84))
                 .position(x: cx, y: item.y + h / 2 + 17)
                 .allowsHitTesting(false)
 
-            Text("\(item.connector.pinCount) pins")
+            Text(pinCountText(item.connector.pinCount))
                 .font(.system(size: 11))
                 .foregroundStyle(Palette.nameText)
                 .fixedSize()

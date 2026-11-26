@@ -37,6 +37,7 @@ Swift Testing, in `ios/Harness Builder/Harness BuilderTests/`. The app is the te
 | `WireConnectTests` | Connecting wires you build to pins on other plugs: draft, store, and tracing from both ends |
 | `SettingsTests` | Appearance setting and the light/dark palette |
 | `BackupAndCSVTests` | Backup and restore, CSV wire list, wired and spare counts |
+| `WordingTests` | Counts read naturally ("1 pin", "2 pins") |
 | `MapChecksTests` | The "Check this harness" rules |
 | `PrintExportTests` | Print-friendly export: real files, white page, dark export unchanged |
 | `SVGExportTests` | SVG export: well-formed, every pin and name drawn, every shape, palette colors |

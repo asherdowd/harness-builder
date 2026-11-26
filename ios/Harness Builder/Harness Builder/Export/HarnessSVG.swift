@@ -123,7 +123,7 @@ enum HarnessSVG {
         }
         o.append("</g>")
         o.append(text(item.connector.title, x: cx, centerY: item.y + h / 2 + 17, size: 14, bold: true, fill: c.idText))
-        o.append(text("\(item.connector.pinCount) pins", x: cx, centerY: item.y + h / 2 + 32, size: 11, bold: false, fill: c.nameText))
+        o.append(text(pinCountText(item.connector.pinCount), x: cx, centerY: item.y + h / 2 + 32, size: 11, bold: false, fill: c.nameText))
         return o.joined(separator: "\n")
     }
 

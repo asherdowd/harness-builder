@@ -75,7 +75,7 @@ struct SettingsSheet: View {
                 header("APPEARANCE")
                 SegRow(options: AppearanceMode.allCases.map { ($0.rawValue, $0.label) },
                        selection: $appearanceRaw)
-                Text("System follows your phone's light or dark setting.")
+                Text("System follows this device's light or dark setting.")
                     .font(.system(size: 12))
                     .foregroundStyle(Palette.nameText)
 

@@ -104,7 +104,7 @@ struct PlugSheet: View {
                     .foregroundStyle(Palette.text)
                 Spacer()
             }
-            Text("\(c.pinCount) pins · \(c.wiredCount) wired · \(c.spareCount) spare")
+            Text("\(pinCountText(c.pinCount)) · \(c.wiredCount) wired · \(c.spareCount) spare")
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.nameText)
         }
