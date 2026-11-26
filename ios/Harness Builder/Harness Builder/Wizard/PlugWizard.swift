@@ -169,6 +169,12 @@ struct PlugWizard: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
 
+            // The picture stays pinned and the form scrolls under it. A clear
+            // line and a short fade keep text from looking sliced at the edge.
+            Rectangle()
+                .fill(Palette.divider)
+                .frame(height: 1)
+
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Name")
@@ -254,6 +260,13 @@ struct PlugWizard: View {
                         .padding(.bottom, 24)
                 }
                 .padding(.horizontal, 16)
+                .padding(.top, 12)
+            }
+            .overlay(alignment: .top) {
+                LinearGradient(colors: [Palette.sheetBg, Palette.sheetBg.opacity(0)],
+                               startPoint: .top, endPoint: .bottom)
+                    .frame(height: 12)
+                    .allowsHitTesting(false)
             }
         }
     }
