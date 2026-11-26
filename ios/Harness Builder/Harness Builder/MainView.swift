@@ -203,6 +203,7 @@ struct MainView: View {
                            })
                     .presentationDetents([.large])
                     .presentationBackground(Palette.sheetBg)
+                    .pageSizedSheet()
             case .addHarness:
                 AddHarnessSheet(store: store, onClose: {
                     selectedID = nil
